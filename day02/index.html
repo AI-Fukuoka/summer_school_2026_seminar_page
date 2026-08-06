@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>day02 | NotebookLM完全ガイド</title>
+  <style>
+    :root {
+      --bg: #f6fbff;
+      --surface: #ffffff;
+      --surface-soft: #edf7ff;
+      --ink: #17324a;
+      --muted: #60788c;
+      --accent: #0b84d8;
+      --accent-deep: #095f9e;
+      --line: #d8e8f5;
+      --shadow: 0 20px 50px rgba(18, 55, 89, 0.08);
+      --radius: 20px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Hiragino Sans", "Yu Gothic", "Noto Sans JP", sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at top left, rgba(11, 132, 216, 0.12), transparent 24%),
+        linear-gradient(180deg, #fbfeff 0%, var(--bg) 100%);
+      line-height: 1.8;
+    }
+
+    .shell {
+      width: min(1120px, calc(100% - 28px));
+      margin: 0 auto;
+      padding: 28px 0 64px;
+    }
+
+    .topnav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    .topnav a {
+      color: var(--accent-deep);
+      text-decoration: none;
+      font-weight: 700;
+    }
+
+    .hero {
+      padding: 34px;
+      border: 1px solid var(--line);
+      border-radius: 28px;
+      background: rgba(255, 255, 255, 0.9);
+      box-shadow: var(--shadow);
+    }
+
+    .eyebrow {
+      margin: 0 0 10px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(2rem, 4.5vw, 4rem);
+      line-height: 1.08;
+    }
+
+    .hero p {
+      margin: 16px 0 0;
+      max-width: 760px;
+      color: var(--muted);
+      font-size: 1.04rem;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 260px minmax(0, 1fr);
+      gap: 20px;
+      margin-top: 24px;
+      align-items: start;
+    }
+
+    .toc,
+    .panel,
+    .summary-card {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--surface);
+      box-shadow: 0 10px 28px rgba(18, 55, 89, 0.05);
+    }
+
+    .toc {
+      position: sticky;
+      top: 18px;
+      padding: 20px;
+    }
+
+    .toc h2,
+    .summary-card h2 {
+      margin: 0 0 12px;
+      font-size: 1rem;
+    }
+
+    .toc a {
+      display: block;
+      padding: 10px 12px;
+      border-radius: 12px;
+      color: var(--muted);
+      text-decoration: none;
+    }
+
+    .toc a:hover {
+      background: var(--surface-soft);
+      color: var(--ink);
+    }
+
+    .content {
+      display: grid;
+      gap: 18px;
+    }
+
+    .panel {
+      padding: 26px;
+    }
+
+    .panel h2 {
+      margin: 0 0 8px;
+      font-size: 1.6rem;
+      line-height: 1.3;
+    }
+
+    .panel h3 {
+      margin: 18px 0 10px;
+      font-size: 1.05rem;
+    }
+
+    .panel p {
+      margin: 10px 0 0;
+    }
+
+    .panel ul,
+    .panel ol {
+      margin: 12px 0 0;
+      padding-left: 1.2rem;
+    }
+
+    .note {
+      margin-top: 16px;
+      padding: 16px 18px;
+      border-left: 4px solid var(--accent);
+      border-radius: 14px;
+      background: var(--surface-soft);
+      color: var(--ink);
+    }
+
+    .chip-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      padding: 8px 12px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: var(--surface-soft);
+      font-weight: 700;
+      color: var(--accent-deep);
+      font-size: 0.92rem;
+    }
+
+    .summary-card {
+      margin-top: 24px;
+      padding: 24px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 12px;
+      font-size: 0.95rem;
+    }
+
+    th,
+    td {
+      padding: 12px 10px;
+      border-bottom: 1px solid var(--line);
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      color: var(--accent-deep);
+      font-size: 0.88rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    @media (max-width: 900px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+
+      .toc {
+        position: static;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <div class="topnav">
+      <a href="../">← スライド一覧へ戻る</a>
+      <span>day02 / NotebookLM</span>
+    </div>
+
+    <section class="hero">
+      <p class="eyebrow">day02 / AI Summer School 2026</p>
+      <h1>NotebookLM完全ガイド</h1>
+      <p>あなたの資料が「賢い相棒」に変わるまで。NotebookLM を、要約ツールではなく資料ベースで考える AI アシスタントとして理解するための教材ページです。</p>
+      <div class="chip-row">
+        <span class="chip">引用つき回答</span>
+        <span class="chip">ソース読解</span>
+        <span class="chip">Studio変換</span>
+        <span class="chip">学習向け活用</span>
+      </div>
+    </section>
+
+    <div class="grid">
+      <aside class="toc">
+        <h2>目次</h2>
+        <a href="#intro">導入</a>
+        <a href="#chapter1">第1章 便利な理由</a>
+        <a href="#chapter2">第2章 ソース対応</a>
+        <a href="#chapter3">第3章 主要機能</a>
+        <a href="#chapter4">第4章 Studio機能</a>
+        <a href="#chapter5">第5章 学習機能</a>
+        <a href="#chapter6">第6章 活用シーン</a>
+        <a href="#chapter7">第7章 Claude Code連携</a>
+        <a href="#chapter8">第8章 注意点</a>
+        <a href="#summary">各スライド要点</a>
+      </aside>
+
+      <section class="content">
+        <article class="panel" id="intro">
+          <h2>導入：NotebookLMとは？</h2>
+          <p>NotebookLMは Google の AI-powered research assistant で、インターネット全体ではなく、自分が入れたソースを根拠に答えるのが大きな特徴です。</p>
+          <ul>
+            <li>自分が渡した資料だけで考える</li>
+            <li>回答に in-line citations がつく</li>
+            <li>音声・図解・スライドなど別形式への変換が速い</li>
+            <li>ノートごとにテーマを分けて育てられる</li>
+          </ul>
+          <div class="note">`AIに聞く` というより、`自分の資料に聞く` 感覚に近い、という伝え方が受講者にはわかりやすいです。</div>
+        </article>
+
+        <article class="panel" id="chapter1">
+          <h2>第1章：なぜNotebookLMが便利なのか</h2>
+          <p>NotebookLM の強さは、ソースに grounded した回答を返し、何を根拠に話しているかが見えやすいことにあります。</p>
+          <ol>
+            <li>1 notebook = 1 project で資料を閉じ込められる</li>
+            <li>チャット回答に引用がつき出典確認しやすい</li>
+            <li>資料にないことを過信しにくい</li>
+            <li>学習向けにも業務向けにも使いやすい</li>
+          </ol>
+        </article>
+
+        <article class="panel" id="chapter2">
+          <h2>第2章：何を入れられるのか</h2>
+          <p>NotebookLM は複数形式の資料を読み込めます。</p>
+          <ul>
+            <li>PDF</li>
+            <li>Webサイト</li>
+            <li>YouTube動画</li>
+            <li>音声ファイル</li>
+            <li>Google Docs / Slides / Sheets</li>
+            <li>画像 / コピペしたテキスト</li>
+          </ul>
+          <h3>2026-08-06時点の目安</h3>
+          <ul>
+            <li>Standardでは 100 notebooks / user</li>
+            <li>1 notebook あたり 50 sources</li>
+            <li>1 source あたり 500,000 words または 200MB まで</li>
+            <li>Google Slides は最大100スライド</li>
+            <li>Google Sheets は 100k tokens 制限あり</li>
+          </ul>
+        </article>
+
+        <article class="panel" id="chapter3">
+          <h2>第3章：何ができるのか</h2>
+          <h3>1. チャットで資料を読む</h3>
+          <ul>
+            <li>ノート内の資料を横断して質問できる</li>
+            <li>要約、比較、論点整理、重要箇所の抽出が速い</li>
+            <li>引用つきなので元資料に戻りやすい</li>
+          </ul>
+          <h3>2. Notesで知見をためる</h3>
+          <ul>
+            <li>チャット結果を Save to note</li>
+            <li>自分で書いたメモも追加可能</li>
+            <li>最大 1,000 notes / notebook</li>
+          </ul>
+          <h3>3. Mind Mapで構造をつかむ</h3>
+          <ul>
+            <li>資料全体の論点を枝分かれ図で可視化</li>
+            <li>初学者が全体像を掴むのに向く</li>
+          </ul>
+          <h3>4. Studioで別形式に変換</h3>
+          <ul>
+            <li>Audio Overview</li>
+            <li>Video Overview</li>
+            <li>Flashcards / Quizzes</li>
+            <li>Infographic</li>
+            <li>Slide Deck</li>
+          </ul>
+        </article>
+
+        <article class="panel" id="chapter4">
+          <h2>第4章：Studio機能がすごい</h2>
+          <h3>Audio Overview</h3>
+          <ul>
+            <li>2人のAIホストによる対話型音声まとめ</li>
+            <li>Deep Dive / Brief / Critique / Debate などの形式</li>
+            <li>80+ languages 対応</li>
+          </ul>
+          <h3>Video Overview</h3>
+          <ul>
+            <li>資料から動画形式の解説を生成</li>
+            <li>Cinematic / Explainer / Brief などの形式</li>
+            <li>生成に30分以上かかることもある</li>
+          </ul>
+          <h3>Infographic / Slide Deck</h3>
+          <ul>
+            <li>要点を1枚に圧縮してPNG出力</li>
+            <li>Detailed Deck / Presenter Slides を選べる</li>
+            <li>PDFに加えて PowerPoint (.pptx) でもダウンロード可能</li>
+          </ul>
+        </article>
+
+        <article class="panel" id="chapter5">
+          <h2>第5章：学習機能とDeep Research</h2>
+          <p>講座ではまずソース読解を本筋にしつつ、必要に応じて外部調査や復習機能へ広げると理解しやすいです。</p>
+          <ul>
+            <li>Deep Research はプランごとに回数上限あり</li>
+            <li>Flashcards / Quizzes は復習教材にしやすい</li>
+            <li>Mind Map → Chat → Flashcards の流れが相性良い</li>
+          </ul>
+        </article>
+
+        <article class="panel" id="chapter6">
+          <h2>第6章：サマースクール向け活用シーン</h2>
+          <ol>
+            <li>講義資料の理解: PDFやスライドを入れて難しい章だけ質問する</li>
+            <li>動画講義の時短復習: Audio Overviewで耳から復習する</li>
+            <li>発表資料の下書き: 複数資料からスライド構成を起こす</li>
+            <li>調査メモの整理: 比較観点を抽出し自分のメモまで蓄積する</li>
+            <li>学習コミュニティ運営: 講座資料やFAQを1つのノートに集約する</li>
+          </ol>
+        </article>
+
+        <article class="panel" id="chapter7">
+          <h2>第7章：Claude Codeとの連携</h2>
+          <p>NotebookLM を「頭脳」、Claude Code を「手足」として分けると、読む負担と作る負担を切り分けやすくなります。</p>
+          <ol>
+            <li>NotebookLMに資料を入れる</li>
+            <li>要点、論点、構成案を作る</li>
+            <li>その出力を CLAUDE.md や作業メモに落とす</li>
+            <li>Claude Code に実制作を渡す</li>
+          </ol>
+        </article>
+
+        <article class="panel" id="chapter8">
+          <h2>第8章：注意点</h2>
+          <ul>
+            <li>AI生成なので事実誤認や表現ミスはあり得る</li>
+            <li>引用つきでも最終確認は人が行う</li>
+            <li>モバイル版では一部機能制限がある</li>
+            <li>共有設定や公開設定は個人アカウントとWorkspaceで差がある</li>
+          </ul>
+          <div class="note">`信じるために使う` のではなく、`確認しやすくするために使う`。</div>
+        </article>
+
+        <article class="summary-card" id="summary">
+          <h2>各スライドのポイントまとめ</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>枚数</th>
+                <th>タイトル</th>
+                <th>簡潔なポイント</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>1</td><td>NotebookLMとは？</td><td>自分が渡した資料を根拠に考えるAIノート。</td></tr>
+              <tr><td>2</td><td>ソース対応と容量</td><td>PDF、動画、音声、Docsなどをまとめて扱える。</td></tr>
+              <tr><td>3</td><td>チャットとNotes</td><td>引用つき回答とメモ蓄積で、理解が深まる。</td></tr>
+              <tr><td>4</td><td>Mind MapとStudio</td><td>構造化し、音声・動画・図解・スライドへ変換できる。</td></tr>
+              <tr><td>5</td><td>Audio / Slide / Infographic</td><td>学習と発表の形式変換が速い。</td></tr>
+              <tr><td>6</td><td>活用シーン</td><td>講義理解、復習、発表準備、調査整理に使える。</td></tr>
+              <tr><td>7</td><td>Claude Code連携</td><td>読解はNotebookLM、制作はClaude Codeで分担。</td></tr>
+              <tr><td>8</td><td>まとめ</td><td>NotebookLMは、資料を使える知識に変える道具。</td></tr>
+            </tbody>
+          </table>
+        </article>
+      </section>
+    </div>
+  </main>
+</body>
+</html>
