@@ -1,103 +1,1182 @@
-<!DOCTYPE html><html lang="ja"><head><meta charset="utf-8"><title>AIエージェント入門 — 業務で使い始める前に</title><style>
-:root{
-  --ink:#111C33; --navy:#12305F; --teal:#0F8C8C; --amber:#E0A32E;
-  --muted:#525C6B; --line:#D8DEE9; --bg:#FFFFFF; --soft:#F4F7FB;
+﻿<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AIエージェント入門 — AI Summer school 2026</title>
+  <style>
+:root {
+  --bg: #f4f6f8;
+  --surface: #ffffff;
+  --surface-muted: #edf3f8;
+  --surface-strong: #dceaf9;
+  --ink: #1b2432;
+  --muted: #5d6777;
+  --line: #d4dce7;
+  --accent: #0d84d8;
+  --accent-deep: #095f9e;
+  --accent-soft: #d8ecfb;
+  --shadow: 0 18px 48px rgba(27, 36, 50, 0.08);
+  --radius: 8px;
 }
-*{box-sizing:border-box}
-/* 文字が薄く見えたので、太さと濃さを上げた。**細字は印刷でさらに薄くなる。**
-   本文 500、見出し 800、図中のラベル 700 で段差を付ける。 */
-body{margin:0;background:#EEF1F5;color:var(--ink);
-  font-family:"Hiragino Kaku Gothic ProN","Yu Gothic","Noto Sans JP",sans-serif;
-  line-height:1.78;font-size:15px;font-weight:500;
-  -webkit-font-smoothing:antialiased;}
-/* **height + overflow:hidden にしてはならない。** 溢れたページで本文が
-   切れて読めなくなる（実測: 「エージェントの能力」が容量の200%で欠けた）。
-   min-height にして、溢れる分は伸ばす。印刷側は自然に改ページする。 */
-.page{background:var(--bg);width:210mm;min-height:297mm;
-  margin:16px auto;padding:20mm 18mm 16mm;position:relative;box-shadow:0 2px 12px rgba(0,0,0,.12);}
-.page::before{content:"";position:absolute;left:0;top:0;bottom:0;width:9mm;
-  background:linear-gradient(180deg,var(--navy),#1E4A8A);}
-.running{font-size:12px;font-weight:700;color:var(--muted);border-bottom:1px solid var(--line);
-  padding-bottom:6px;margin-bottom:18px;letter-spacing:.04em;}
-h1.deck{font-size:31px;font-weight:800;line-height:1.4;margin:.2em 0 .1em;color:var(--navy);}
-h1.deck+.sub{color:var(--teal);font-weight:700;font-size:17px;margin-bottom:26px;}
-h2{font-size:26px;color:var(--ink);margin:0 0 2px;line-height:1.35;
-  font-weight:800;letter-spacing:-.01em;}
-h2 .lead{display:block;font-size:13.5px;color:var(--muted);font-weight:700;
-  margin-bottom:2px;letter-spacing:.02em;}
-h2+.rule{height:2px;background:var(--navy);margin:10px 0 16px;width:100%;}
-section.sec+section.sec{margin-top:30px;}
-p{margin:0 0 1em;text-align:justify;font-weight:500;}
-.caution{border:1.5px solid var(--amber);border-radius:8px;padding:14px 16px;
-  background:#FFFDF5;margin:0 0 1em;font-weight:600;}
-.caution .tag{display:inline-block;background:var(--amber);color:#fff;
-  font-size:12px;font-weight:700;border-radius:4px;padding:1px 8px;margin-bottom:6px;}
-/* 要点は青の丸囲み枠にする。手本の資料でいちばん効いていた要素。 */
-.keypoint{border:1.5px solid #1668C8;background:#F2F7FD;border-radius:10px;
-  padding:13px 17px;margin:14px 0 1em;font-weight:700;}
-.keypoint .tag{display:inline-block;background:#1668C8;color:#fff;font-size:11px;
-  font-weight:700;border-radius:4px;padding:1px 9px;margin-bottom:6px;}
-figure{margin:18px 0;}
-figure img{width:100%;border:1px solid var(--line);border-radius:6px;display:block;}
-figure .ph{border:1.5px dashed var(--line);border-radius:6px;padding:38px 12px;
-  text-align:center;color:var(--muted);font-size:13px;background:var(--soft);}
-figcaption{font-size:12.5px;font-weight:600;color:var(--muted);margin-top:6px;}
-.bars{margin:6px 0 2px;}
-.bar{display:grid;grid-template-columns:8em 1fr auto;align-items:center;
-  gap:10px;margin-bottom:8px;}
-.bar .lb{font-size:14px;font-weight:700;}
-.bar .tr{background:var(--soft);border-radius:3px;height:20px;overflow:hidden;}
-.bar .fl{background:var(--navy);height:100%;}
-.bar .vl{font-size:15px;font-weight:700;color:var(--navy);min-width:3.5em;
-  text-align:right;}
-.flow{display:flex;align-items:stretch;gap:6px;flex-wrap:wrap;margin:6px 0;}
-.flow .st{flex:1 1 0;min-width:96px;background:var(--soft);border-radius:6px;
-  padding:10px 8px;text-align:center;font-size:13px;font-weight:700;}
-.flow .ar{align-self:center;color:var(--navy);font-weight:700;}
-.cmp{display:grid;gap:10px;margin:6px 0;}
-.cmp .bx{border:1.5px solid var(--line);border-radius:8px;padding:12px 14px;
-  font-weight:600;font-size:13.5px;}
-.cmp .bx .lb{display:inline-block;background:var(--navy);color:#fff;font-size:12px;
-  font-weight:700;border-radius:4px;padding:1px 8px;margin-bottom:6px;}
-/* 対比のうち1つを目立たせる（「こちらが要点」を示す）。 */
-.cmp .bx.hi{border-color:#1668C8;background:#F2F7FD;}
-.cmp .bx.hi .lb{background:#1668C8;}
-/* 手順のうち、危険な段や人が担う段を目立たせる。 */
-.flow .st.hi{background:#F2F7FD;border:1.5px solid #1668C8;}
-.flow .st.warn{background:#FFFDF5;border:1.5px solid var(--amber);}
-/* 2軸のマトリクス。**「どれから手を付けるか」は言葉より位置で伝わる。** */
-.mx{display:grid;grid-template-columns:auto 1fr 1fr;gap:0;margin:8px 0;
-  font-size:13px;font-weight:700;}
-.mx .ax{color:var(--muted);font-size:11.5px;font-weight:700;
-  display:flex;align-items:center;justify-content:center;padding:4px 6px;}
-.mx .ax.y{writing-mode:vertical-rl;}
-.mx .cell{border:1px solid var(--line);padding:12px 10px;min-height:62px;
-  background:var(--soft);}
-.mx .cell.hi{background:#F2F7FD;border:1.5px solid #1668C8;color:var(--navy);}
-.mx .cell .t{display:block;font-size:11px;color:var(--muted);font-weight:700;
-  margin-bottom:3px;}
-/* 積み上げ・階層。上ほど狭くする。 */
-.ly{margin:8px 0;display:flex;flex-direction:column;align-items:center;gap:5px;}
-.ly .lv{background:var(--soft);border:1px solid var(--line);border-radius:5px;
-  padding:9px 12px;text-align:center;font-size:13px;font-weight:700;}
-.ly .lv.hi{background:#F2F7FD;border-color:#1668C8;color:var(--navy);}
-.footer{position:absolute;left:20mm;right:20mm;bottom:12mm;font-size:11.5px;font-weight:600;
-  color:var(--muted);display:flex;justify-content:space-between;
-  border-top:1px solid var(--line);padding-top:6px;}
-.toc li{margin-bottom:4px;}
-/* 章タブ（右端の縦ラベル）。手本の資料が持っていた誘導。 */
-.chtab{position:absolute;right:0;top:26mm;writing-mode:vertical-rl;
-  background:var(--navy);color:#fff;font-size:11px;font-weight:700;
-  padding:10px 5px;border-radius:4px 0 0 4px;letter-spacing:.12em;}
-/* 見出しのメリハリ。小さな前置き＋大きな題、要語だけ青。 */
-h2 em{font-style:normal;color:#1668C8;}
-.bridge{margin-top:18px;background:var(--soft);border-radius:6px;
-  padding:10px 14px;font-size:13px;font-weight:700;color:var(--navy);}
-.bridge b{color:#1668C8;}
-.chtag{display:inline-block;background:var(--soft);color:var(--navy);font-size:11px;
-  font-weight:700;border-radius:3px;padding:1px 8px;margin-bottom:6px;}
-@media print{
-  body{background:#fff}
-  .page{margin:0;box-shadow:none;page-break-after:always;width:auto;height:auto;}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
 }
-</style></head><body><div class="page"><div class="running">AIエージェント入門 — 業務で使い始める前に</div><h1 class="deck">AIエージェント入門 — 業務で使い始める前に</h1><div class="sub">自分の業務のどこにAIエージェントを使えるか見当がつき、安全に始めるための最低限の注意を知っている</div><p>対象: 非エンジニアの社会人。日常業務でPCを使うが、コードは書かない。生成AIのチャットは触ったことがある</p><p>所要: 30 分</p><h2>目次</h2><div class="rule"></div><ol class="toc"><li>AIエージェントの基礎</li><li>業務での活用例</li><li>安全に任せるための制御</li><li>評価・改善・説明責任</li></ol><div class="footer"><span>AIエージェント入門 — 業務で使い始める前に</span><span></span></div></div><div class="page"><span class="chtab">AIエージェントの基礎</span><div class="running">AIエージェントの基礎</div><section class="sec" data-section="W-01-01"><h2><span class=lead>まず、何が違うのかから</span>生成AIとAIエージェントの違い</h2><div class="rule"></div><p data-cards="EV-3f8db8,EV-9456c5,EV-b6c196,EV-81581a,EV-20f96a,EV-0c6d2f,EV-4464a5,EV-901666,EV-17ce78,EV-214258">生成AIとの違いは、<strong>答えを返すところで終わるか、環境に触れて仕事を進めるところまで担うか</strong>にある。チャットは質問に答えて終わりだが、エージェントはPCやファイルなど、コンピュータから届く範囲に手を伸ばし、実際の作業まで行う。</p><p data-cards="EV-3f8db8,EV-9456c5,EV-b6c196,EV-81581a,EV-20f96a,EV-0c6d2f,EV-4464a5,EV-901666,EV-17ce78,EV-214258">たとえば、チャットでは回答を受け取った人が次の操作をする。エージェントでは、その操作そのものを任せられる。フォルダの中のファイルをまとめて読む、内容に応じてファイル名を変える、調べた結果を表にして保存する。<strong>役割の差は、回答そのものより、回答後の操作を誰が引き受けるかに表れる。</strong></p><p data-cards="EV-3f8db8,EV-9456c5,EV-b6c196,EV-81581a,EV-20f96a,EV-0c6d2f,EV-4464a5,EV-901666,EV-17ce78,EV-214258">ただし、この違いは二者択一ではない。仕事の複雑さに応じて、チャット、簡単な自動化、エージェントを使い分けることになる。</p><figure data-cards="EV-b6c196,EV-214258,EV-0c6d2f"><div class="flow"><div class="st">依頼する</div><div class="ar">→</div><div class="st">答えが返る</div><div class="ar">→</div><div class="st hi">ファイルを開く・貼る・送る</div><div class="ar">→</div><div class="st">仕事が終わる</div></div><figcaption>同じ依頼でも、どこまでを誰がやるかが違う</figcaption></figure><figure data-cards="EV-901666,EV-17ce78,EV-81581a"><div class="ly"><div class="lv hi" style="width:46%">エージェント（複数の手順を任せる）</div><div class="lv" style="width:69%">簡単な自動化</div><div class="lv" style="width:92%">チャット（聞いて答えをもらう）</div></div><figcaption>仕事の複雑さで選ぶ</figcaption></figure><div class="keypoint" data-cards="EV-b6c196,EV-9456c5,EV-3f8db8,EV-0c6d2f"><span class="tag">要点</span><div>回答後の操作を誰が引き受けるか</div></div></section><div class="bridge">次は <b>エージェント導入で得られる価値と限界</b> &nbsp;→ 次ページ</div><div class="footer"><span>AIエージェント入門 — 業務で使い始める前に</span><span>1</span></div></div><div class="page"><span class="chtab">AIエージェントの基礎</span><div class="running">AIエージェントの基礎</div><section class="sec" data-section="W-01-02"><h2><span class=lead>性能より、人の判断が効く</span>エージェント導入で得られる価値と限界</h2><div class="rule"></div><p data-cards="EV-ca1f52,EV-2fd519,EV-22b75c,EV-74c8ee,EV-793a18,EV-719de0,EV-ddd667,EV-c8f3a0,EV-8c3480,EV-2bd60e,EV-9e3993,EV-f851ea">エージェントを入れると何が得られ、どこで頭打ちになるのか。<strong>成果を左右するのは性能そのものより、何を任せ、どう確認し、どこで止めるかという人間の判断</strong>である。一方的に仕事を渡す自動化ではなく、行き来のある協調として捉えるほうが実態に近い。</p><p data-cards="EV-ca1f52,EV-2fd519,EV-22b75c,EV-74c8ee,EV-793a18,EV-719de0,EV-ddd667,EV-c8f3a0,EV-8c3480,EV-2bd60e,EV-9e3993,EV-f851ea">数字の見え方には注意がいる。管理されないまま使われている例が7割を超え、管理を始めた組織は3割に届かないという調査がある。事務作業の削減効果を企業別に示した表もあるが、<strong>それは他社の値であって自社の値ではない。</strong> 実際にできる仕事の長さも、秒単位から数時間へと急速に伸びたが、連続して動き続けることを意味しない。</p><p data-cards="EV-ca1f52,EV-2fd519,EV-22b75c,EV-74c8ee,EV-793a18,EV-719de0,EV-ddd667,EV-c8f3a0,EV-8c3480,EV-2bd60e,EV-9e3993,EV-f851ea">限界のほうもはっきりしている。誤りは出るものとして、人が事実を確かめる工程を組み込む。何にでも使えばよいというものでもなく、まず用途を決め、そこから必要なものを選ぶ。用語の定義を争うより、<strong>手元にある仕組みで期待する結果が出るかどうか</strong>を優先するほうが実務的である。</p><figure data-cards="EV-ddd667"><div class="bars"><div class="bar"><div class="lb">管理されていない</div><div class="tr"><div class="fl" style="width:100.0%"></div></div><div class="vl">73%</div></div><div class="bar"><div class="lb">管理を始めた</div><div class="tr"><div class="fl" style="width:37.0%"></div></div><div class="vl">27%</div></div></div><figcaption>管理せずに使われている割合（他社調査。自社の値ではない）</figcaption></figure><figure data-cards="EV-ca1f52,EV-22b75c"><div class="cmp" style="grid-template-columns:1fr 1fr"><div class="bx"><span class="lb">自動化として見る</span><div>渡したら終わり。できなければ道具が悪いという話になる</div></div><div class="bx hi"><span class="lb">協調として見る</span><div>何を任せ、どう確認し、どこで止めるかを人が決め続ける</div></div></div><figcaption>渡して終わりではなく、行き来する</figcaption></figure><div class="keypoint" data-cards="EV-22b75c,EV-ca1f52,EV-2fd519,EV-793a18,EV-74c8ee,EV-f851ea"><span class="tag">要点</span><div>性能より、人の判断が効く</div></div></section><div class="bridge">次は <b>調査・報告・資料作成を効率化する</b> &nbsp;→ 次ページ</div><div class="footer"><span>AIエージェント入門 — 業務で使い始める前に</span><span>2</span></div></div><div class="page"><span class="chtab">業務での活用例</span><div class="running">業務での活用例</div><section class="sec" data-section="W-02-01"><h2><span class=lead>自分の業務のどこに置くか</span>調査・報告・資料作成を効率化する</h2><div class="rule"></div><p data-cards="EV-6b4d4e,EV-3b15c5,EV-f5872c,EV-8de6fb,EV-69269a,EV-7b5a03,EV-739279,EV-ec38fd,EV-481970,EV-debf58">どの仕事から手をつけるかは、感覚ではなく洗い出しで決める。<strong>優先順位を決める前に、時間を食っている業務を頻度・所要時間・定型度で並べてみる。</strong></p><p data-cards="EV-6b4d4e,EV-3b15c5,EV-f5872c,EV-8de6fb,EV-69269a,EV-7b5a03,EV-739279,EV-ec38fd,EV-481970,EV-debf58">仕事は「作る・処理する・応答する」の三つに分けると整理しやすい。それぞれの中で、<strong>頻度と定型度がともに高いもの</strong>が最初の候補になる。件数が多くて手順が決まっているほど、効果が出やすい。</p><p data-cards="EV-6b4d4e,EV-3b15c5,EV-f5872c,EV-8de6fb,EV-69269a,EV-7b5a03,EV-739279,EV-ec38fd,EV-481970,EV-debf58">調査、報告、資料作成は、この条件に当てはまりやすい。複数のページから情報を集めて比較表にする、複数の文書を読んで一つの報告書にまとめる、といった作業である。<strong>一件ずつなら手でもできるが、数が増えると人手では追いつかない</strong>種類の仕事が向いている。</p><p data-cards="EV-6b4d4e,EV-3b15c5,EV-f5872c,EV-8de6fb,EV-69269a,EV-7b5a03,EV-739279,EV-ec38fd,EV-481970,EV-debf58">逆に、報告された値や誰かの要約をそのまま使う場面では、一次情報までたどって確かめる。</p><figure data-cards="EV-ec38fd,EV-f5872c,EV-481970"><div class="mx"><div class="ax"></div><div class="ax">定型度 低</div><div class="ax">定型度 高</div><div class="ax y">頻度 高</div><div class="cell">毎回考えて判断している</div><div class="cell hi"><span class="t">最初の候補</span>調査・報告・資料作成はここ</div><div class="ax y">頻度 低</div><div class="cell">後回しでよい</div><div class="cell">手順は決まっているが件数が少ない</div></div><figcaption>頻度と定型度で置き場所を決める</figcaption></figure><figure data-cards="EV-3b15c5,EV-739279"><div class="cmp" style="grid-template-columns:1fr 1fr 1fr"><div class="bx"><span class="lb">作る</span><div>資料・報告書・文面をゼロから用意する</div></div><div class="bx"><span class="lb">処理する</span><div>届いたものを読んで、まとめる・振り分ける</div></div><div class="bx"><span class="lb">応答する</span><div>問い合わせに答える・確認して返す</div></div></div><figcaption>自分の仕事はどれに入るか</figcaption></figure><div class="keypoint" data-cards="EV-6b4d4e,EV-ec38fd,EV-7b5a03,EV-3b15c5"><span class="tag">要点</span><div>頻度・所要時間・定型度で見る</div></div></section><div class="bridge">次は <b>外部コンテンツのプロンプトインジェクションを防ぐ</b> &nbsp;→ 次ページ</div><div class="footer"><span>AIエージェント入門 — 業務で使い始める前に</span><span>3</span></div></div><div class="page"><span class="chtab">安全に任せるための制御</span><div class="running">安全に任せるための制御</div><section class="sec" data-section="W-03-01"><h2><span class=lead>危ないのは、読ませて任せたとき</span>外部コンテンツのプロンプトインジェクションを防ぐ</h2><div class="rule"></div><p data-cards="EV-8f3427,EV-2e6702,EV-b31c5d,EV-4bcc4c,EV-713ec5,EV-598187">外部から読み込んだ内容には、<strong>エージェントへの命令が混ざっていることがある。</strong> メール、メッセージ、Webページの中身は、そういう入力として扱う。</p><p data-cards="EV-8f3427,EV-2e6702,EV-b31c5d,EV-4bcc4c,EV-713ec5,EV-598187">外部の文章を読ませたうえで操作まで任せると、そこに埋め込まれた指示にエージェントが従ってしまい、意図しない動きをすることがある。これをプロンプトインジェクションと呼ぶ。</p><p data-cards="EV-8f3427,EV-2e6702,EV-b31c5d,EV-4bcc4c,EV-713ec5,EV-598187"><strong>「怪しい命令には従わないで」と指示しても防げない。</strong> 指示は、それ自体が読み込まれた文章と同じ土俵にあるからである。できる対策は入口を絞ることで、公式または信頼できる情報源に限定すると、素性の分からない内容から受けるリスクを下げられる。</p><figure data-cards="EV-713ec5,EV-b31c5d,EV-8f3427"><div class="flow"><div class="st">外から来た文章を読ませる</div><div class="ar">→</div><div class="st warn">中に命令が混ざっている</div><div class="ar">→</div><div class="st">操作まで任せてある</div><div class="ar">→</div><div class="st warn">その命令どおりに動く</div></div><figcaption>乗っ取りが成立する道すじ</figcaption></figure><figure data-cards="EV-4bcc4c,EV-598187"><div class="cmp" style="grid-template-columns:1fr 1fr"><div class="bx"><span class="lb">効かない</span><div>「怪しい命令には従わないで」とエージェントにお願いする</div></div><div class="bx hi"><span class="lb">効く</span><div>読ませる先を公式・信頼できる情報源に限る</div></div></div><figcaption>効く対策と、効かない対策</figcaption></figure><div class="keypoint" data-cards="EV-713ec5,EV-713ec5"><span class="tag">要点</span><div>メール・DM・Webの中身は外部入力</div></div></section><div class="bridge">次は <b>人が責任を持って検証・停止する</b> &nbsp;→ 次ページ</div><div class="footer"><span>AIエージェント入門 — 業務で使い始める前に</span><span>4</span></div></div><div class="page"><span class="chtab">評価・改善・説明責任</span><div class="running">評価・改善・説明責任</div><section class="sec" data-section="W-04-01"><h2><span class=lead>任せても、席は空かない</span>人が責任を持って検証・停止する</h2><div class="rule"></div><p data-cards="EV-b773f9,EV-4170a8,EV-65a0ff,EV-d8b939,EV-a3a166,EV-4d8b14,EV-1c2710,EV-2be88d,EV-814a63,EV-ea60af,EV-b59b24,EV-834953,EV-717094"><strong>性能が上がっても、人が持つ責任は減らない。</strong> むしろ、判断を任せるほど、人の知識と検証の価値が上がる。</p><p data-cards="EV-b773f9,EV-4170a8,EV-65a0ff,EV-d8b939,EV-a3a166,EV-4d8b14,EV-1c2710,EV-2be88d,EV-814a63,EV-ea60af,EV-b59b24,EV-834953,EV-717094">人が担うのは二つである。何を作るかを指示することと、出てきたものが正しいかを検証すること。出力には誤りがありうるので、結果を無条件に信頼しない。図面から見積りの下書きを素早く作れても、<strong>最終の判断は人が担う。</strong></p><p data-cards="EV-b773f9,EV-4170a8,EV-65a0ff,EV-d8b939,EV-a3a166,EV-4d8b14,EV-1c2710,EV-2be88d,EV-814a63,EV-ea60af,EV-b59b24,EV-834953,EV-717094">そしてもう一つ、<strong>途中で止める判断</strong>も人の仕事である。おかしいと思ったら作業を中断し、方向を変えられること。重要な判断、最終的な責任、対外的な確認は人の側に残る、と決めておくと、どこまで任せてよいかの線が引きやすくなる。</p><figure data-cards="EV-d8b939,EV-4d8b14,EV-b773f9,EV-1c2710"><div class="cmp" style="grid-template-columns:1fr 1fr"><div class="bx"><span class="lb">エージェントに任せる</span><div>下書きを作る。手順を進める。何度でもやり直す</div></div><div class="bx hi"><span class="lb">人に残る</span><div>何を作るかの指示。出てきたものの検証。最終責任</div></div></div><figcaption>任せるところと、残すところ</figcaption></figure><figure data-cards="EV-b59b24,EV-65a0ff,EV-814a63,EV-ea60af"><div class="flow"><div class="st">何を作るか指示する</div><div class="ar">→</div><div class="st">エージェントが進める</div><div class="ar">→</div><div class="st hi">おかしいと思ったら止める</div><div class="ar">→</div><div class="st hi">人が検証して確定する</div></div><figcaption>止める判断が入る場所</figcaption></figure><div class="keypoint" data-cards="EV-a3a166,EV-4170a8,EV-b773f9,EV-d8b939,EV-4d8b14"><span class="tag">要点</span><div>人の検証の価値が上がる</div></div></section><div class="bridge">次は <b>小さな試行で導入効果を確かめる</b> &nbsp;→ 次ページ</div><div class="footer"><span>AIエージェント入門 — 業務で使い始める前に</span><span>5</span></div></div><div class="page"><span class="chtab">評価・改善・説明責任</span><div class="running">評価・改善・説明責任</div><section class="sec" data-section="W-04-02"><h2><span class=lead>契約の前に、小さく測る</span>小さな試行で導入効果を確かめる</h2><div class="rule"></div><p data-cards="EV-b66037,EV-b5bb6f,EV-6fc39a,EV-bcd1d3,EV-3a77c9,EV-295836,EV-5d8bde,EV-15e84c,EV-567137,EV-ee0ab7,EV-1447b5,EV-f8e21b">効果は、他社の数字ではなく自分の現場で確かめる。<strong>契約や本格導入の前に、小さく測れる試行を始める。</strong></p><p data-cards="EV-b66037,EV-b5bb6f,EV-6fc39a,EV-bcd1d3,EV-3a77c9,EV-295836,EV-5d8bde,EV-15e84c,EV-567137,EV-ee0ab7,EV-1447b5,EV-f8e21b">形は決まっている。一人が、一つの測定できる業務を、一週間試す。対外的に使う前に人が確認する。これだけで、能力とリスクの両方が具体的に分かる。</p><p data-cards="EV-b66037,EV-b5bb6f,EV-6fc39a,EV-bcd1d3,EV-3a77c9,EV-295836,EV-5d8bde,EV-15e84c,EV-567137,EV-ee0ab7,EV-1447b5,EV-f8e21b">続けるなら、最初の30日で<strong>担当者・対象の業務・指標</strong>の三つを決める。損益の目安は、削減できた時間、時間単価、道具の費用で計算できる。</p><p data-cards="EV-b66037,EV-b5bb6f,EV-6fc39a,EV-bcd1d3,EV-3a77c9,EV-295836,EV-5d8bde,EV-15e84c,EV-567137,EV-ee0ab7,EV-1447b5,EV-f8e21b">広げる段になって効いてくるのは、成功事例の共有、やり方の標準化、効果の見える化の三つである。<strong>入れただけでは定着せず、測れる形になって初めて価値が出る。</strong></p><figure data-cards="EV-5d8bde,EV-6fc39a,EV-b5bb6f"><div class="ly"><div class="lv" style="width:46%">全社に広げる</div><div class="lv" style="width:69%">部門で展開する</div><div class="lv hi" style="width:92%">一人・一つの業務・一週間</div></div><figcaption>小さく始めて、確かめてから広げる</figcaption></figure><figure data-cards="EV-3a77c9,EV-1447b5"><div class="cmp" style="grid-template-columns:1fr 1fr 1fr"><div class="bx"><span class="lb">担当者</span><div>誰がやるかを1人に決める</div></div><div class="bx"><span class="lb">対象の業務</span><div>測れる業務を1つだけ選ぶ</div></div><div class="bx"><span class="lb">指標</span><div>何をもって効果とするかを先に決める</div></div></div><figcaption>最初の30日で決める三つ</figcaption></figure><div class="keypoint" data-cards="EV-b5bb6f,EV-6fc39a,EV-295836,EV-5d8bde"><span class="tag">要点</span><div>契約の前に小さく測れる試行を</div></div></section><div class="footer"><span>AIエージェント入門 — 業務で使い始める前に</span><span>6</span></div></div></body></html>
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  font-family: "Hiragino Sans", "Yu Gothic", "Noto Sans JP", sans-serif;
+  color: var(--ink);
+  background: var(--bg);
+}
+
+button,
+a {
+  font: inherit;
+}
+
+.icon-sprite {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+}
+
+.icon {
+  width: 1.15rem;
+  height: 1.15rem;
+  stroke: currentColor;
+  stroke-width: 1.75;
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  flex: 0 0 auto;
+}
+
+.icon--large {
+  width: 2rem;
+  height: 2rem;
+}
+
+.icon--panel {
+  width: 2rem;
+  height: 2rem;
+}
+
+.app-shell {
+  display: grid;
+  grid-template-columns: 260px minmax(0, 1fr);
+  min-height: 100vh;
+}
+
+.rail {
+  border-right: 1px solid var(--line);
+  background: #eef1f5;
+}
+
+.rail__inner {
+  position: sticky;
+  top: 0;
+  padding: 28px 22px;
+  min-height: 100vh;
+}
+
+.rail__eyebrow,
+.topbar__eyebrow,
+.eyebrow,
+.mini-label {
+  margin: 0;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent-deep);
+}
+
+.rail__title {
+  margin: 8px 0 0;
+  font-size: 1.45rem;
+  line-height: 1.25;
+}
+
+.rail__subtitle {
+  margin: 6px 0 24px;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.toc {
+  display: grid;
+  gap: 6px;
+  max-height: calc(100vh - 180px);
+  overflow: auto;
+  padding-right: 4px;
+}
+
+.toc__link {
+  display: block;
+  padding: 10px 12px;
+  border-radius: var(--radius);
+  color: var(--muted);
+  text-decoration: none;
+  line-height: 1.4;
+}
+
+.toc__link:hover,
+.toc__link.is-active {
+  background: var(--surface);
+  color: var(--ink);
+}
+
+.workspace {
+  min-width: 0;
+}
+
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  padding: 18px 28px;
+  border-bottom: 1px solid var(--line);
+  background: rgba(244, 246, 248, 0.96);
+  backdrop-filter: blur(10px);
+}
+
+.topbar__title,
+.topbar__counter {
+  margin: 4px 0 0;
+  font-weight: 700;
+}
+
+.topbar__actions {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.action-button,
+.nav-button {
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.action-button {
+  padding: 10px 14px;
+}
+
+.nav-button {
+  min-width: 88px;
+  padding: 12px 16px;
+}
+
+.action-button:hover,
+.nav-button:hover {
+  border-color: var(--accent);
+  color: var(--accent-deep);
+}
+
+.deck {
+  padding: 28px;
+  display: grid;
+  gap: 28px;
+}
+
+.slide {
+  min-height: calc(100vh - 106px);
+  display: grid;
+  place-items: center;
+  scroll-margin-top: 106px;
+}
+
+.slide__frame {
+  position: relative;
+  width: min(1260px, 100%);
+  min-height: 680px;
+  aspect-ratio: 16 / 9;
+  padding: 42px 48px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+
+.slide__main {
+  height: 100%;
+  display: grid;
+  align-content: start;
+  gap: 26px;
+}
+
+.slide__number {
+  position: absolute;
+  right: 28px;
+  bottom: 22px;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--muted);
+}
+
+.slide__chapter,
+.slide__tag,
+.side-pill {
+  position: absolute;
+  top: 26px;
+  right: 26px;
+  padding: 8px 12px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--surface);
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.side-pill {
+  top: 50%;
+  right: 12px;
+  transform: translateY(-50%) rotate(90deg);
+  transform-origin: center;
+}
+
+.side-pill--chapter2 {
+  color: var(--accent-deep);
+}
+
+.side-pill--chapter3 {
+  color: var(--accent-deep);
+}
+
+.slide__header {
+  display: grid;
+  gap: 10px;
+}
+
+.title {
+  margin: 0;
+  font-size: clamp(2rem, 3vw, 3.5rem);
+  line-height: 1.16;
+  letter-spacing: 0;
+}
+
+.title--hero {
+  font-size: clamp(2.6rem, 4.4vw, 4.6rem);
+  line-height: 1.05;
+}
+
+.title--chapter {
+  font-size: clamp(2.7rem, 4.4vw, 4.4rem);
+}
+
+.accent {
+  color: var(--accent);
+}
+
+.lead {
+  margin: 0;
+  font-size: 1.18rem;
+  line-height: 1.8;
+  color: var(--muted);
+}
+
+.callout,
+.footer-note {
+  margin: 0;
+  padding: 18px 20px;
+  border-left: 4px solid var(--accent);
+  background: var(--surface-muted);
+  line-height: 1.9;
+}
+
+.footer-note {
+  border-left-width: 0;
+  padding: 0;
+  background: transparent;
+  color: var(--muted);
+}
+
+.prompt-sample {
+  margin: 0;
+  padding: 18px 20px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface-muted);
+  font-family: "SFMono-Regular", "Menlo", "Monaco", "Consolas", monospace;
+  font-size: 0.92rem;
+  line-height: 1.8;
+  white-space: pre-wrap;
+}
+
+.chip-list,
+.chapter-points,
+.bullet-list,
+.mini-list,
+.check-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.chip-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.chip-list li,
+.chapter-points span,
+.summary-band span {
+  display: inline-flex;
+  align-items: center;
+  padding: 10px 14px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--surface);
+  font-weight: 700;
+}
+
+.hero-grid {
+  height: 100%;
+  display: grid;
+  grid-template-columns: 1.05fr 1fr;
+  gap: 32px;
+  align-items: center;
+}
+
+.hero-copy {
+  display: grid;
+  gap: 18px;
+}
+
+.art-panel {
+  margin: 0;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: linear-gradient(180deg, #ffffff, #f7fafc);
+}
+
+.art-panel--cover {
+  padding: 0;
+  border: none;
+  background: transparent;
+}
+
+.art-panel--llm,
+.art-panel--compare {
+  align-self: stretch;
+}
+
+.slide-illustration {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 12px;
+}
+
+.slide-illustration--cover {
+  border-radius: 0;
+}
+
+.art-caption {
+  margin: 12px 0 0;
+  padding: 0 6px;
+  color: var(--muted);
+  line-height: 1.75;
+}
+
+.visual-stack,
+.stacked-panels {
+  display: grid;
+  gap: 14px;
+}
+
+.keyword-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.keyword-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 10px 14px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--surface);
+  font-weight: 700;
+}
+
+.keyword-pill--accent {
+  background: var(--accent-soft);
+}
+
+.comparison-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr);
+  gap: 18px;
+  align-items: start;
+}
+
+.scene {
+  position: relative;
+  display: grid;
+  gap: 18px;
+}
+
+.scene__label {
+  margin: 0 0 10px;
+  font-weight: 700;
+  color: var(--muted);
+}
+
+.speech-card,
+.stack-card,
+.output-card,
+.feature-card,
+.compare-card,
+.principle-card,
+.usecase-card,
+.warning-item,
+.route-item,
+.map-step,
+.flow-step,
+.workflow-band__item,
+.table-row,
+.role-split__pane,
+.split-panel__pane,
+.info-strip {
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+
+.speech-card,
+.stack-card {
+  padding: 16px 18px;
+  line-height: 1.7;
+}
+
+.scene__device {
+  padding: 8px 0;
+}
+
+.device {
+  padding: 18px;
+  border: 1px solid var(--ink);
+  border-radius: 14px;
+  background: linear-gradient(180deg, #fcfdff, #eef3f8);
+}
+
+.device__screen {
+  min-height: 240px;
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+
+.device__row {
+  height: 14px;
+  margin-bottom: 10px;
+  border-radius: 999px;
+  background: var(--accent-soft);
+}
+
+.device__row--short {
+  width: 58%;
+}
+
+.device__tiles {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 18px;
+}
+
+.device__tile {
+  min-height: 78px;
+  border-radius: var(--radius);
+  background: var(--surface-muted);
+}
+
+.output-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.output-card {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 16px;
+}
+
+.two-column {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 28px;
+}
+
+.two-column--wide {
+  align-items: start;
+}
+
+.bullet-list {
+  display: grid;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.bullet-list li,
+.mini-list li,
+.check-list li {
+  position: relative;
+  padding-left: 22px;
+  line-height: 1.7;
+}
+
+.bullet-list li::before,
+.mini-list li::before,
+.check-list li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.7em;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+  transform: translateY(-50%);
+}
+
+.request-output {
+  display: grid;
+  grid-template-columns: 1fr 72px 1fr;
+  gap: 16px;
+  align-items: center;
+}
+
+.request-output__column {
+  display: grid;
+  gap: 10px;
+}
+
+.request-output__arrow {
+  display: grid;
+  place-items: center;
+  color: var(--accent);
+}
+
+.stack-card--accent,
+.flow-step--accent,
+.split-panel__pane--accent,
+.role-split__pane--accent,
+.workflow-band__item--accent,
+.map-step--accent {
+  background: var(--accent-soft);
+}
+
+.map-flow {
+  display: grid;
+  gap: 16px;
+}
+
+.map-step {
+  display: grid;
+  grid-template-columns: 72px 1fr;
+  gap: 18px;
+  align-items: center;
+  padding: 18px 20px;
+}
+
+.map-step__index {
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: var(--surface-muted);
+  font-size: 1.45rem;
+  font-weight: 800;
+  color: var(--accent-deep);
+}
+
+.map-step h3,
+.compare-card h3,
+.feature-card h3,
+.principle-card h3,
+.usecase-card h3,
+.flow-step h3,
+.pane-head h3 {
+  margin: 0;
+}
+
+.map-step p,
+.compare-card p,
+.feature-card p,
+.principle-card p,
+.usecase-card p,
+.flow-step p,
+.warning-item span {
+  margin: 6px 0 0;
+  line-height: 1.7;
+  color: var(--muted);
+}
+
+.table-block {
+  display: grid;
+}
+
+.table-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 18px;
+  padding: 14px 16px;
+  border-radius: 0;
+  border-bottom: none;
+}
+
+.table-row + .table-row {
+  border-top: none;
+}
+
+.table-row--header {
+  background: var(--surface-muted);
+  font-weight: 700;
+}
+
+.route-list {
+  display: grid;
+  gap: 12px;
+}
+
+.route-item {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: center;
+  padding: 16px 18px;
+  line-height: 1.6;
+}
+
+.chapter-hero {
+  height: 100%;
+  display: grid;
+  grid-template-columns: 180px 1fr;
+  gap: 34px;
+  align-items: center;
+}
+
+.chapter-hero__number {
+  display: grid;
+  place-items: center;
+  width: 132px;
+  height: 132px;
+  border-radius: 18px;
+  background: var(--accent);
+  color: #fff;
+  font-size: 5rem;
+  font-weight: 800;
+}
+
+.chapter-hero__body {
+  display: grid;
+  gap: 18px;
+}
+
+.chapter-points {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.info-strip {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  padding: 16px 18px;
+  margin-top: 18px;
+}
+
+.flow {
+  display: grid;
+  gap: 16px;
+}
+
+.flow--three {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.flow--four {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.flow-step {
+  padding: 18px 18px 20px;
+}
+
+.comparison-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.compare-card,
+.feature-card,
+.principle-card,
+.usecase-card {
+  padding: 20px;
+}
+
+.compare-card__lead {
+  min-height: 64px;
+}
+
+.split-panel {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.split-panel__pane,
+.role-split__pane {
+  padding: 22px;
+}
+
+.pane-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.summary-band {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.feature-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.feature-card {
+  display: grid;
+  gap: 12px;
+}
+
+.warning-list {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.warning-item {
+  display: grid;
+  gap: 10px;
+  padding: 18px;
+}
+
+.role-split {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.check-list {
+  display: grid;
+  gap: 10px;
+}
+
+.principle-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.workflow-band {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.workflow-band__item {
+  display: grid;
+  gap: 10px;
+  padding: 20px;
+}
+
+.usecase-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.deck-controls {
+  position: sticky;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  padding: 16px 24px 24px;
+  background: linear-gradient(180deg, rgba(244, 246, 248, 0), rgba(244, 246, 248, 0.96) 42%);
+}
+
+@media (max-width: 1220px) {
+  .app-shell {
+    grid-template-columns: 1fr;
+  }
+
+  .rail {
+    display: none;
+  }
+
+  .deck {
+    padding: 20px;
+  }
+
+  .slide__frame {
+    min-height: 620px;
+    padding: 34px;
+  }
+}
+
+@media (max-width: 980px) {
+  .topbar {
+    padding: 16px 18px;
+  }
+
+  .topbar__actions {
+    gap: 10px;
+  }
+
+  .slide {
+    min-height: auto;
+  }
+
+  .slide__frame {
+    aspect-ratio: auto;
+    min-height: auto;
+  }
+
+  .hero-grid,
+  .two-column,
+  .comparison-layout,
+  .chapter-hero,
+  .comparison-grid,
+  .split-panel,
+  .feature-grid,
+  .warning-list,
+  .role-split,
+  .principle-grid,
+  .workflow-band,
+  .usecase-grid,
+  .flow--three,
+  .flow--four,
+  .request-output {
+    grid-template-columns: 1fr;
+  }
+
+  .request-output__arrow {
+    min-height: 48px;
+    transform: rotate(90deg);
+  }
+
+  .side-pill,
+  .slide__chapter,
+  .slide__tag {
+    position: static;
+    transform: none;
+    display: inline-flex;
+    width: fit-content;
+    margin-bottom: 18px;
+  }
+
+  .slide__number {
+    position: static;
+    margin-top: 18px;
+  }
+
+  .chapter-hero__number {
+    width: 96px;
+    height: 96px;
+    font-size: 3.3rem;
+  }
+}
+
+@media print {
+  @page {
+    size: landscape;
+    margin: 0;
+  }
+
+  html,
+  body {
+    background: #fff;
+  }
+
+  .rail,
+  .topbar,
+  .deck-controls {
+    display: none;
+  }
+
+  .app-shell,
+  .workspace,
+  .deck {
+    display: block;
+    padding: 0;
+  }
+
+  .slide {
+    min-height: auto;
+    break-after: page;
+    page-break-after: always;
+  }
+
+  .slide:last-child {
+    break-after: auto;
+    page-break-after: auto;
+  }
+
+  .slide__frame {
+    width: 100vw;
+    height: 100vh;
+    min-height: 100vh;
+    aspect-ratio: auto;
+    box-shadow: none;
+    border: none;
+  }
+
+  * {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+}
+
+  
+.illustration-placeholder {
+  display: grid;
+  place-items: center;
+  min-height: 240px;
+  padding: 24px;
+  border-radius: 12px;
+  background:
+    radial-gradient(circle at top left, rgba(13,132,216,0.22), transparent 35%),
+    linear-gradient(135deg, #eef7ff 0%, #d8ecfb 52%, #ffffff 100%);
+  border: 1px solid rgba(13,132,216,0.18);
+  color: #095f9e;
+  font-weight: 700;
+  text-align: center;
+  line-height: 1.7;
+}
+
+.illustration-placeholder--cover {
+  min-height: 420px;
+  border-radius: 24px;
+  box-shadow: 0 24px 50px rgba(13, 132, 216, 0.12);
+}
+
+.illustration-placeholder span {
+  max-width: 24ch;
+  font-size: clamp(1rem, 1.6vw, 1.5rem);
+}
+
+</style>
+</head><body>
+  <svg class="icon-sprite" aria-hidden="true" focusable="false">
+    <symbol id="icon-chat" viewBox="0 0 24 24">
+      <path d="M4 6.5A2.5 2.5 0 0 1 6.5 4h11A2.5 2.5 0 0 1 20 6.5v7A2.5 2.5 0 0 1 17.5 16H10l-4 4v-4.5A2.5 2.5 0 0 1 4 13z"></path>
+    </symbol>
+    <symbol id="icon-desktop" viewBox="0 0 24 24">
+      <rect x="3" y="4" width="18" height="12" rx="2"></rect>
+      <path d="M8 20h8M12 16v4"></path>
+    </symbol>
+    <symbol id="icon-doc" viewBox="0 0 24 24">
+      <path d="M7 3h7l4 4v14H7z"></path>
+      <path d="M14 3v4h4M9 12h6M9 16h6"></path>
+    </symbol>
+    <symbol id="icon-grid" viewBox="0 0 24 24">
+      <rect x="4" y="4" width="6" height="6"></rect>
+      <rect x="14" y="4" width="6" height="6"></rect>
+      <rect x="4" y="14" width="6" height="6"></rect>
+      <rect x="14" y="14" width="6" height="6"></rect>
+    </symbol>
+    <symbol id="icon-check" viewBox="0 0 24 24">
+      <path d="M5 12.5 10 17l9-10"></path>
+    </symbol>
+    <symbol id="icon-search" viewBox="0 0 24 24">
+      <circle cx="11" cy="11" r="6"></circle>
+      <path d="m20 20-4.2-4.2"></path>
+    </symbol>
+    <symbol id="icon-lightbulb" viewBox="0 0 24 24">
+      <path d="M9 18h6M10 21h4M8 14a6 6 0 1 1 8 0c-1 1-1.5 2-1.5 3h-5C9.5 16 9 15 8 14Z"></path>
+    </symbol>
+    <symbol id="icon-folder" viewBox="0 0 24 24">
+      <path d="M3 7h6l2 2h10v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+    </symbol>
+    <symbol id="icon-users" viewBox="0 0 24 24">
+      <circle cx="8" cy="9" r="3"></circle>
+      <circle cx="16" cy="8" r="2.5"></circle>
+      <path d="M3.5 18a4.5 4.5 0 0 1 9 0M13 18a3.8 3.8 0 0 1 7.5 0"></path>
+    </symbol>
+    <symbol id="icon-arrow-right" viewBox="0 0 24 24">
+      <path d="M4 12h15"></path>
+      <path d="m13 6 6 6-6 6"></path>
+    </symbol>
+    <symbol id="icon-play" viewBox="0 0 24 24">
+      <path d="M8 6v12l10-6z"></path>
+    </symbol>
+  </svg>
+  <div class="app-shell">
+    <aside class="rail" aria-label="スライド一覧">
+      <div class="rail__inner">
+        <p class="rail__eyebrow">AIやろうぜ in Fukuoka</p>
+        <h1 class="rail__title">AIエージェント入門</h1>
+        <p class="rail__subtitle">AI Summer school 2026 / Day 09</p>
+        <nav class="toc">
+          <a class="toc__link" href="#slide-1">1 表紙</a>
+          <a class="toc__link" href="#slide-2">2 講義のゴール</a>
+          <a class="toc__link" href="#slide-3">3 AIエージェントの基礎</a>
+          <a class="toc__link" href="#slide-4">4 生成AIとAIエージェントの違い</a>
+          <a class="toc__link" href="#slide-5">5 導入で得られる価値と限界</a>
+          <a class="toc__link" href="#slide-6">6 業務での活用例</a>
+          <a class="toc__link" href="#slide-7">7 調査・報告・資料作成</a>
+          <a class="toc__link" href="#slide-8">8 安全に任せるための制御</a>
+          <a class="toc__link" href="#slide-9">9 プロンプトインジェクション</a>
+          <a class="toc__link" href="#slide-10">10 評価・改善・説明責任</a>
+          <a class="toc__link" href="#slide-11">11 人が検証・停止する</a>
+          <a class="toc__link" href="#slide-12">12 小さな試行で確かめる</a>
+        </nav>
+      </div>
+    </aside>
+    <div class="workspace">
+      <header class="topbar">
+        <div><p class="topbar__eyebrow">AI SUMMER SCHOOL 2026</p><p class="topbar__title">AIエージェント入門 — 業務で使い始める前に</p></div>
+        <div class="topbar__actions"><p class="topbar__counter" id="slide-counter">1 / 12</p><button class="action-button" type="button" data-action="print">印刷 / PDF</button></div>
+      </header>
+      <main class="deck" id="deck">
+        <section class="slide slide--cover" id="slide-1" data-title="表紙"><div class="slide__frame"><div class="slide__chapter">DAY 09</div><div class="hero-grid"><div class="hero-copy"><p class="eyebrow">AIやろうぜ in Fukuoka / AI SUMMER SCHOOL 2026</p><h2 class="title title--hero">AIエージェント<br><span class="accent">入門</span></h2><p class="lead">業務で使い始める前に</p><ul class="chip-list"><li>非エンジニア向け</li><li>30分</li><li>講義・実践の入口</li></ul></div><figure class="art-panel art-panel--cover"><div class="slide-illustration slide-illustration--cover illustration-placeholder illustration-placeholder--cover" role="img" aria-label="人とAIエージェントが業務を進めるイメージ"><span>答えるAIから<br>仕事を進めるAIへ</span></div><figcaption>自分の業務のどこに使えるかを見つけ、安全に始める。</figcaption></figure></div><div class="slide__number">1</div></div></section>
+        <section class="slide" id="slide-2" data-title="講義のゴール"><div class="slide__frame"><div class="side-pill">はじめに</div><div class="slide__main"><div class="slide__header"><p class="eyebrow">今日のゴール</p><h2 class="title">使える場所を見つけ、<span class="accent">安全に小さく始める</span></h2></div><div class="principle-grid"><article class="principle-card"><h3>違いを知る</h3><p>チャットとエージェントの役割の差をつかむ。</p></article><article class="principle-card"><h3>業務を選ぶ</h3><p>頻度と定型度から、最初の候補を見つける。</p></article><article class="principle-card"><h3>安全に進める</h3><p>検証と停止を人の役割として残す。</p></article></div><p class="callout">ゴールは、<strong>自分の業務のどこにAIエージェントを使えるか見当がつき、安全に始めるための最低限の注意を知っている</strong>状態です。</p></div><div class="slide__number">2</div></div></section>
+        <section class="slide slide--chapter" id="slide-3" data-title="AIエージェントの基礎"><div class="slide__frame"><div class="slide__chapter">CHAPTER 01</div><div class="chapter-hero"><p class="eyebrow">AIエージェントの基礎</p><h2 class="title title--hero">答えて終わるか、<br><span class="accent">作業まで担うか</span></h2><p class="lead">まず、何が違うのかから</p></div><div class="slide__number">3</div></div></section>
+        <section class="slide" id="slide-4" data-title="生成AIとAIエージェントの違い"><div class="slide__frame"><div class="side-pill">基礎</div><div class="slide__main"><div class="slide__header"><p class="eyebrow">生成AIとAIエージェントの違い</p><h2 class="title">違いは、回答の後に<span class="accent">誰が操作するか</span></h2></div><div class="request-output"><div class="request-output__column"><p class="mini-label">生成AIチャット</p><div class="stack-card">質問する</div><div class="stack-card">答えを受け取る</div><div class="stack-card">人が次の操作をする</div></div><div class="request-output__arrow"><svg class="icon icon--large"><use href="#icon-arrow-right"></use></svg></div><div class="request-output__column"><p class="mini-label">AIエージェント</p><div class="stack-card stack-card--accent">目的を渡す</div><div class="stack-card stack-card--accent">PC・ファイルに触れる</div><div class="stack-card stack-card--accent">複数の作業を進める</div></div></div><div class="two-column two-column--wide"><div><p>チャットは質問に答えて終わる。一方、エージェントはPCやファイルなど、コンピュータから届く範囲に手を伸ばし、実際の作業まで行う。</p></div><div><p class="callout">役割の差は、回答そのものより、<strong>回答後の操作を誰が引き受けるか</strong>に表れます。</p></div></div></div><div class="slide__number">4</div></div></section>
+        <section class="slide" id="slide-5" data-title="導入で得られる価値と限界"><div class="slide__frame"><div class="side-pill">基礎</div><div class="slide__main"><div class="slide__header"><p class="eyebrow">導入で得られる価値と限界</p><h2 class="title">成果を分けるのは、<span class="accent">人の判断</span></h2></div><div class="comparison-grid"><article class="compare-card"><h3>得られる価値</h3><p class="compare-card__lead">調査、整理、下書きなどの反復作業を進められる。</p><ul class="mini-list"><li>最小限を知って、作りながら理解する</li><li>一方通行ではなく、行き来する協調</li></ul></article><article class="compare-card"><h3>数字を見るときの注意</h3><p class="compare-card__lead">他社の削減効果や利用率は、自社の値ではない。</p><ul class="mini-list"><li>長く動けても、正確さの保証ではない</li><li>誤りが出る前提で確認の工程を置く</li></ul></article><article class="compare-card"><h3>実務での考え方</h3><p class="compare-card__lead">何にでも使うのではなく、用途を決めて選ぶ。</p><ul class="mini-list"><li>何を任せるかを決める</li><li>どう確認し、どこで止めるかを決める</li></ul></article></div><p class="callout">性能そのものより、<strong>何を任せ、どう確認し、どこで止めるか</strong>という人間の判断が効きます。</p></div><div class="slide__number">5</div></div></section>
+        <section class="slide slide--chapter" id="slide-6" data-title="業務での活用例"><div class="slide__frame"><div class="slide__chapter">CHAPTER 02</div><div class="chapter-hero"><p class="eyebrow">業務での活用例</p><h2 class="title title--hero">どこに使うかを<br><span class="accent">感覚で決めない</span></h2><p class="lead">自分の業務のどこに置くか</p></div><div class="slide__number">6</div></div></section>
+        <section class="slide" id="slide-7" data-title="調査・報告・資料作成"><div class="slide__frame"><div class="side-pill">活用</div><div class="slide__main"><div class="slide__header"><p class="eyebrow">調査・報告・資料作成を効率化する</p><h2 class="title">最初は、<span class="accent">高頻度・高定型</span>の仕事から</h2></div><div class="two-column"><div class="matrix-card"><p class="mini-label">見つける観点</p><ul class="bullet-list"><li>時間を食っている業務を並べる</li><li>頻度・所要時間・定型度で見る</li><li>「作る・処理する・応答する」に分ける</li></ul></div><div class="matrix-card matrix-card--accent"><p class="mini-label">最初の候補</p><ul class="bullet-list"><li>頻度と定型度がともに高い仕事</li><li>複数のページから情報を集めて比較表にする</li><li>複数の文書を一つの報告書にまとめる</li></ul></div></div><div class="request-output"><div class="request-output__column"><div class="stack-card">一次情報を確認する</div></div><div class="request-output__arrow"><svg class="icon icon--large"><use href="#icon-arrow-right"></use></svg></div><div class="request-output__column"><div class="stack-card stack-card--accent">調査・整理・下書きを任せる</div></div></div><p class="callout">報告値や誰かの要約をそのまま使う場面では、<strong>一次情報までたどって確かめる</strong>ことが必要です。</p></div><div class="slide__number">7</div></div></section>
+        <section class="slide slide--chapter" id="slide-8" data-title="安全に任せるための制御"><div class="slide__frame"><div class="slide__chapter">CHAPTER 03</div><div class="chapter-hero"><p class="eyebrow">安全に任せるための制御</p><h2 class="title title--hero">外から入る文章を<br><span class="accent">どう扱うか</span></h2><p class="lead">読ませて、操作まで任せるときの注意</p></div><div class="slide__number">8</div></div></section>
+        <section class="slide" id="slide-9" data-title="プロンプトインジェクション"><div class="slide__frame"><div class="side-pill">安全</div><div class="slide__main"><div class="slide__header"><p class="eyebrow">外部コンテンツのプロンプトインジェクションを防ぐ</p><h2 class="title">外の文章は、<span class="accent">命令を含む入力</span>として扱う</h2></div><div class="process-strip"><div class="process-step">メール・DM・Webを読む</div><div class="process-arrow">→</div><div class="process-step process-step--warning">中に命令が混ざる</div><div class="process-arrow">→</div><div class="process-step">操作まで任せてある</div><div class="process-arrow">→</div><div class="process-step process-step--warning">意図しない動きをする</div></div><div class="comparison-grid"><article class="compare-card"><h3>効かない対策</h3><p class="compare-card__lead">「怪しい命令には従わないで」とお願いする。</p><p>その指示も、読み込まれた文章と同じ土俵にあるためです。</p></article><article class="compare-card"><h3>効く対策</h3><p class="compare-card__lead">公式・信頼できる情報源に限定する。</p><p>読ませるものを先に決め、入口を絞ります。</p></article></div><p class="callout">メール、メッセージ、Webページの中身は、<strong>外部入力</strong>です。</p></div><div class="slide__number">9</div></div></section>
+        <section class="slide slide--chapter" id="slide-10" data-title="評価・改善・説明責任"><div class="slide__frame"><div class="slide__chapter">CHAPTER 04</div><div class="chapter-hero"><p class="eyebrow">評価・改善・説明責任</p><h2 class="title title--hero">任せるほど、<br><span class="accent">人の責任は増す</span></h2><p class="lead">検証・停止・最終判断を残す</p></div><div class="slide__number">10</div></div></section>
+        <section class="slide" id="slide-11" data-title="人が検証・停止する"><div class="slide__frame"><div class="side-pill">責任</div><div class="slide__main"><div class="slide__header"><p class="eyebrow">人が責任を持って検証・停止する</p><h2 class="title">エージェントに任せても、<span class="accent">最終判断は人</span></h2></div><div class="comparison-grid"><article class="compare-card"><h3>エージェントに任せる</h3><ul class="mini-list"><li>下書きを作る</li><li>手順を進める</li><li>何度でもやり直す</li></ul></article><article class="compare-card"><h3>人に残す</h3><ul class="mini-list"><li>何を作るかを指示する</li><li>出てきたものを検証する</li><li>重要な判断と最終責任を持つ</li></ul></article><article class="compare-card"><h3>止める判断</h3><ul class="mini-list"><li>おかしいと思ったら中断する</li><li>方向を変える</li><li>対外的な確認を人が行う</li></ul></article></div><p class="callout"><strong>性能が上がっても、人が持つ責任は減らない。</strong>判断を任せるほど、人の知識と検証の価値が上がります。</p></div><div class="slide__number">11</div></div></section>
+        <section class="slide" id="slide-12" data-title="小さな試行で確かめる"><div class="slide__frame"><div class="side-pill">実践</div><div class="slide__main"><div class="slide__header"><p class="eyebrow">小さな試行で導入効果を確かめる</p><h2 class="title">一人・一業務・一週間で、<span class="accent">自分の現場を測る</span></h2></div><div class="process-strip"><div class="process-step">一人で始める</div><div class="process-arrow">→</div><div class="process-step">測れる業務を一つ選ぶ</div><div class="process-arrow">→</div><div class="process-step">一週間試す</div><div class="process-arrow">→</div><div class="process-step">人が確認して確かめる</div></div><div class="principle-grid"><article class="principle-card"><h3>最初の30日</h3><p>担当者・対象の業務・指標の三つを決める。</p></article><article class="principle-card"><h3>効果の目安</h3><p>削減時間 × 時間単価 − 道具の費用。</p></article><article class="principle-card"><h3>広げるとき</h3><p>成功事例の共有、やり方の標準化、効果の見える化。</p></article></div><p class="callout">入れただけでは定着せず、<strong>測れる形になって初めて価値が出る</strong>。他社の数字ではなく、自分の現場で確かめます。</p></div><div class="slide__number">12</div></div></section>
+      </main>
+      <div class="deck-controls" aria-label="スライド操作"><button class="nav-button" type="button" data-action="prev">前へ</button><button class="nav-button" type="button" data-action="next">次へ</button></div>
+    </div>
+  </div>
+  <script>
+const slides = Array.from(document.querySelectorAll(".slide"));
+const tocLinks = Array.from(document.querySelectorAll(".toc__link"));
+const counter = document.querySelector("#slide-counter");
+
+function updateActiveSlide(index) {
+  tocLinks.forEach((link, linkIndex) => {
+    link.classList.toggle("is-active", linkIndex === index);
+  });
+
+  if (counter) {
+    counter.textContent = `${index + 1} / ${slides.length}`;
+  }
+}
+
+function goToSlide(index) {
+  const safeIndex = Math.max(0, Math.min(index, slides.length - 1));
+  const slide = slides[safeIndex];
+  if (!slide) return;
+  slide.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+const observer = new IntersectionObserver(
+  (entries) => {
+    const visible = entries
+      .filter((entry) => entry.isIntersecting)
+      .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+
+    if (!visible) return;
+    const index = slides.indexOf(visible.target);
+    if (index >= 0) {
+      updateActiveSlide(index);
+    }
+  },
+  {
+    threshold: [0.4, 0.6, 0.8],
+    rootMargin: "-18% 0px -18% 0px",
+  }
+);
+
+slides.forEach((slide) => observer.observe(slide));
+updateActiveSlide(0);
+
+document.addEventListener("click", (event) => {
+  const button = event.target.closest("[data-action]");
+  if (!button) return;
+
+  const currentIndex = tocLinks.findIndex((link) => link.classList.contains("is-active"));
+
+  switch (button.dataset.action) {
+    case "prev":
+      goToSlide(currentIndex - 1);
+      break;
+    case "next":
+      goToSlide(currentIndex + 1);
+      break;
+    case "print":
+      window.print();
+      break;
+    default:
+      break;
+  }
+});
+
+document.addEventListener("keydown", (event) => {
+  const currentIndex = tocLinks.findIndex((link) => link.classList.contains("is-active"));
+
+  if (event.key === "ArrowRight" || event.key === "ArrowDown" || event.key === "PageDown") {
+    event.preventDefault();
+    goToSlide(currentIndex + 1);
+  }
+
+  if (event.key === "ArrowLeft" || event.key === "ArrowUp" || event.key === "PageUp") {
+    event.preventDefault();
+    goToSlide(currentIndex - 1);
+  }
+
+  if (event.key === "Home") {
+    event.preventDefault();
+    goToSlide(0);
+  }
+
+  if (event.key === "End") {
+    event.preventDefault();
+    goToSlide(slides.length - 1);
+  }
+});
+
+  </script>
+</body>
+</html>
+
