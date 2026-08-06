@@ -1,0 +1,2406 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AIの歩き方 2026年8月最新版</title>
+  <style>
+:root {
+  --bg: #f4f6f8;
+  --surface: #ffffff;
+  --surface-muted: #edf3f8;
+  --surface-strong: #dceaf9;
+  --ink: #1b2432;
+  --muted: #5d6777;
+  --line: #d4dce7;
+  --accent: #0d84d8;
+  --accent-deep: #095f9e;
+  --accent-soft: #d8ecfb;
+  --shadow: 0 18px 48px rgba(27, 36, 50, 0.08);
+  --radius: 8px;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  font-family: "Hiragino Sans", "Yu Gothic", "Noto Sans JP", sans-serif;
+  color: var(--ink);
+  background: var(--bg);
+}
+
+button,
+a {
+  font: inherit;
+}
+
+.icon-sprite {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+}
+
+.icon {
+  width: 1.15rem;
+  height: 1.15rem;
+  stroke: currentColor;
+  stroke-width: 1.75;
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  flex: 0 0 auto;
+}
+
+.icon--large {
+  width: 2rem;
+  height: 2rem;
+}
+
+.icon--panel {
+  width: 2rem;
+  height: 2rem;
+}
+
+.app-shell {
+  display: grid;
+  grid-template-columns: 260px minmax(0, 1fr);
+  min-height: 100vh;
+}
+
+.rail {
+  border-right: 1px solid var(--line);
+  background: #eef1f5;
+}
+
+.rail__inner {
+  position: sticky;
+  top: 0;
+  padding: 28px 22px;
+  min-height: 100vh;
+}
+
+.rail__eyebrow,
+.topbar__eyebrow,
+.eyebrow,
+.mini-label {
+  margin: 0;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent-deep);
+}
+
+.rail__title {
+  margin: 8px 0 0;
+  font-size: 1.45rem;
+  line-height: 1.25;
+}
+
+.rail__subtitle {
+  margin: 6px 0 24px;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.toc {
+  display: grid;
+  gap: 6px;
+  max-height: calc(100vh - 180px);
+  overflow: auto;
+  padding-right: 4px;
+}
+
+.toc__link {
+  display: block;
+  padding: 10px 12px;
+  border-radius: var(--radius);
+  color: var(--muted);
+  text-decoration: none;
+  line-height: 1.4;
+}
+
+.toc__link:hover,
+.toc__link.is-active {
+  background: var(--surface);
+  color: var(--ink);
+}
+
+.workspace {
+  min-width: 0;
+}
+
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  padding: 18px 28px;
+  border-bottom: 1px solid var(--line);
+  background: rgba(244, 246, 248, 0.96);
+  backdrop-filter: blur(10px);
+}
+
+.topbar__title,
+.topbar__counter {
+  margin: 4px 0 0;
+  font-weight: 700;
+}
+
+.topbar__actions {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.action-button,
+.nav-button {
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.action-button {
+  padding: 10px 14px;
+}
+
+.nav-button {
+  min-width: 88px;
+  padding: 12px 16px;
+}
+
+.action-button:hover,
+.nav-button:hover {
+  border-color: var(--accent);
+  color: var(--accent-deep);
+}
+
+.deck {
+  padding: 28px;
+  display: grid;
+  gap: 28px;
+}
+
+.slide {
+  min-height: calc(100vh - 106px);
+  display: grid;
+  place-items: center;
+  scroll-margin-top: 106px;
+}
+
+.slide__frame {
+  position: relative;
+  width: min(1260px, 100%);
+  min-height: 680px;
+  aspect-ratio: 16 / 9;
+  padding: 42px 48px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+
+.slide__main {
+  height: 100%;
+  display: grid;
+  align-content: start;
+  gap: 26px;
+}
+
+.slide__number {
+  position: absolute;
+  right: 28px;
+  bottom: 22px;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--muted);
+}
+
+.slide__chapter,
+.slide__tag,
+.side-pill {
+  position: absolute;
+  top: 26px;
+  right: 26px;
+  padding: 8px 12px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--surface);
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.side-pill {
+  top: 50%;
+  right: 12px;
+  transform: translateY(-50%) rotate(90deg);
+  transform-origin: center;
+}
+
+.side-pill--chapter2 {
+  color: var(--accent-deep);
+}
+
+.side-pill--chapter3 {
+  color: var(--accent-deep);
+}
+
+.slide__header {
+  display: grid;
+  gap: 10px;
+}
+
+.title {
+  margin: 0;
+  font-size: clamp(2rem, 3vw, 3.5rem);
+  line-height: 1.16;
+  letter-spacing: 0;
+}
+
+.title--hero {
+  font-size: clamp(2.6rem, 4.4vw, 4.6rem);
+  line-height: 1.05;
+}
+
+.title--chapter {
+  font-size: clamp(2.7rem, 4.4vw, 4.4rem);
+}
+
+.accent {
+  color: var(--accent);
+}
+
+.lead {
+  margin: 0;
+  font-size: 1.18rem;
+  line-height: 1.8;
+  color: var(--muted);
+}
+
+.callout,
+.footer-note {
+  margin: 0;
+  padding: 18px 20px;
+  border-left: 4px solid var(--accent);
+  background: var(--surface-muted);
+  line-height: 1.9;
+}
+
+.footer-note {
+  border-left-width: 0;
+  padding: 0;
+  background: transparent;
+  color: var(--muted);
+}
+
+.prompt-sample {
+  margin: 0;
+  padding: 18px 20px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface-muted);
+  font-family: "SFMono-Regular", "Menlo", "Monaco", "Consolas", monospace;
+  font-size: 0.92rem;
+  line-height: 1.8;
+  white-space: pre-wrap;
+}
+
+.chip-list,
+.chapter-points,
+.bullet-list,
+.mini-list,
+.check-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.chip-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.chip-list li,
+.chapter-points span,
+.summary-band span {
+  display: inline-flex;
+  align-items: center;
+  padding: 10px 14px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--surface);
+  font-weight: 700;
+}
+
+.hero-grid {
+  height: 100%;
+  display: grid;
+  grid-template-columns: 1.05fr 1fr;
+  gap: 32px;
+  align-items: center;
+}
+
+.hero-copy {
+  display: grid;
+  gap: 18px;
+}
+
+.art-panel {
+  margin: 0;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: linear-gradient(180deg, #ffffff, #f7fafc);
+}
+
+.art-panel--cover {
+  padding: 0;
+  border: none;
+  background: transparent;
+}
+
+.art-panel--llm,
+.art-panel--compare {
+  align-self: stretch;
+}
+
+.slide-illustration {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 12px;
+}
+
+.slide-illustration--cover {
+  border-radius: 0;
+}
+
+.art-caption {
+  margin: 12px 0 0;
+  padding: 0 6px;
+  color: var(--muted);
+  line-height: 1.75;
+}
+
+.visual-stack,
+.stacked-panels {
+  display: grid;
+  gap: 14px;
+}
+
+.keyword-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.keyword-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 10px 14px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--surface);
+  font-weight: 700;
+}
+
+.keyword-pill--accent {
+  background: var(--accent-soft);
+}
+
+.comparison-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr);
+  gap: 18px;
+  align-items: start;
+}
+
+.scene {
+  position: relative;
+  display: grid;
+  gap: 18px;
+}
+
+.scene__label {
+  margin: 0 0 10px;
+  font-weight: 700;
+  color: var(--muted);
+}
+
+.speech-card,
+.stack-card,
+.output-card,
+.feature-card,
+.compare-card,
+.principle-card,
+.usecase-card,
+.warning-item,
+.route-item,
+.map-step,
+.flow-step,
+.workflow-band__item,
+.table-row,
+.role-split__pane,
+.split-panel__pane,
+.info-strip {
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+
+.speech-card,
+.stack-card {
+  padding: 16px 18px;
+  line-height: 1.7;
+}
+
+.scene__device {
+  padding: 8px 0;
+}
+
+.device {
+  padding: 18px;
+  border: 1px solid var(--ink);
+  border-radius: 14px;
+  background: linear-gradient(180deg, #fcfdff, #eef3f8);
+}
+
+.device__screen {
+  min-height: 240px;
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+
+.device__row {
+  height: 14px;
+  margin-bottom: 10px;
+  border-radius: 999px;
+  background: var(--accent-soft);
+}
+
+.device__row--short {
+  width: 58%;
+}
+
+.device__tiles {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 18px;
+}
+
+.device__tile {
+  min-height: 78px;
+  border-radius: var(--radius);
+  background: var(--surface-muted);
+}
+
+.output-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.output-card {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 16px;
+}
+
+.two-column {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 28px;
+}
+
+.two-column--wide {
+  align-items: start;
+}
+
+.bullet-list {
+  display: grid;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.bullet-list li,
+.mini-list li,
+.check-list li {
+  position: relative;
+  padding-left: 22px;
+  line-height: 1.7;
+}
+
+.bullet-list li::before,
+.mini-list li::before,
+.check-list li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.7em;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+  transform: translateY(-50%);
+}
+
+.request-output {
+  display: grid;
+  grid-template-columns: 1fr 72px 1fr;
+  gap: 16px;
+  align-items: center;
+}
+
+.request-output__column {
+  display: grid;
+  gap: 10px;
+}
+
+.request-output__arrow {
+  display: grid;
+  place-items: center;
+  color: var(--accent);
+}
+
+.stack-card--accent,
+.flow-step--accent,
+.split-panel__pane--accent,
+.role-split__pane--accent,
+.workflow-band__item--accent,
+.map-step--accent {
+  background: var(--accent-soft);
+}
+
+.map-flow {
+  display: grid;
+  gap: 16px;
+}
+
+.map-step {
+  display: grid;
+  grid-template-columns: 72px 1fr;
+  gap: 18px;
+  align-items: center;
+  padding: 18px 20px;
+}
+
+.map-step__index {
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: var(--surface-muted);
+  font-size: 1.45rem;
+  font-weight: 800;
+  color: var(--accent-deep);
+}
+
+.map-step h3,
+.compare-card h3,
+.feature-card h3,
+.principle-card h3,
+.usecase-card h3,
+.flow-step h3,
+.pane-head h3 {
+  margin: 0;
+}
+
+.map-step p,
+.compare-card p,
+.feature-card p,
+.principle-card p,
+.usecase-card p,
+.flow-step p,
+.warning-item span {
+  margin: 6px 0 0;
+  line-height: 1.7;
+  color: var(--muted);
+}
+
+.table-block {
+  display: grid;
+}
+
+.table-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 18px;
+  padding: 14px 16px;
+  border-radius: 0;
+  border-bottom: none;
+}
+
+.table-row + .table-row {
+  border-top: none;
+}
+
+.table-row--header {
+  background: var(--surface-muted);
+  font-weight: 700;
+}
+
+.route-list {
+  display: grid;
+  gap: 12px;
+}
+
+.route-item {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: center;
+  padding: 16px 18px;
+  line-height: 1.6;
+}
+
+.chapter-hero {
+  height: 100%;
+  display: grid;
+  grid-template-columns: 180px 1fr;
+  gap: 34px;
+  align-items: center;
+}
+
+.chapter-hero__number {
+  display: grid;
+  place-items: center;
+  width: 132px;
+  height: 132px;
+  border-radius: 18px;
+  background: var(--accent);
+  color: #fff;
+  font-size: 5rem;
+  font-weight: 800;
+}
+
+.chapter-hero__body {
+  display: grid;
+  gap: 18px;
+}
+
+.chapter-points {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.info-strip {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  padding: 16px 18px;
+  margin-top: 18px;
+}
+
+.flow {
+  display: grid;
+  gap: 16px;
+}
+
+.flow--three {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.flow--four {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.flow-step {
+  padding: 18px 18px 20px;
+}
+
+.comparison-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.compare-card,
+.feature-card,
+.principle-card,
+.usecase-card {
+  padding: 20px;
+}
+
+.compare-card__lead {
+  min-height: 64px;
+}
+
+.split-panel {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.split-panel__pane,
+.role-split__pane {
+  padding: 22px;
+}
+
+.pane-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.summary-band {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.feature-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.feature-card {
+  display: grid;
+  gap: 12px;
+}
+
+.warning-list {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.warning-item {
+  display: grid;
+  gap: 10px;
+  padding: 18px;
+}
+
+.role-split {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.check-list {
+  display: grid;
+  gap: 10px;
+}
+
+.principle-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.workflow-band {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.workflow-band__item {
+  display: grid;
+  gap: 10px;
+  padding: 20px;
+}
+
+.usecase-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.deck-controls {
+  position: sticky;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  padding: 16px 24px 24px;
+  background: linear-gradient(180deg, rgba(244, 246, 248, 0), rgba(244, 246, 248, 0.96) 42%);
+}
+
+@media (max-width: 1220px) {
+  .app-shell {
+    grid-template-columns: 1fr;
+  }
+
+  .rail {
+    display: none;
+  }
+
+  .deck {
+    padding: 20px;
+  }
+
+  .slide__frame {
+    min-height: 620px;
+    padding: 34px;
+  }
+}
+
+@media (max-width: 980px) {
+  .topbar {
+    padding: 16px 18px;
+  }
+
+  .topbar__actions {
+    gap: 10px;
+  }
+
+  .slide {
+    min-height: auto;
+  }
+
+  .slide__frame {
+    aspect-ratio: auto;
+    min-height: auto;
+  }
+
+  .hero-grid,
+  .two-column,
+  .comparison-layout,
+  .chapter-hero,
+  .comparison-grid,
+  .split-panel,
+  .feature-grid,
+  .warning-list,
+  .role-split,
+  .principle-grid,
+  .workflow-band,
+  .usecase-grid,
+  .flow--three,
+  .flow--four,
+  .request-output {
+    grid-template-columns: 1fr;
+  }
+
+  .request-output__arrow {
+    min-height: 48px;
+    transform: rotate(90deg);
+  }
+
+  .side-pill,
+  .slide__chapter,
+  .slide__tag {
+    position: static;
+    transform: none;
+    display: inline-flex;
+    width: fit-content;
+    margin-bottom: 18px;
+  }
+
+  .slide__number {
+    position: static;
+    margin-top: 18px;
+  }
+
+  .chapter-hero__number {
+    width: 96px;
+    height: 96px;
+    font-size: 3.3rem;
+  }
+}
+
+@media print {
+  @page {
+    size: landscape;
+    margin: 0;
+  }
+
+  html,
+  body {
+    background: #fff;
+  }
+
+  .rail,
+  .topbar,
+  .deck-controls {
+    display: none;
+  }
+
+  .app-shell,
+  .workspace,
+  .deck {
+    display: block;
+    padding: 0;
+  }
+
+  .slide {
+    min-height: auto;
+    break-after: page;
+    page-break-after: always;
+  }
+
+  .slide:last-child {
+    break-after: auto;
+    page-break-after: auto;
+  }
+
+  .slide__frame {
+    width: 100vw;
+    height: 100vh;
+    min-height: 100vh;
+    aspect-ratio: auto;
+    box-shadow: none;
+    border: none;
+  }
+
+  * {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+}
+
+  
+.illustration-placeholder {
+  display: grid;
+  place-items: center;
+  min-height: 240px;
+  padding: 24px;
+  border-radius: 12px;
+  background:
+    radial-gradient(circle at top left, rgba(13,132,216,0.22), transparent 35%),
+    linear-gradient(135deg, #eef7ff 0%, #d8ecfb 52%, #ffffff 100%);
+  border: 1px solid rgba(13,132,216,0.18);
+  color: #095f9e;
+  font-weight: 700;
+  text-align: center;
+  line-height: 1.7;
+}
+
+.illustration-placeholder--cover {
+  min-height: 420px;
+  border-radius: 24px;
+  box-shadow: 0 24px 50px rgba(13, 132, 216, 0.12);
+}
+
+.illustration-placeholder span {
+  max-width: 24ch;
+  font-size: clamp(1rem, 1.6vw, 1.5rem);
+}
+
+</style>
+</head>
+<body>
+  <svg class="icon-sprite" aria-hidden="true" focusable="false">
+    <symbol id="icon-chat" viewBox="0 0 24 24">
+      <path d="M4 6.5A2.5 2.5 0 0 1 6.5 4h11A2.5 2.5 0 0 1 20 6.5v7A2.5 2.5 0 0 1 17.5 16H10l-4 4v-4.5A2.5 2.5 0 0 1 4 13z"></path>
+    </symbol>
+    <symbol id="icon-desktop" viewBox="0 0 24 24">
+      <rect x="3" y="4" width="18" height="12" rx="2"></rect>
+      <path d="M8 20h8M12 16v4"></path>
+    </symbol>
+    <symbol id="icon-doc" viewBox="0 0 24 24">
+      <path d="M7 3h7l4 4v14H7z"></path>
+      <path d="M14 3v4h4M9 12h6M9 16h6"></path>
+    </symbol>
+    <symbol id="icon-grid" viewBox="0 0 24 24">
+      <rect x="4" y="4" width="6" height="6"></rect>
+      <rect x="14" y="4" width="6" height="6"></rect>
+      <rect x="4" y="14" width="6" height="6"></rect>
+      <rect x="14" y="14" width="6" height="6"></rect>
+    </symbol>
+    <symbol id="icon-check" viewBox="0 0 24 24">
+      <path d="M5 12.5 10 17l9-10"></path>
+    </symbol>
+    <symbol id="icon-search" viewBox="0 0 24 24">
+      <circle cx="11" cy="11" r="6"></circle>
+      <path d="m20 20-4.2-4.2"></path>
+    </symbol>
+    <symbol id="icon-lightbulb" viewBox="0 0 24 24">
+      <path d="M9 18h6M10 21h4M8 14a6 6 0 1 1 8 0c-1 1-1.5 2-1.5 3h-5C9.5 16 9 15 8 14Z"></path>
+    </symbol>
+    <symbol id="icon-folder" viewBox="0 0 24 24">
+      <path d="M3 7h6l2 2h10v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+    </symbol>
+    <symbol id="icon-users" viewBox="0 0 24 24">
+      <circle cx="8" cy="9" r="3"></circle>
+      <circle cx="16" cy="8" r="2.5"></circle>
+      <path d="M3.5 18a4.5 4.5 0 0 1 9 0M13 18a3.8 3.8 0 0 1 7.5 0"></path>
+    </symbol>
+    <symbol id="icon-arrow-right" viewBox="0 0 24 24">
+      <path d="M4 12h15"></path>
+      <path d="m13 6 6 6-6 6"></path>
+    </symbol>
+    <symbol id="icon-play" viewBox="0 0 24 24">
+      <path d="M8 6v12l10-6z"></path>
+    </symbol>
+  </svg>
+
+  <div class="app-shell">
+    <aside class="rail" aria-label="スライド一覧">
+      <div class="rail__inner">
+        <p class="rail__eyebrow">AI-Fukuoka</p>
+        <h1 class="rail__title">AIの歩き方 2026</h1>
+        <p class="rail__subtitle">2026年8月最新版 / 通しスライド実装</p>
+
+        <nav class="toc">
+          <a class="toc__link" href="#slide-1">1 表紙</a>
+          <a class="toc__link" href="#slide-2">2 序章メッセージ</a>
+          <a class="toc__link" href="#slide-3">3 なぜ今基礎なのか</a>
+          <a class="toc__link" href="#slide-4">4 全体マップ</a>
+          <a class="toc__link" href="#slide-5">5 序章扉</a>
+          <a class="toc__link" href="#slide-6">6 AIは検索の代わりではない</a>
+          <a class="toc__link" href="#slide-7">7 本資料のゴール</a>
+          <a class="toc__link" href="#slide-8">8 第1章扉</a>
+          <a class="toc__link" href="#slide-9">9 従来AIと生成AI</a>
+          <a class="toc__link" href="#slide-10">10 LLMとは</a>
+          <a class="toc__link" href="#slide-11">11 文章はどう作られるか</a>
+          <a class="toc__link" href="#slide-12">12 得意と苦手</a>
+          <a class="toc__link" href="#slide-13">13 第2章扉</a>
+          <a class="toc__link" href="#slide-14">14 マルチモーダル</a>
+          <a class="toc__link" href="#slide-15">15 モデルの選び方</a>
+          <a class="toc__link" href="#slide-16">16 ブラウザ版とアプリ</a>
+          <a class="toc__link" href="#slide-17">17 第3章扉</a>
+          <a class="toc__link" href="#slide-18">18 チャットからエージェントへ</a>
+          <a class="toc__link" href="#slide-19">19 エージェントは何をしているか</a>
+          <a class="toc__link" href="#slide-20">20 人間の役割の変化</a>
+          <a class="toc__link" href="#slide-21">21 第4章扉</a>
+          <a class="toc__link" href="#slide-22">22 ハルシネーション</a>
+          <a class="toc__link" href="#slide-23">23 情報漏洩</a>
+          <a class="toc__link" href="#slide-24">24 著作権と権利</a>
+          <a class="toc__link" href="#slide-25">25 RAG</a>
+          <a class="toc__link" href="#slide-26">26 第5章扉</a>
+          <a class="toc__link" href="#slide-27">27 Step1 業務を決める</a>
+          <a class="toc__link" href="#slide-28">28 Step2 前提・役割・ゴール</a>
+          <a class="toc__link" href="#slide-29">29 コンテキストとループ</a>
+          <a class="toc__link" href="#slide-30">30 Step3 最終判断</a>
+          <a class="toc__link" href="#slide-31">31 3ステップのまとめ</a>
+          <a class="toc__link" href="#slide-32">32 付録扉</a>
+          <a class="toc__link" href="#slide-33">33 FAQ1</a>
+          <a class="toc__link" href="#slide-34">34 FAQ2</a>
+          <a class="toc__link" href="#slide-35">35 FAQ3</a>
+          <a class="toc__link" href="#slide-36">36 まとめ</a>
+        </nav>
+      </div>
+    </aside>
+
+    <div class="workspace">
+      <header class="topbar">
+        <div>
+          <p class="topbar__eyebrow">SLIDE OUTPUT</p>
+          <p class="topbar__title">AIの歩き方 2026年8月最新版</p>
+        </div>
+        <div class="topbar__actions">
+          <p class="topbar__counter" id="slide-counter">1 / 36</p>
+          <button class="action-button" type="button" data-action="print">印刷 / PDF</button>
+        </div>
+      </header>
+
+      <main class="deck" id="deck">
+        <section class="slide slide--cover" id="slide-1" data-title="表紙">
+          <div class="slide__frame">
+            <div class="slide__chapter">AUG 2026</div>
+            <div class="hero-grid">
+              <div class="hero-copy">
+                <p class="eyebrow">AI SUMMER SCHOOL / AUGUST 2026</p>
+                <h2 class="title title--hero">AIの歩き方<br><span class="accent">2026年8月最新版</span></h2>
+                <p class="lead">知っておくべき基礎知識</p>
+                <ul class="chip-list">
+                  <li>非エンジニアOK</li>
+                  <li>基礎から実務まで</li>
+                  <li>2026年トレンド対応</li>
+                </ul>
+              </div>
+
+              <figure class="art-panel art-panel--cover">
+                <div class="slide-illustration slide-illustration--cover illustration-placeholder illustration-placeholder--cover" role="img" aria-label="ノートPCで仕事をする人と、AIが資料や表などの成果物を返しているイラスト"><span>AIと人が並走する学習イメージ</span></div>
+                <figcaption class="art-caption">「質問するツール」から「共に働くパートナー」へ。</figcaption>
+              </figure>
+            </div>
+            <div class="slide__number">1</div>
+          </div>
+        </section>
+
+        <section class="slide" id="slide-2" data-title="序章メッセージ">
+          <div class="slide__frame">
+            <div class="slide__tag">序章</div>
+            <div class="slide__main">
+              <div class="slide__header">
+                <p class="eyebrow">まず押さえること</p>
+                <h2 class="title">AIは「検索の代わり」ではなく、<span class="accent">思考の相棒</span>になった</h2>
+              </div>
+
+              <div class="two-column two-column--wide">
+                <div>
+                  <p class="callout">
+                    いま大事なのは、難解なプロンプトを丸暗記することではありません。
+                    AIの仕組みと役割の変化を理解して、「どう任せると仕事が進むか」をつかむことです。
+                  </p>
+                  <ul class="bullet-list">
+                    <li>検索の代わりに使うだけでは差がつきにくい</li>
+                    <li>整理、下書き、比較、計画で使うと価値が出やすい</li>
+                    <li>2026年は「自律して動くAI」の理解が必須になっている</li>
+                  </ul>
+                </div>
+
+                <div class="request-output">
+                  <div class="request-output__column">
+                    <p class="mini-label">以前の使い方</p>
+                    <div class="stack-card">AIに質問する</div>
+                    <div class="stack-card">答えを読む</div>
+                  </div>
+                  <div class="request-output__arrow">
+                    <svg class="icon icon--large"><use href="#icon-arrow-right"></use></svg>
+                  </div>
+                  <div class="request-output__column">
+                    <p class="mini-label">2026年の使い方</p>
+                    <div class="stack-card stack-card--accent">ゴールを渡す</div>
+                    <div class="stack-card stack-card--accent">AIが作業を進める</div>
+                    <div class="stack-card stack-card--accent">人が最終判断する</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="slide__number">2</div>
+          </div>
+        </section>
+
+        <section class="slide" id="slide-3" data-title="なぜ今基礎なのか">
+          <div class="slide__frame">
+            <div class="slide__tag">序章</div>
+            <div class="slide__main">
+              <div class="slide__header">
+                <p class="eyebrow">2026年現在の状況</p>
+                <h2 class="title">「使っている人」と「使いこなしている人」で、<span class="accent">差が広がっている</span></h2>
+              </div>
+
+              <div class="split-panel">
+                <article class="split-panel__pane">
+                  <div class="pane-head">
+                    <svg class="icon icon--panel"><use href="#icon-search"></use></svg>
+                    <h3>たまに検索するだけの人</h3>
+                  </div>
+                  <ul class="mini-list">
+                    <li>思いついたときだけ質問する</li>
+                    <li>毎回ゼロから頼む</li>
+                    <li>答えを読むだけで終わる</li>
+                    <li>仕事への組み込みが弱い</li>
+                  </ul>
+                </article>
+                <article class="split-panel__pane split-panel__pane--accent">
+                  <div class="pane-head">
+                    <svg class="icon icon--panel"><use href="#icon-users"></use></svg>
+                    <h3>使いこなしている人</h3>
+                  </div>
+                  <ul class="mini-list">
+                    <li>AIに任せる工程を決めている</li>
+                    <li>資料や前提をそろえて渡せる</li>
+                    <li>確認と修正のループを回している</li>
+                    <li>成果物を仕事へそのままつなげている</li>
+                  </ul>
+                </article>
+              </div>
+
+              <p class="footer-note">だからこそ、もう一度「AIの基礎」を整理する意味があります。</p>
+            </div>
+            <div class="slide__number">3</div>
+          </div>
+        </section>
+
+        <section class="slide" id="slide-4" data-title="全体マップ">
+          <div class="slide__frame">
+            <div class="slide__tag">全体マップ</div>
+            <div class="slide__main">
+              <div class="slide__header">
+                <p class="eyebrow">目次</p>
+                <h2 class="title">5章 + 巻末付録で、<span class="accent">基礎から実務</span>までつなぐ</h2>
+              </div>
+
+              <div class="map-flow">
+                <article class="map-step">
+                  <div class="map-step__index">序</div>
+                  <div>
+                    <h3>なぜ今、もう一度AIの基礎なのか</h3>
+                    <p>検索ツールではなく、思考の相棒として捉え直す</p>
+                  </div>
+                </article>
+                <article class="map-step">
+                  <div class="map-step__index">1</div>
+                  <div>
+                    <h3>生成AIの正体</h3>
+                    <p>仕組みと、できること・できないこと</p>
+                  </div>
+                </article>
+                <article class="map-step">
+                  <div class="map-step__index">2</div>
+                  <div>
+                    <h3>2026年の常識</h3>
+                    <p>マルチモーダルとモデルの選び方</p>
+                  </div>
+                </article>
+                <article class="map-step">
+                  <div class="map-step__index">3</div>
+                  <div>
+                    <h3>最重要トレンド</h3>
+                    <p>チャットからAIエージェントへ</p>
+                  </div>
+                </article>
+                <article class="map-step">
+                  <div class="map-step__index">4</div>
+                  <div>
+                    <h3>失敗しないためのルール</h3>
+                    <p>3大リスクと安全対策</p>
+                  </div>
+                </article>
+                <article class="map-step map-step--accent">
+                  <div class="map-step__index">5</div>
+                  <div>
+                    <h3>実践</h3>
+                    <p>今日から使えるAIとの働き方 3ステップ</p>
+                  </div>
+                </article>
+              </div>
+
+              <p class="footer-note">巻末付録として、初中級者がつまずきやすい用語を FAQ 形式でまとめています。</p>
+            </div>
+            <div class="slide__number">4</div>
+          </div>
+        </section>
+
+        <section class="slide slide--chapter" id="slide-5" data-title="序章扉">
+          <div class="slide__frame">
+            <div class="chapter-hero">
+              <div class="chapter-hero__number">序</div>
+              <div class="chapter-hero__body">
+                <p class="eyebrow">INTRODUCTION</p>
+                <h2 class="title title--chapter">なぜ今、もう一度<span class="accent">AIの基礎</span>なのか</h2>
+                <p class="callout">AIを「検索の代わり」に留めず、仕事の相棒として使い始めるための出発点です。</p>
+                <div class="chapter-points">
+                  <span>成果の差が広がっている</span>
+                  <span>基礎を知る意味</span>
+                  <span>本資料のゴール</span>
+                </div>
+              </div>
+            </div>
+            <div class="slide__number">5</div>
+          </div>
+        </section>
+
+        <section class="slide" id="slide-6" data-title="AIは検索の代わりではない">
+          <div class="slide__frame">
+            <div class="side-pill">序章</div>
+            <div class="slide__main">
+              <div class="slide__header">
+                <p class="eyebrow">序章の結論</p>
+                <h2 class="title">AIは「答えを探す」だけでなく、<span class="accent">考える途中</span>を一緒に進める</h2>
+              </div>
+
+              <div class="flow flow--three">
+                <article class="flow-step">
+                  <h3>検索</h3>
+                  <p>情報を見つける</p>
+                </article>
+                <article class="flow-step flow-step--accent">
+                  <h3>生成AI</h3>
+                  <p>整理する / 下書きする / 比較する</p>
+                </article>
+                <article class="flow-step">
+                  <h3>人間</h3>
+                  <p>判断する / 決める / 出す</p>
+                </article>
+              </div>
+
+              <p class="callout">
+                つまり、AIに期待すべきなのは「完璧な正解」より、
+                「考える材料を素早く返してくれること」です。
+              </p>
+            </div>
+            <div class="slide__number">6</div>
+          </div>
+        </section>
+
+        <section class="slide" id="slide-7" data-title="本資料のゴール">
+          <div class="slide__frame">
+            <div class="side-pill">序章</div>
+            <div class="slide__main">
+              <div class="slide__header">
+                <p class="eyebrow">この資料で目指すこと</p>
+                <h2 class="title">難しい英語を覚えるより、<span class="accent">正しい使い方</span>を腹落ちさせる</h2>
+              </div>
+
+              <div class="principle-grid">
+                <article class="principle-card">
+                  <h3>1 仕組みを知る</h3>
+                  <p>AIがどう考え、どこで間違えやすいかを理解する。</p>
+                </article>
+                <article class="principle-card">
+                  <h3>2 2026年の常識を知る</h3>
+                  <p>マルチモーダルとエージェントの変化を押さえる。</p>
+                </article>
+                <article class="principle-card">
+                  <h3>3 今日から試す</h3>
+                  <p>1業務×1AIの小さな実践へつなげる。</p>
+                </article>
+              </div>
+            </div>
+            <div class="slide__number">7</div>
+          </div>
+        </section>
+
+        <section class="slide slide--chapter" id="slide-8" data-title="第1章扉">
+          <div class="slide__frame">
+            <div class="chapter-hero">
+              <div class="chapter-hero__number">1</div>
+              <div class="chapter-hero__body">
+                <p class="eyebrow">CHAPTER 01</p>
+                <h2 class="title title--chapter">生成AIの正体<span class="accent">できること / できないこと</span></h2>
+                <p class="callout">AIは「答えを知っている辞書」ではなく、「超・高精度な連想ゲームマシーン」です。</p>
+                <div class="chapter-points">
+                  <span>従来AIとの違い</span>
+                  <span>LLM</span>
+                  <span>文章生成の仕組み</span>
+                  <span>得意 / 苦手</span>
+                </div>
+              </div>
+            </div>
+            <div class="slide__number">8</div>
+          </div>
+        </section>
+
+        <section class="slide" id="slide-9" data-title="従来AIと生成AI">
+          <div class="slide__frame">
+            <div class="side-pill">第1章</div>
+            <div class="slide__main">
+              <div class="slide__header">
+                <p class="eyebrow">1-1</p>
+                <h2 class="title">「従来のAI」と「生成AI」は、<span class="accent">役割が違う</span></h2>
+              </div>
+
+              <div class="split-panel">
+                <article class="split-panel__pane">
+                  <div class="pane-head">
+                    <svg class="icon icon--panel"><use href="#icon-search"></use></svg>
+                    <h3>従来のAI</h3>
+                  </div>
+                  <ul class="mini-list">
+                    <li>猫か犬かを判定する</li>
+                    <li>不正検知や売上予測をする</li>
+                    <li>目的が比較的1つに絞られている</li>
+                    <li>「見分ける」「予測する」AI</li>
+                  </ul>
+                </article>
+                <article class="split-panel__pane split-panel__pane--accent">
+                  <div class="pane-head">
+                    <svg class="icon icon--panel"><use href="#icon-lightbulb"></use></svg>
+                    <h3>生成AI</h3>
+                  </div>
+                  <ul class="mini-list">
+                    <li>文章や画像を新しく作る</li>
+                    <li>要約、翻訳、コード作成もできる</li>
+                    <li>言葉に関わる多用途を1つでこなす</li>
+                    <li>「考えて形にする」AI</li>
+                  </ul>
+                </article>
+              </div>
+            </div>
+            <div class="slide__number">9</div>
+          </div>
+        </section>
+
+        <section class="slide" id="slide-10" data-title="LLMとは">
+          <div class="slide__frame">
+            <div class="side-pill">第1章</div>
+            <div class="slide__main">
+              <div class="slide__header">
+                <p class="eyebrow">1-2</p>
+                <h2 class="title">LLMとは、言葉を扱う<span class="accent">AIのエンジン</span></h2>
+              </div>
+
+              <div class="two-column">
+                <div>
+                  <p class="callout">
+                    LLM（大規模言語モデル）は、「世界中の文章を読み込んで、
+                    言葉を自由自在に操るAIのエンジン」です。
+                  </p>
+                  <div class="info-strip">
+                    <strong>たとえ</strong>
+                    <span>世界中の図書館を丸ごと読んだ、超・物知りな言葉の天才。</span>
+                  </div>
+                </div>
+
+                <div class="visual-stack">
+                  <figure class="art-panel art-panel--llm">
+                    <div class="slide-illustration illustration-placeholder" role="img" aria-label="人の依頼がLLMを通って文書や表として返る流れのイラスト"><span>入力 → LLM → 要約・比較・下書き</span></div>
+                  </figure>
+                  <div class="keyword-row">
+                    <span class="keyword-pill">文章を読む</span>
+                    <span class="keyword-pill keyword-pill--accent">文脈をつなぐ</span>
+                    <span class="keyword-pill">要約や下書きを返す</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="slide__number">10</div>
+          </div>
+        </section>
+
+        <section class="slide" id="slide-11" data-title="文章はどう作られるか">
+          <div class="slide__frame">
+            <div class="side-pill">第1章</div>
+            <div class="slide__main">
+              <div class="slide__header">
+                <p class="eyebrow">1-2</p>
+                <h2 class="title">AIは「意味を理解している」より、<span class="accent">次の言葉を選んでいる</span></h2>
+              </div>
+
+              <div class="flow flow--three">
+                <article class="flow-step">
+                  <h3>入力</h3>
+                  <p>昔々あるところに…</p>
+                </article>
+                <article class="flow-step flow-step--accent">
+                  <h3>確率で選ぶ</h3>
+                  <p>次に来そうな言葉を、最も自然な順で並べる</p>
+                </article>
+                <article class="flow-step">
+                  <h3>出力</h3>
+                  <p>それっぽい文章として返る</p>
+                </article>
+              </div>
+
+              <div class="split-panel">
+                <article class="split-panel__pane">
+                  <h3>誤解しやすい見方</h3>
+                  <p class="compare-card__lead">意味を完全に理解して答えている</p>
+                </article>
+                <article class="split-panel__pane split-panel__pane--accent">
+                  <h3>実際の見方</h3>
+                  <p class="compare-card__lead">膨大な学習結果をもとに、「前後につながりそうな言葉」を高精度で組み立てている</p>
+                </article>
+              </div>
+            </div>
+            <div class="slide__number">11</div>
+          </div>
+        </section>
+
+        <section class="slide" id="slide-12" data-title="得意と苦手">
+          <div class="slide__frame">
+            <div class="side-pill">第1章</div>
+            <div class="slide__main">
+              <div class="slide__header">
+                <p class="eyebrow">1-3</p>
+                <h2 class="title">得意なことと、<span class="accent">任せきってはいけないこと</span></h2>
+              </div>
+
+              <div class="split-panel">
+                <article class="split-panel__pane split-panel__pane--accent">
+                  <div class="pane-head">
+                    <svg class="icon icon--panel"><use href="#icon-check"></use></svg>
+                    <h3>得意なこと</h3>
+                  </div>
+                  <ul class="mini-list">
+                    <li>大量テキストの要約・抽出</li>
+                    <li>アイディア出し・ブレスト</li>
+                    <li>文章の書き換え・トーン変更</li>
+                    <li>構成案、比較表、たたき台づくり</li>
+                  </ul>
+                </article>
+                <article class="split-panel__pane">
+                  <div class="pane-head">
+                    <svg class="icon icon--panel"><use href="#icon-search"></use></svg>
+                    <h3>苦手 / 危険なこと</h3>
+                  </div>
+                  <ul class="mini-list">
+                    <li>厳密な数値計算</li>
+                    <li>最新のローカル情報</li>
+                    <li>100%の事実確認</li>
+                    <li>法律、契約、社外文書の最終判断</li>
+                  </ul>
+                </article>
+              </div>
+            </div>
+            <div class="slide__number">12</div>
+          </div>
+        </section>
+
+        <section class="slide slide--chapter" id="slide-13" data-title="第2章扉">
+          <div class="slide__frame">
+            <div class="chapter-hero">
+              <div class="chapter-hero__number">2</div>
+              <div class="chapter-hero__body">
+                <p class="eyebrow">CHAPTER 02</p>
+                <h2 class="title title--chapter">2026年の常識<span class="accent">マルチモーダルとモデル選び</span></h2>
+                <p class="callout">テキストだけではなく、画像・音声・ファイルを扱う前提で考える時代です。</p>
+                <div class="chapter-points">
+                  <span>マルチモーダル</span>
+                  <span>主要モデル</span>
+                  <span>使い分け</span>
+                  <span>ブラウザ版とアプリ</span>
+                </div>
+              </div>
+            </div>
+            <div class="slide__number">13</div>
+          </div>
+        </section>
+
+        <section class="slide" id="slide-14" data-title="マルチモーダル">
+          <div class="slide__frame">
+            <div class="side-pill">第2章</div>
+            <div class="slide__main">
+              <div class="slide__header">
+                <p class="eyebrow">2-1</p>
+                <h2 class="title">マルチモーダル = 「見て・聞いて・読んで」<span class="accent">一緒に理解する</span></h2>
+              </div>
+
+              <div class="split-panel">
+                <article class="split-panel__pane">
+                  <div class="pane-head">
+                    <svg class="icon icon--panel"><use href="#icon-chat"></use></svg>
+                    <h3>昔のAI</h3>
+                  </div>
+                  <ul class="mini-list">
+                    <li>文字入力が中心</li>
+                    <li>テキストだけでやり取りする</li>
+                    <li>説明しないと伝わらないことが多い</li>
+                  </ul>
+                </article>
+                <article class="split-panel__pane split-panel__pane--accent">
+                  <div class="pane-head">
+                    <svg class="icon icon--panel"><use href="#icon-doc"></use></svg>
+                    <h3>2026年のAI</h3>
+                  </div>
+                  <ul class="mini-list">
+                    <li>画像、音声、PDF、表も一緒に扱える</li>
+                    <li>ホワイトボード写真から議事録化できる</li>
+                    <li>ファイルを読ませながら会話できる</li>
+                  </ul>
+                </article>
+              </div>
+
+              <p class="callout">たとえるなら、ラジオから対面打ち合わせへ進化したイメージです。</p>
+            </div>
+            <div class="slide__number">14</div>
+          </div>
+        </section>
+
+        <section class="slide" id="slide-15" data-title="モデルの選び方">
+          <div class="slide__frame">
+            <div class="side-pill">第2章</div>
+            <div class="slide__main">
+              <div class="slide__header">
+                <p class="eyebrow">2-2</p>
+                <h2 class="title">ざっくりわかる、<span class="accent">AIツールの選び方</span></h2>
+              </div>
+
+              <div class="comparison-grid">
+                <article class="compare-card">
+                  <h3>ChatGPT系</h3>
+                  <p class="compare-card__lead">万能型。日常会話、文章作成、アイデア出しの入口にしやすい。</p>
+                  <ul class="mini-list">
+                    <li>幅広い用途</li>
+                    <li>試しやすい</li>
+                    <li>最初の1本にしやすい</li>
+                  </ul>
+                </article>
+                <article class="compare-card">
+                  <h3>Claude系</h3>
+                  <p class="compare-card__lead">長文読解、人間らしい文章、コード作成で選ばれやすい。</p>
+                  <ul class="mini-list">
+                    <li>長文に強い</li>
+                    <li>自然な文面</li>
+                    <li>資料整理と相性がよい</li>
+                  </ul>
+                </article>
+                <article class="compare-card">
+                  <h3>Gemini系</h3>
+                  <p class="compare-card__lead">Google連携や最新情報の検索を含む流れで便利。</p>
+                  <ul class="mini-list">
+                    <li>Gmail / Drive と相性</li>
+                    <li>検索前提に強い</li>
+                    <li>Google文脈で入りやすい</li>
+                  </ul>
+                </article>
+              </div>
+            </div>
+            <div class="slide__number">15</div>
+          </div>
+        </section>
+
+        <section class="slide" id="slide-16" data-title="ブラウザ版とアプリ">
+          <div class="slide__frame">
+            <div class="side-pill">第2章</div>
+            <div class="slide__main">
+              <div class="slide__header">
+                <p class="eyebrow">使い方の入口</p>
+                <h2 class="title">ブラウザ版チャットと<span class="accent">デスクトップアプリ</span>の違い</h2>
+              </div>
+
+              <div class="comparison-layout">
+                <div class="stacked-panels">
+                  <article class="split-panel__pane">
+                    <div class="pane-head">
+                      <svg class="icon icon--panel"><use href="#icon-chat"></use></svg>
+                      <h3>ブラウザ版チャット</h3>
+                    </div>
+                    <ul class="mini-list">
+                      <li>相談しやすい</li>
+                      <li>まず試しやすい</li>
+                      <li>単発の要約や下書きに向く</li>
+                      <li>1問1答の使い方が中心</li>
+                    </ul>
+                  </article>
+                  <article class="split-panel__pane split-panel__pane--accent">
+                    <div class="pane-head">
+                      <svg class="icon icon--panel"><use href="#icon-desktop"></use></svg>
+                      <h3>デスクトップアプリ</h3>
+                    </div>
+                    <ul class="mini-list">
+                      <li>ファイルや作業画面に近い</li>
+                      <li>複数資料をまたぐ仕事に向く</li>
+                      <li>実務の流れに入り込みやすい</li>
+                      <li>実行と確認のループを回しやすい</li>
+                    </ul>
+                  </article>
+                </div>
+
+                <figure class="art-panel art-panel--compare">
+                  <div class="slide-illustration illustration-placeholder" role="img" aria-label="ブラウザ版チャットとデスクトップアプリの使い方を比較したイラスト"><span>チャット相談 と アプリ実務 の比較図</span></div>
+                </figure>
+              </div>
+
+              <div class="summary-band">
+                <span>ブラウザ版 = 質問しやすい</span>
+                <span>アプリ = 作業に入り込みやすい</span>
+              </div>
+            </div>
+            <div class="slide__number">16</div>
+          </div>
+        </section>
+
+        <section class="slide slide--chapter" id="slide-17" data-title="第3章扉">
+          <div class="slide__frame">
+            <div class="chapter-hero">
+              <div class="chapter-hero__number">3</div>
+              <div class="chapter-hero__body">
+                <p class="eyebrow">CHAPTER 03</p>
+                <h2 class="title title--chapter">最重要トレンド<span class="accent">チャットからAIエージェントへ</span></h2>
+                <p class="callout">質問に答えるだけのAIではなく、ゴールを渡すと動き出すAIが中心になっています。</p>
+                <div class="chapter-points">
+                  <span>2024年との違い</span>
+                  <span>計画</span>
+                  <span>実行</span>
+                  <span>確認と修正</span>
+                </div>
+              </div>
+            </div>
+            <div class="slide__number">17</div>
+          </div>
+        </section>
+
+        <section class="slide" id="slide-18" data-title="チャットからエージェントへ">
+          <div class="slide__frame">
+            <div class="side-pill">第3章</div>
+            <div class="slide__main">
+              <div class="slide__header">
+                <p class="eyebrow">3-1</p>
+                <h2 class="title">変化の中心は、<span class="accent">1問1答</span>から自律実行へ</h2>
+              </div>
+
+              <div class="split-panel">
+                <article class="split-panel__pane">
+                  <div class="pane-head">
+                    <svg class="icon icon--panel"><use href="#icon-chat"></use></svg>
+                    <h3>2024年まで</h3>
+                  </div>
+                  <ul class="mini-list">
+                    <li>「このメールを書いて」</li>
+                    <li>人が細かく一問一答で指示する</li>
+                    <li>答えを返してもらう使い方が中心</li>
+                  </ul>
+                </article>
+                <article class="split-panel__pane split-panel__pane--accent">
+                  <div class="pane-head">
+                    <svg class="icon icon--panel"><use href="#icon-users"></use></svg>
+                    <h3>2026年</h3>
+                  </div>
+                  <ul class="mini-list">
+                    <li>「来週の出張計画を完了させて」</li>
+                    <li>AIが手順を分解して進める</li>
+                    <li>目標を渡して任せる使い方が増えている</li>
+                  </ul>
+                </article>
+              </div>
+            </div>
+            <div class="slide__number">18</div>
+          </div>
+        </section>
+
+        <section class="slide" id="slide-19" data-title="エージェントは何をしているか">
+          <div class="slide__frame">
+            <div class="side-pill">第3章</div>
+            <div class="slide__main">
+              <div class="slide__header">
+                <p class="eyebrow">3-2</p>
+                <h2 class="title">AIエージェントは、<span class="accent">計画 → 実行 → 確認</span>を回している</h2>
+              </div>
+
+              <div class="flow flow--four">
+                <article class="flow-step">
+                  <h3>計画</h3>
+                  <p>ゴールまでの手順を自分で分解する</p>
+                </article>
+                <article class="flow-step flow-step--accent">
+                  <h3>実行</h3>
+                  <p>Web検索、ファイル、カレンダー、メールなどを使う</p>
+                </article>
+                <article class="flow-step">
+                  <h3>確認</h3>
+                  <p>途中結果を見て、間違いや不足を見つける</p>
+                </article>
+                <article class="flow-step">
+                  <h3>修正</h3>
+                  <p>必要ならやり直しながらゴールへ近づく</p>
+                </article>
+              </div>
+
+              <div class="summary-band">
+                <span>プロンプト</span>
+                <span>コンテキスト</span>
+                <span>ハーネス</span>
+                <span>ループ</span>
+              </div>
+            </div>
+            <div class="slide__number">19</div>
+          </div>
+        </section>
+
+        <section class="slide" id="slide-20" data-title="人間の役割の変化">
+          <div class="slide__frame">
+            <div class="side-pill">第3章</div>
+            <div class="slide__main">
+              <div class="slide__header">
+                <p class="eyebrow">3-3</p>
+                <h2 class="title">人間の仕事は、細かい指示より<span class="accent">ゴール設定と最終チェック</span></h2>
+              </div>
+
+              <div class="role-split">
+                <article class="role-split__pane">
+                  <p class="mini-label">人間が担う</p>
+                  <ul class="check-list">
+                    <li>目的を明確にする</li>
+                    <li>前提条件を伝える</li>
+                    <li>使ってよい範囲を決める</li>
+                    <li>成果物に責任を持つ</li>
+                  </ul>
+                </article>
+                <article class="role-split__pane role-split__pane--accent">
+                  <p class="mini-label">AIに任せる</p>
+                  <ul class="check-list">
+                    <li>手順の分解</li>
+                    <li>情報整理</li>
+                    <li>下書きと比較</li>
+                    <li>途中の修正ややり直し</li>
+                  </ul>
+                </article>
+              </div>
+            </div>
+            <div class="slide__number">20</div>
+          </div>
+        </section>
+
+        <section class="slide slide--chapter" id="slide-21" data-title="第4章扉">
+          <div class="slide__frame">
+            <div class="chapter-hero">
+              <div class="chapter-hero__number">4</div>
+              <div class="chapter-hero__body">
+                <p class="eyebrow">CHAPTER 04</p>
+                <h2 class="title title--chapter">失敗しないためのルール<span class="accent">3大リスクと安全対策</span></h2>
+                <p class="callout">AIは「おっちょこちょいな新人部下」くらいの感覚で扱うと、ちょうどよく安全です。</p>
+                <div class="chapter-points">
+                  <span>ハルシネーション</span>
+                  <span>情報漏洩</span>
+                  <span>著作権</span>
+                  <span>RAG</span>
+                </div>
+              </div>
+            </div>
+            <div class="slide__number">21</div>
+          </div>
+        </section>
+
+        <section class="slide" id="slide-22" data-title="ハルシネーション">
+          <div class="slide__frame">
+            <div class="side-pill">第4章</div>
+            <div class="slide__main">
+              <div class="slide__header">
+                <p class="eyebrow">リスク1</p>
+                <h2 class="title">ハルシネーション = 自信満々の<span class="accent">それっぽい嘘</span></h2>
+              </div>
+
+              <div class="two-column">
+                <div>
+                  <p class="callout">
+                    AIは「事実を検索して答える」のではなく、
+                    「前に続く言葉として自然なもの」を確率で組み立てています。
+                  </p>
+                  <div class="info-strip">
+                    <strong>たとえ</strong>
+                    <span>記憶があいまいなのに、知ったかぶりで話をつないでしまう人。</span>
+                  </div>
+                </div>
+
+                <div>
+                  <p class="mini-label">対策</p>
+                  <ul class="bullet-list">
+                    <li>数字、法律、人名は一次情報で裏取りする</li>
+                    <li>社外文書は必ず人が最終確認する</li>
+                    <li>RAGや検索を使って、根拠を見せながら使う</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="slide__number">22</div>
+          </div>
+        </section>
+
+        <section class="slide" id="slide-23" data-title="情報漏洩">
+          <div class="slide__frame">
+            <div class="side-pill">第4章</div>
+            <div class="slide__main">
+              <div class="slide__header">
+                <p class="eyebrow">リスク2</p>
+                <h2 class="title">無料版のまま使うと、<span class="accent">入力データの扱い</span>が問題になることがある</h2>
+              </div>
+
+              <div class="split-panel">
+                <article class="split-panel__pane">
+                  <div class="pane-head">
+                    <svg class="icon icon--panel"><use href="#icon-folder"></use></svg>
+                    <h3>何が問題か</h3>
+                  </div>
+                  <ul class="mini-list">
+                    <li>入力内容が再学習に使われる設定のことがある</li>
+                    <li>社内資料や個人情報をそのまま入れるのは危険</li>
+                    <li>誰が見てもよい情報かを先に考える必要がある</li>
+                  </ul>
+                </article>
+                <article class="split-panel__pane split-panel__pane--accent">
+                  <div class="pane-head">
+                    <svg class="icon icon--panel"><use href="#icon-check"></use></svg>
+                    <h3>対策</h3>
+                  </div>
+                  <ul class="mini-list">
+                    <li>学習オフ設定を確認する</li>
+                    <li>法人向けプランを使う</li>
+                    <li>個人情報や機密を匿名化する</li>
+                    <li>入力ルールを社内でそろえる</li>
+                  </ul>
+                </article>
+              </div>
+            </div>
+            <div class="slide__number">23</div>
+          </div>
+        </section>
+
+        <section class="slide" id="slide-24" data-title="著作権と権利">
+          <div class="slide__frame">
+            <div class="side-pill">第4章</div>
+            <div class="slide__main">
+              <div class="slide__header">
+                <p class="eyebrow">リスク3</p>
+                <h2 class="title">著作権と権利侵害は、<span class="accent">商用利用時</span>ほど慎重に見る</h2>
+              </div>
+
+              <div class="principle-grid">
+                <article class="principle-card">
+                  <h3>避けたいこと</h3>
+                  <p>特定の作家やアーティストの作風を、直接まねさせて商用利用すること。</p>
+                </article>
+                <article class="principle-card">
+                  <h3>確認したいこと</h3>
+                  <p>画像、文章、音声の権利処理と、利用規約上の扱い。</p>
+                </article>
+                <article class="principle-card">
+                  <h3>実務の姿勢</h3>
+                  <p>公開前に人が見て、「誰かの権利を侵していないか」を最後に確認する。</p>
+                </article>
+              </div>
+            </div>
+            <div class="slide__number">24</div>
+          </div>
+        </section>
+
+        <section class="slide" id="slide-25" data-title="RAG">
+          <div class="slide__frame">
+            <div class="side-pill">第4章</div>
+            <div class="slide__main">
+              <div class="slide__header">
+                <p class="eyebrow">社内AIで重要</p>
+                <h2 class="title">RAG = AIに<span class="accent">カンペ</span>を見せながら答えさせる仕組み</h2>
+              </div>
+
+              <div class="two-column">
+                <div>
+                  <p class="callout">
+                    RAG は、質問のたびに社内資料や最新データを検索して、
+                    その内容をAIに見せながら回答させる仕組みです。
+                  </p>
+                  <div class="info-strip">
+                    <strong>たとえ</strong>
+                    <span>マニュアルを開いた状態で受けるオープンブックテスト。</span>
+                  </div>
+                </div>
+
+                <div class="flow flow--three">
+                  <article class="flow-step">
+                    <h3>1 検索</h3>
+                    <p>関連する社内資料を探す</p>
+                  </article>
+                  <article class="flow-step flow-step--accent">
+                    <h3>2 参照</h3>
+                    <p>AIにその資料を見せる</p>
+                  </article>
+                  <article class="flow-step">
+                    <h3>3 回答</h3>
+                    <p>資料ベースで答えるので、嘘が減りやすい</p>
+                  </article>
+                </div>
+              </div>
+            </div>
+            <div class="slide__number">25</div>
+          </div>
+        </section>
+
+        <section class="slide slide--chapter" id="slide-26" data-title="第5章扉">
+          <div class="slide__frame">
+            <div class="chapter-hero">
+              <div class="chapter-hero__number">5</div>
+              <div class="chapter-hero__body">
+                <p class="eyebrow">CHAPTER 05</p>
+                <h2 class="title title--chapter">実践<span class="accent">今日から使える3ステップ</span></h2>
+                <p class="callout">最初から全自動を目指さず、「1業務 × 1AI」から始めるのが一番うまくいきます。</p>
+                <div class="chapter-points">
+                  <span>任せる業務を決める</span>
+                  <span>前提を伝える</span>
+                  <span>最終判断に集中する</span>
+                </div>
+              </div>
+            </div>
+            <div class="slide__number">26</div>
+          </div>
+        </section>
+
+        <section class="slide" id="slide-27" data-title="Step1 業務を決める">
+          <div class="slide__frame">
+            <div class="side-pill">第5章</div>
+            <div class="slide__main">
+              <div class="slide__header">
+                <p class="eyebrow">Step 1</p>
+                <h2 class="title">まずは、<span class="accent">任せる業務を1つ</span>だけ決める</h2>
+              </div>
+
+              <div class="usecase-grid">
+                <article class="usecase-card">
+                  <h3>週次報告書のたたき台</h3>
+                  <p>ゼロから書く負荷を減らす定番の入口。</p>
+                </article>
+                <article class="usecase-card">
+                  <h3>長文メールの要約</h3>
+                  <p>読む時間を短縮し、返信方針を立てやすくする。</p>
+                </article>
+                <article class="usecase-card">
+                  <h3>会議トピックの整理</h3>
+                  <p>論点と次アクションを切り分ける。</p>
+                </article>
+                <article class="usecase-card">
+                  <h3>提案書の章立て</h3>
+                  <p>資料の骨子を先に作ってもらう。</p>
+                </article>
+              </div>
+            </div>
+            <div class="slide__number">27</div>
+          </div>
+        </section>
+
+        <section class="slide" id="slide-28" data-title="Step2 前提・役割・ゴール">
+          <div class="slide__frame">
+            <div class="side-pill">第5章</div>
+            <div class="slide__main">
+              <div class="slide__header">
+                <p class="eyebrow">Step 2</p>
+                <h2 class="title">伝えるときは、<span class="accent">前提・役割・ゴール</span>をセットで</h2>
+              </div>
+
+              <div class="two-column">
+                <div>
+                  <ul class="bullet-list">
+                    <li>前提: 誰向けか、どんな状況か</li>
+                    <li>役割: AIに何者として振る舞ってほしいか</li>
+                    <li>ゴール: 最終的に何を返してほしいか</li>
+                  </ul>
+                </div>
+
+                <pre class="prompt-sample">あなたは Web マーケターです。
+
+30代の会社員に向けて、
+新商品の魅力を伝える800字のブログの下書きを作ってください。
+
+専門用語は避け、
+導入で興味を引き、
+最後は行動を促す一文で締めてください。</pre>
+              </div>
+            </div>
+            <div class="slide__number">28</div>
+          </div>
+        </section>
+
+        <section class="slide" id="slide-29" data-title="コンテキストとループ">
+          <div class="slide__frame">
+            <div class="side-pill">第5章</div>
+            <div class="slide__main">
+              <div class="slide__header">
+                <p class="eyebrow">Step 2.5</p>
+                <h2 class="title">さらに精度を上げるには、<span class="accent">コンテキストと確認ループ</span>を足す</h2>
+              </div>
+
+              <div class="flow flow--four">
+                <article class="flow-step">
+                  <h3>プロンプト</h3>
+                  <p>頼み方を整える</p>
+                </article>
+                <article class="flow-step flow-step--accent">
+                  <h3>コンテキスト</h3>
+                  <p>資料、日時、対象者、過去文面を渡す</p>
+                </article>
+                <article class="flow-step">
+                  <h3>ハーネス</h3>
+                  <p>使えるツールやファイルを整える</p>
+                </article>
+                <article class="flow-step">
+                  <h3>ループ</h3>
+                  <p>返ってきたものを見て、直して、再度使う</p>
+                </article>
+              </div>
+
+              <p class="footer-note">1回で完璧を目指すより、少しずつ良くするほうが実務では強いです。</p>
+            </div>
+            <div class="slide__number">29</div>
+          </div>
+        </section>
+
+        <section class="slide" id="slide-30" data-title="Step3 最終判断">
+          <div class="slide__frame">
+            <div class="side-pill">第5章</div>
+            <div class="slide__main">
+              <div class="slide__header">
+                <p class="eyebrow">Step 3</p>
+                <h2 class="title">人間は「判コを押す」<span class="accent">最終判断</span>に集中する</h2>
+              </div>
+
+              <div class="role-split">
+                <article class="role-split__pane">
+                  <p class="mini-label">AIがやる</p>
+                  <ul class="check-list">
+                    <li>0から形を作る</li>
+                    <li>整理する</li>
+                    <li>比較する</li>
+                    <li>叩き台を返す</li>
+                  </ul>
+                </article>
+                <article class="role-split__pane role-split__pane--accent">
+                  <p class="mini-label">人間がやる</p>
+                  <ul class="check-list">
+                    <li>チェックする</li>
+                    <li>修正する</li>
+                    <li>優先順位を決める</li>
+                    <li>最終的に出すか決める</li>
+                  </ul>
+                </article>
+              </div>
+            </div>
+            <div class="slide__number">30</div>
+          </div>
+        </section>
+
+        <section class="slide" id="slide-31" data-title="3ステップのまとめ">
+          <div class="slide__frame">
+            <div class="side-pill">第5章</div>
+            <div class="slide__main">
+              <div class="slide__header">
+                <p class="eyebrow">実践まとめ</p>
+                <h2 class="title">今日から使える、<span class="accent">AIとの働き方</span>3ステップ</h2>
+              </div>
+
+              <div class="workflow-band">
+                <article class="workflow-band__item">
+                  <strong>1 業務を決める</strong>
+                  <span>まずは 1業務 × 1AI</span>
+                </article>
+                <article class="workflow-band__item workflow-band__item--accent">
+                  <strong>2 前提を伝える</strong>
+                  <span>前提・役割・ゴール + コンテキスト</span>
+                </article>
+                <article class="workflow-band__item">
+                  <strong>3 最終判断する</strong>
+                  <span>人がチェックして出す</span>
+                </article>
+              </div>
+
+              <p class="callout">最初から全自動を目指さない。この感覚が、いちばん長く使えるコツです。</p>
+            </div>
+            <div class="slide__number">31</div>
+          </div>
+        </section>
+
+        <section class="slide slide--chapter" id="slide-32" data-title="付録扉">
+          <div class="slide__frame">
+            <div class="chapter-hero">
+              <div class="chapter-hero__number">付</div>
+              <div class="chapter-hero__body">
+                <p class="eyebrow">APPENDIX / FAQ</p>
+                <h2 class="title title--chapter">初中級者がつまずきやすい<span class="accent">AI用語集 FAQ</span></h2>
+                <p class="callout">専門用語を丸暗記しなくても、「要するに何か」が腹落ちすれば十分です。</p>
+                <div class="chapter-points">
+                  <span>LLM</span>
+                  <span>ハルシネーション</span>
+                  <span>RAG</span>
+                  <span>マルチモーダル</span>
+                  <span>エージェント</span>
+                </div>
+              </div>
+            </div>
+            <div class="slide__number">32</div>
+          </div>
+        </section>
+
+        <section class="slide" id="slide-33" data-title="FAQ1">
+          <div class="slide__frame">
+            <div class="side-pill">付録</div>
+            <div class="slide__main">
+              <div class="slide__header">
+                <p class="eyebrow">FAQ 1</p>
+                <h2 class="title">LLM と ハルシネーションは、<span class="accent">この感覚</span>で十分</h2>
+              </div>
+
+              <div class="usecase-grid">
+                <article class="usecase-card">
+                  <h3>LLM って何？</h3>
+                  <p><strong>一言:</strong> 言葉を操るAIのエンジン</p>
+                  <p><strong>たとえ:</strong> 世界中の図書館を読んだ、超・物知りな言葉の天才</p>
+                </article>
+                <article class="usecase-card">
+                  <h3>ハルシネーションって何？</h3>
+                  <p><strong>一言:</strong> 自信満々のそれっぽい嘘</p>
+                  <p><strong>たとえ:</strong> 場をつなぐために話を作ってしまう、おしゃべりな人</p>
+                </article>
+              </div>
+            </div>
+            <div class="slide__number">33</div>
+          </div>
+        </section>
+
+        <section class="slide" id="slide-34" data-title="FAQ2">
+          <div class="slide__frame">
+            <div class="side-pill">付録</div>
+            <div class="slide__main">
+              <div class="slide__header">
+                <p class="eyebrow">FAQ 2</p>
+                <h2 class="title">RAG と マルチモーダルは、<span class="accent">便利な補助機能</span>として覚える</h2>
+              </div>
+
+              <div class="usecase-grid">
+                <article class="usecase-card">
+                  <h3>RAG って何？</h3>
+                  <p><strong>一言:</strong> AIにカンペを見せながら答えさせる仕組み</p>
+                  <p><strong>たとえ:</strong> マニュアルを開いた状態で受けるオープンブックテスト</p>
+                </article>
+                <article class="usecase-card">
+                  <h3>マルチモーダルって何？</h3>
+                  <p><strong>一言:</strong> 文字だけでなく、画像・音声・動画も扱えること</p>
+                  <p><strong>たとえ:</strong> ラジオから対面打ち合わせへの進化</p>
+                </article>
+              </div>
+            </div>
+            <div class="slide__number">34</div>
+          </div>
+        </section>
+
+        <section class="slide" id="slide-35" data-title="FAQ3">
+          <div class="slide__frame">
+            <div class="side-pill">付録</div>
+            <div class="slide__main">
+              <div class="slide__header">
+                <p class="eyebrow">FAQ 3</p>
+                <h2 class="title">エージェント / トークン / プロンプトの違いも、<span class="accent">たとえ</span>で覚える</h2>
+              </div>
+
+              <div class="comparison-grid">
+                <article class="compare-card">
+                  <h3>AIエージェント</h3>
+                  <p class="compare-card__lead">質問に答えるだけではなく、ゴールに向けて自分で動くAI。</p>
+                  <ul class="mini-list">
+                    <li>たとえ: 勝手に手配まで済ませる新人アシスタント</li>
+                    <li>計画、実行、確認を回す</li>
+                  </ul>
+                </article>
+                <article class="compare-card">
+                  <h3>トークン / コンテキスト</h3>
+                  <p class="compare-card__lead">トークンは文字数の単位、コンテキストはAIの作業デスクの広さ。</p>
+                  <ul class="mini-list">
+                    <li>たとえ: 一度に机の上へ広げられる資料の量</li>
+                    <li>長い会話は、古い内容からあふれていく</li>
+                  </ul>
+                </article>
+                <article class="compare-card">
+                  <h3>プロンプトとファインチューニング</h3>
+                  <p class="compare-card__lead">プロンプトはその場の指示、ファインチューニングはAI自体の専門教育。</p>
+                  <ul class="mini-list">
+                    <li>たとえ: 口頭指示 と 専門研修</li>
+                    <li>日常業務の大半はプロンプトで十分</li>
+                  </ul>
+                </article>
+              </div>
+            </div>
+            <div class="slide__number">35</div>
+          </div>
+        </section>
+
+        <section class="slide" id="slide-36" data-title="まとめ">
+          <div class="slide__frame">
+            <div class="side-pill">まとめ</div>
+            <div class="slide__main">
+              <div class="slide__header">
+                <p class="eyebrow">最後に</p>
+                <h2 class="title">英語を覚える必要はありません。<span class="accent">要するに何か</span>が分かれば十分です。</h2>
+              </div>
+
+              <div class="principle-grid">
+                <article class="principle-card">
+                  <h3>LLM</h3>
+                  <p>言葉を扱うAIのエンジン</p>
+                </article>
+                <article class="principle-card">
+                  <h3>RAG</h3>
+                  <p>カンペを見せながら答えさせる仕組み</p>
+                </article>
+                <article class="principle-card">
+                  <h3>エージェント</h3>
+                  <p>ゴールを渡すと動き出すAIアシスタント</p>
+                </article>
+              </div>
+
+              <p class="callout">「質問するツール」から「共に働くパートナー」へ。この変化を理解すると、AIの使い方が一段変わります。</p>
+            </div>
+            <div class="slide__number">36</div>
+          </div>
+        </section>
+      </main>
+
+      <div class="deck-controls" aria-label="スライド操作">
+        <button class="nav-button" type="button" data-action="prev">前へ</button>
+        <button class="nav-button" type="button" data-action="next">次へ</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+const slides = Array.from(document.querySelectorAll(".slide"));
+const tocLinks = Array.from(document.querySelectorAll(".toc__link"));
+const counter = document.querySelector("#slide-counter");
+
+function updateActiveSlide(index) {
+  tocLinks.forEach((link, linkIndex) => {
+    link.classList.toggle("is-active", linkIndex === index);
+  });
+
+  if (counter) {
+    counter.textContent = `${index + 1} / ${slides.length}`;
+  }
+}
+
+function goToSlide(index) {
+  const safeIndex = Math.max(0, Math.min(index, slides.length - 1));
+  const slide = slides[safeIndex];
+  if (!slide) return;
+  slide.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+const observer = new IntersectionObserver(
+  (entries) => {
+    const visible = entries
+      .filter((entry) => entry.isIntersecting)
+      .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+
+    if (!visible) return;
+    const index = slides.indexOf(visible.target);
+    if (index >= 0) {
+      updateActiveSlide(index);
+    }
+  },
+  {
+    threshold: [0.4, 0.6, 0.8],
+    rootMargin: "-18% 0px -18% 0px",
+  }
+);
+
+slides.forEach((slide) => observer.observe(slide));
+updateActiveSlide(0);
+
+document.addEventListener("click", (event) => {
+  const button = event.target.closest("[data-action]");
+  if (!button) return;
+
+  const currentIndex = tocLinks.findIndex((link) => link.classList.contains("is-active"));
+
+  switch (button.dataset.action) {
+    case "prev":
+      goToSlide(currentIndex - 1);
+      break;
+    case "next":
+      goToSlide(currentIndex + 1);
+      break;
+    case "print":
+      window.print();
+      break;
+    default:
+      break;
+  }
+});
+
+document.addEventListener("keydown", (event) => {
+  const currentIndex = tocLinks.findIndex((link) => link.classList.contains("is-active"));
+
+  if (event.key === "ArrowRight" || event.key === "ArrowDown" || event.key === "PageDown") {
+    event.preventDefault();
+    goToSlide(currentIndex + 1);
+  }
+
+  if (event.key === "ArrowLeft" || event.key === "ArrowUp" || event.key === "PageUp") {
+    event.preventDefault();
+    goToSlide(currentIndex - 1);
+  }
+
+  if (event.key === "Home") {
+    event.preventDefault();
+    goToSlide(0);
+  }
+
+  if (event.key === "End") {
+    event.preventDefault();
+    goToSlide(slides.length - 1);
+  }
+});
+
+  </script>
+</body>
+</html>
