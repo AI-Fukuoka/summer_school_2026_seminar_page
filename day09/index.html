@@ -1,0 +1,103 @@
+<!DOCTYPE html><html lang="ja"><head><meta charset="utf-8"><title>AIエージェント入門 — 業務で使い始める前に</title><style>
+:root{
+  --ink:#111C33; --navy:#12305F; --teal:#0F8C8C; --amber:#E0A32E;
+  --muted:#525C6B; --line:#D8DEE9; --bg:#FFFFFF; --soft:#F4F7FB;
+}
+*{box-sizing:border-box}
+/* 文字が薄く見えたので、太さと濃さを上げた。**細字は印刷でさらに薄くなる。**
+   本文 500、見出し 800、図中のラベル 700 で段差を付ける。 */
+body{margin:0;background:#EEF1F5;color:var(--ink);
+  font-family:"Hiragino Kaku Gothic ProN","Yu Gothic","Noto Sans JP",sans-serif;
+  line-height:1.78;font-size:15px;font-weight:500;
+  -webkit-font-smoothing:antialiased;}
+/* **height + overflow:hidden にしてはならない。** 溢れたページで本文が
+   切れて読めなくなる（実測: 「エージェントの能力」が容量の200%で欠けた）。
+   min-height にして、溢れる分は伸ばす。印刷側は自然に改ページする。 */
+.page{background:var(--bg);width:210mm;min-height:297mm;
+  margin:16px auto;padding:20mm 18mm 16mm;position:relative;box-shadow:0 2px 12px rgba(0,0,0,.12);}
+.page::before{content:"";position:absolute;left:0;top:0;bottom:0;width:9mm;
+  background:linear-gradient(180deg,var(--navy),#1E4A8A);}
+.running{font-size:12px;font-weight:700;color:var(--muted);border-bottom:1px solid var(--line);
+  padding-bottom:6px;margin-bottom:18px;letter-spacing:.04em;}
+h1.deck{font-size:31px;font-weight:800;line-height:1.4;margin:.2em 0 .1em;color:var(--navy);}
+h1.deck+.sub{color:var(--teal);font-weight:700;font-size:17px;margin-bottom:26px;}
+h2{font-size:26px;color:var(--ink);margin:0 0 2px;line-height:1.35;
+  font-weight:800;letter-spacing:-.01em;}
+h2 .lead{display:block;font-size:13.5px;color:var(--muted);font-weight:700;
+  margin-bottom:2px;letter-spacing:.02em;}
+h2+.rule{height:2px;background:var(--navy);margin:10px 0 16px;width:100%;}
+section.sec+section.sec{margin-top:30px;}
+p{margin:0 0 1em;text-align:justify;font-weight:500;}
+.caution{border:1.5px solid var(--amber);border-radius:8px;padding:14px 16px;
+  background:#FFFDF5;margin:0 0 1em;font-weight:600;}
+.caution .tag{display:inline-block;background:var(--amber);color:#fff;
+  font-size:12px;font-weight:700;border-radius:4px;padding:1px 8px;margin-bottom:6px;}
+/* 要点は青の丸囲み枠にする。手本の資料でいちばん効いていた要素。 */
+.keypoint{border:1.5px solid #1668C8;background:#F2F7FD;border-radius:10px;
+  padding:13px 17px;margin:14px 0 1em;font-weight:700;}
+.keypoint .tag{display:inline-block;background:#1668C8;color:#fff;font-size:11px;
+  font-weight:700;border-radius:4px;padding:1px 9px;margin-bottom:6px;}
+figure{margin:18px 0;}
+figure img{width:100%;border:1px solid var(--line);border-radius:6px;display:block;}
+figure .ph{border:1.5px dashed var(--line);border-radius:6px;padding:38px 12px;
+  text-align:center;color:var(--muted);font-size:13px;background:var(--soft);}
+figcaption{font-size:12.5px;font-weight:600;color:var(--muted);margin-top:6px;}
+.bars{margin:6px 0 2px;}
+.bar{display:grid;grid-template-columns:8em 1fr auto;align-items:center;
+  gap:10px;margin-bottom:8px;}
+.bar .lb{font-size:14px;font-weight:700;}
+.bar .tr{background:var(--soft);border-radius:3px;height:20px;overflow:hidden;}
+.bar .fl{background:var(--navy);height:100%;}
+.bar .vl{font-size:15px;font-weight:700;color:var(--navy);min-width:3.5em;
+  text-align:right;}
+.flow{display:flex;align-items:stretch;gap:6px;flex-wrap:wrap;margin:6px 0;}
+.flow .st{flex:1 1 0;min-width:96px;background:var(--soft);border-radius:6px;
+  padding:10px 8px;text-align:center;font-size:13px;font-weight:700;}
+.flow .ar{align-self:center;color:var(--navy);font-weight:700;}
+.cmp{display:grid;gap:10px;margin:6px 0;}
+.cmp .bx{border:1.5px solid var(--line);border-radius:8px;padding:12px 14px;
+  font-weight:600;font-size:13.5px;}
+.cmp .bx .lb{display:inline-block;background:var(--navy);color:#fff;font-size:12px;
+  font-weight:700;border-radius:4px;padding:1px 8px;margin-bottom:6px;}
+/* 対比のうち1つを目立たせる（「こちらが要点」を示す）。 */
+.cmp .bx.hi{border-color:#1668C8;background:#F2F7FD;}
+.cmp .bx.hi .lb{background:#1668C8;}
+/* 手順のうち、危険な段や人が担う段を目立たせる。 */
+.flow .st.hi{background:#F2F7FD;border:1.5px solid #1668C8;}
+.flow .st.warn{background:#FFFDF5;border:1.5px solid var(--amber);}
+/* 2軸のマトリクス。**「どれから手を付けるか」は言葉より位置で伝わる。** */
+.mx{display:grid;grid-template-columns:auto 1fr 1fr;gap:0;margin:8px 0;
+  font-size:13px;font-weight:700;}
+.mx .ax{color:var(--muted);font-size:11.5px;font-weight:700;
+  display:flex;align-items:center;justify-content:center;padding:4px 6px;}
+.mx .ax.y{writing-mode:vertical-rl;}
+.mx .cell{border:1px solid var(--line);padding:12px 10px;min-height:62px;
+  background:var(--soft);}
+.mx .cell.hi{background:#F2F7FD;border:1.5px solid #1668C8;color:var(--navy);}
+.mx .cell .t{display:block;font-size:11px;color:var(--muted);font-weight:700;
+  margin-bottom:3px;}
+/* 積み上げ・階層。上ほど狭くする。 */
+.ly{margin:8px 0;display:flex;flex-direction:column;align-items:center;gap:5px;}
+.ly .lv{background:var(--soft);border:1px solid var(--line);border-radius:5px;
+  padding:9px 12px;text-align:center;font-size:13px;font-weight:700;}
+.ly .lv.hi{background:#F2F7FD;border-color:#1668C8;color:var(--navy);}
+.footer{position:absolute;left:20mm;right:20mm;bottom:12mm;font-size:11.5px;font-weight:600;
+  color:var(--muted);display:flex;justify-content:space-between;
+  border-top:1px solid var(--line);padding-top:6px;}
+.toc li{margin-bottom:4px;}
+/* 章タブ（右端の縦ラベル）。手本の資料が持っていた誘導。 */
+.chtab{position:absolute;right:0;top:26mm;writing-mode:vertical-rl;
+  background:var(--navy);color:#fff;font-size:11px;font-weight:700;
+  padding:10px 5px;border-radius:4px 0 0 4px;letter-spacing:.12em;}
+/* 見出しのメリハリ。小さな前置き＋大きな題、要語だけ青。 */
+h2 em{font-style:normal;color:#1668C8;}
+.bridge{margin-top:18px;background:var(--soft);border-radius:6px;
+  padding:10px 14px;font-size:13px;font-weight:700;color:var(--navy);}
+.bridge b{color:#1668C8;}
+.chtag{display:inline-block;background:var(--soft);color:var(--navy);font-size:11px;
+  font-weight:700;border-radius:3px;padding:1px 8px;margin-bottom:6px;}
+@media print{
+  body{background:#fff}
+  .page{margin:0;box-shadow:none;page-break-after:always;width:auto;height:auto;}
+}
+</style></head><body><div class="page"><div class="running">AIエージェント入門 — 業務で使い始める前に</div><h1 class="deck">AIエージェント入門 — 業務で使い始める前に</h1><div class="sub">自分の業務のどこにAIエージェントを使えるか見当がつき、安全に始めるための最低限の注意を知っている</div><p>対象: 非エンジニアの社会人。日常業務でPCを使うが、コードは書かない。生成AIのチャットは触ったことがある</p><p>所要: 30 分</p><h2>目次</h2><div class="rule"></div><ol class="toc"><li>AIエージェントの基礎</li><li>業務での活用例</li><li>安全に任せるための制御</li><li>評価・改善・説明責任</li></ol><div class="footer"><span>AIエージェント入門 — 業務で使い始める前に</span><span></span></div></div><div class="page"><span class="chtab">AIエージェントの基礎</span><div class="running">AIエージェントの基礎</div><section class="sec" data-section="W-01-01"><h2><span class=lead>まず、何が違うのかから</span>生成AIとAIエージェントの違い</h2><div class="rule"></div><p data-cards="EV-3f8db8,EV-9456c5,EV-b6c196,EV-81581a,EV-20f96a,EV-0c6d2f,EV-4464a5,EV-901666,EV-17ce78,EV-214258">生成AIとの違いは、<strong>答えを返すところで終わるか、環境に触れて仕事を進めるところまで担うか</strong>にある。チャットは質問に答えて終わりだが、エージェントはPCやファイルなど、コンピュータから届く範囲に手を伸ばし、実際の作業まで行う。</p><p data-cards="EV-3f8db8,EV-9456c5,EV-b6c196,EV-81581a,EV-20f96a,EV-0c6d2f,EV-4464a5,EV-901666,EV-17ce78,EV-214258">たとえば、チャットでは回答を受け取った人が次の操作をする。エージェントでは、その操作そのものを任せられる。フォルダの中のファイルをまとめて読む、内容に応じてファイル名を変える、調べた結果を表にして保存する。<strong>役割の差は、回答そのものより、回答後の操作を誰が引き受けるかに表れる。</strong></p><p data-cards="EV-3f8db8,EV-9456c5,EV-b6c196,EV-81581a,EV-20f96a,EV-0c6d2f,EV-4464a5,EV-901666,EV-17ce78,EV-214258">ただし、この違いは二者択一ではない。仕事の複雑さに応じて、チャット、簡単な自動化、エージェントを使い分けることになる。</p><figure data-cards="EV-b6c196,EV-214258,EV-0c6d2f"><div class="flow"><div class="st">依頼する</div><div class="ar">→</div><div class="st">答えが返る</div><div class="ar">→</div><div class="st hi">ファイルを開く・貼る・送る</div><div class="ar">→</div><div class="st">仕事が終わる</div></div><figcaption>同じ依頼でも、どこまでを誰がやるかが違う</figcaption></figure><figure data-cards="EV-901666,EV-17ce78,EV-81581a"><div class="ly"><div class="lv hi" style="width:46%">エージェント（複数の手順を任せる）</div><div class="lv" style="width:69%">簡単な自動化</div><div class="lv" style="width:92%">チャット（聞いて答えをもらう）</div></div><figcaption>仕事の複雑さで選ぶ</figcaption></figure><div class="keypoint" data-cards="EV-b6c196,EV-9456c5,EV-3f8db8,EV-0c6d2f"><span class="tag">要点</span><div>回答後の操作を誰が引き受けるか</div></div></section><div class="bridge">次は <b>エージェント導入で得られる価値と限界</b> &nbsp;→ 次ページ</div><div class="footer"><span>AIエージェント入門 — 業務で使い始める前に</span><span>1</span></div></div><div class="page"><span class="chtab">AIエージェントの基礎</span><div class="running">AIエージェントの基礎</div><section class="sec" data-section="W-01-02"><h2><span class=lead>性能より、人の判断が効く</span>エージェント導入で得られる価値と限界</h2><div class="rule"></div><p data-cards="EV-ca1f52,EV-2fd519,EV-22b75c,EV-74c8ee,EV-793a18,EV-719de0,EV-ddd667,EV-c8f3a0,EV-8c3480,EV-2bd60e,EV-9e3993,EV-f851ea">エージェントを入れると何が得られ、どこで頭打ちになるのか。<strong>成果を左右するのは性能そのものより、何を任せ、どう確認し、どこで止めるかという人間の判断</strong>である。一方的に仕事を渡す自動化ではなく、行き来のある協調として捉えるほうが実態に近い。</p><p data-cards="EV-ca1f52,EV-2fd519,EV-22b75c,EV-74c8ee,EV-793a18,EV-719de0,EV-ddd667,EV-c8f3a0,EV-8c3480,EV-2bd60e,EV-9e3993,EV-f851ea">数字の見え方には注意がいる。管理されないまま使われている例が7割を超え、管理を始めた組織は3割に届かないという調査がある。事務作業の削減効果を企業別に示した表もあるが、<strong>それは他社の値であって自社の値ではない。</strong> 実際にできる仕事の長さも、秒単位から数時間へと急速に伸びたが、連続して動き続けることを意味しない。</p><p data-cards="EV-ca1f52,EV-2fd519,EV-22b75c,EV-74c8ee,EV-793a18,EV-719de0,EV-ddd667,EV-c8f3a0,EV-8c3480,EV-2bd60e,EV-9e3993,EV-f851ea">限界のほうもはっきりしている。誤りは出るものとして、人が事実を確かめる工程を組み込む。何にでも使えばよいというものでもなく、まず用途を決め、そこから必要なものを選ぶ。用語の定義を争うより、<strong>手元にある仕組みで期待する結果が出るかどうか</strong>を優先するほうが実務的である。</p><figure data-cards="EV-ddd667"><div class="bars"><div class="bar"><div class="lb">管理されていない</div><div class="tr"><div class="fl" style="width:100.0%"></div></div><div class="vl">73%</div></div><div class="bar"><div class="lb">管理を始めた</div><div class="tr"><div class="fl" style="width:37.0%"></div></div><div class="vl">27%</div></div></div><figcaption>管理せずに使われている割合（他社調査。自社の値ではない）</figcaption></figure><figure data-cards="EV-ca1f52,EV-22b75c"><div class="cmp" style="grid-template-columns:1fr 1fr"><div class="bx"><span class="lb">自動化として見る</span><div>渡したら終わり。できなければ道具が悪いという話になる</div></div><div class="bx hi"><span class="lb">協調として見る</span><div>何を任せ、どう確認し、どこで止めるかを人が決め続ける</div></div></div><figcaption>渡して終わりではなく、行き来する</figcaption></figure><div class="keypoint" data-cards="EV-22b75c,EV-ca1f52,EV-2fd519,EV-793a18,EV-74c8ee,EV-f851ea"><span class="tag">要点</span><div>性能より、人の判断が効く</div></div></section><div class="bridge">次は <b>調査・報告・資料作成を効率化する</b> &nbsp;→ 次ページ</div><div class="footer"><span>AIエージェント入門 — 業務で使い始める前に</span><span>2</span></div></div><div class="page"><span class="chtab">業務での活用例</span><div class="running">業務での活用例</div><section class="sec" data-section="W-02-01"><h2><span class=lead>自分の業務のどこに置くか</span>調査・報告・資料作成を効率化する</h2><div class="rule"></div><p data-cards="EV-6b4d4e,EV-3b15c5,EV-f5872c,EV-8de6fb,EV-69269a,EV-7b5a03,EV-739279,EV-ec38fd,EV-481970,EV-debf58">どの仕事から手をつけるかは、感覚ではなく洗い出しで決める。<strong>優先順位を決める前に、時間を食っている業務を頻度・所要時間・定型度で並べてみる。</strong></p><p data-cards="EV-6b4d4e,EV-3b15c5,EV-f5872c,EV-8de6fb,EV-69269a,EV-7b5a03,EV-739279,EV-ec38fd,EV-481970,EV-debf58">仕事は「作る・処理する・応答する」の三つに分けると整理しやすい。それぞれの中で、<strong>頻度と定型度がともに高いもの</strong>が最初の候補になる。件数が多くて手順が決まっているほど、効果が出やすい。</p><p data-cards="EV-6b4d4e,EV-3b15c5,EV-f5872c,EV-8de6fb,EV-69269a,EV-7b5a03,EV-739279,EV-ec38fd,EV-481970,EV-debf58">調査、報告、資料作成は、この条件に当てはまりやすい。複数のページから情報を集めて比較表にする、複数の文書を読んで一つの報告書にまとめる、といった作業である。<strong>一件ずつなら手でもできるが、数が増えると人手では追いつかない</strong>種類の仕事が向いている。</p><p data-cards="EV-6b4d4e,EV-3b15c5,EV-f5872c,EV-8de6fb,EV-69269a,EV-7b5a03,EV-739279,EV-ec38fd,EV-481970,EV-debf58">逆に、報告された値や誰かの要約をそのまま使う場面では、一次情報までたどって確かめる。</p><figure data-cards="EV-ec38fd,EV-f5872c,EV-481970"><div class="mx"><div class="ax"></div><div class="ax">定型度 低</div><div class="ax">定型度 高</div><div class="ax y">頻度 高</div><div class="cell">毎回考えて判断している</div><div class="cell hi"><span class="t">最初の候補</span>調査・報告・資料作成はここ</div><div class="ax y">頻度 低</div><div class="cell">後回しでよい</div><div class="cell">手順は決まっているが件数が少ない</div></div><figcaption>頻度と定型度で置き場所を決める</figcaption></figure><figure data-cards="EV-3b15c5,EV-739279"><div class="cmp" style="grid-template-columns:1fr 1fr 1fr"><div class="bx"><span class="lb">作る</span><div>資料・報告書・文面をゼロから用意する</div></div><div class="bx"><span class="lb">処理する</span><div>届いたものを読んで、まとめる・振り分ける</div></div><div class="bx"><span class="lb">応答する</span><div>問い合わせに答える・確認して返す</div></div></div><figcaption>自分の仕事はどれに入るか</figcaption></figure><div class="keypoint" data-cards="EV-6b4d4e,EV-ec38fd,EV-7b5a03,EV-3b15c5"><span class="tag">要点</span><div>頻度・所要時間・定型度で見る</div></div></section><div class="bridge">次は <b>外部コンテンツのプロンプトインジェクションを防ぐ</b> &nbsp;→ 次ページ</div><div class="footer"><span>AIエージェント入門 — 業務で使い始める前に</span><span>3</span></div></div><div class="page"><span class="chtab">安全に任せるための制御</span><div class="running">安全に任せるための制御</div><section class="sec" data-section="W-03-01"><h2><span class=lead>危ないのは、読ませて任せたとき</span>外部コンテンツのプロンプトインジェクションを防ぐ</h2><div class="rule"></div><p data-cards="EV-8f3427,EV-2e6702,EV-b31c5d,EV-4bcc4c,EV-713ec5,EV-598187">外部から読み込んだ内容には、<strong>エージェントへの命令が混ざっていることがある。</strong> メール、メッセージ、Webページの中身は、そういう入力として扱う。</p><p data-cards="EV-8f3427,EV-2e6702,EV-b31c5d,EV-4bcc4c,EV-713ec5,EV-598187">外部の文章を読ませたうえで操作まで任せると、そこに埋め込まれた指示にエージェントが従ってしまい、意図しない動きをすることがある。これをプロンプトインジェクションと呼ぶ。</p><p data-cards="EV-8f3427,EV-2e6702,EV-b31c5d,EV-4bcc4c,EV-713ec5,EV-598187"><strong>「怪しい命令には従わないで」と指示しても防げない。</strong> 指示は、それ自体が読み込まれた文章と同じ土俵にあるからである。できる対策は入口を絞ることで、公式または信頼できる情報源に限定すると、素性の分からない内容から受けるリスクを下げられる。</p><figure data-cards="EV-713ec5,EV-b31c5d,EV-8f3427"><div class="flow"><div class="st">外から来た文章を読ませる</div><div class="ar">→</div><div class="st warn">中に命令が混ざっている</div><div class="ar">→</div><div class="st">操作まで任せてある</div><div class="ar">→</div><div class="st warn">その命令どおりに動く</div></div><figcaption>乗っ取りが成立する道すじ</figcaption></figure><figure data-cards="EV-4bcc4c,EV-598187"><div class="cmp" style="grid-template-columns:1fr 1fr"><div class="bx"><span class="lb">効かない</span><div>「怪しい命令には従わないで」とエージェントにお願いする</div></div><div class="bx hi"><span class="lb">効く</span><div>読ませる先を公式・信頼できる情報源に限る</div></div></div><figcaption>効く対策と、効かない対策</figcaption></figure><div class="keypoint" data-cards="EV-713ec5,EV-713ec5"><span class="tag">要点</span><div>メール・DM・Webの中身は外部入力</div></div></section><div class="bridge">次は <b>人が責任を持って検証・停止する</b> &nbsp;→ 次ページ</div><div class="footer"><span>AIエージェント入門 — 業務で使い始める前に</span><span>4</span></div></div><div class="page"><span class="chtab">評価・改善・説明責任</span><div class="running">評価・改善・説明責任</div><section class="sec" data-section="W-04-01"><h2><span class=lead>任せても、席は空かない</span>人が責任を持って検証・停止する</h2><div class="rule"></div><p data-cards="EV-b773f9,EV-4170a8,EV-65a0ff,EV-d8b939,EV-a3a166,EV-4d8b14,EV-1c2710,EV-2be88d,EV-814a63,EV-ea60af,EV-b59b24,EV-834953,EV-717094"><strong>性能が上がっても、人が持つ責任は減らない。</strong> むしろ、判断を任せるほど、人の知識と検証の価値が上がる。</p><p data-cards="EV-b773f9,EV-4170a8,EV-65a0ff,EV-d8b939,EV-a3a166,EV-4d8b14,EV-1c2710,EV-2be88d,EV-814a63,EV-ea60af,EV-b59b24,EV-834953,EV-717094">人が担うのは二つである。何を作るかを指示することと、出てきたものが正しいかを検証すること。出力には誤りがありうるので、結果を無条件に信頼しない。図面から見積りの下書きを素早く作れても、<strong>最終の判断は人が担う。</strong></p><p data-cards="EV-b773f9,EV-4170a8,EV-65a0ff,EV-d8b939,EV-a3a166,EV-4d8b14,EV-1c2710,EV-2be88d,EV-814a63,EV-ea60af,EV-b59b24,EV-834953,EV-717094">そしてもう一つ、<strong>途中で止める判断</strong>も人の仕事である。おかしいと思ったら作業を中断し、方向を変えられること。重要な判断、最終的な責任、対外的な確認は人の側に残る、と決めておくと、どこまで任せてよいかの線が引きやすくなる。</p><figure data-cards="EV-d8b939,EV-4d8b14,EV-b773f9,EV-1c2710"><div class="cmp" style="grid-template-columns:1fr 1fr"><div class="bx"><span class="lb">エージェントに任せる</span><div>下書きを作る。手順を進める。何度でもやり直す</div></div><div class="bx hi"><span class="lb">人に残る</span><div>何を作るかの指示。出てきたものの検証。最終責任</div></div></div><figcaption>任せるところと、残すところ</figcaption></figure><figure data-cards="EV-b59b24,EV-65a0ff,EV-814a63,EV-ea60af"><div class="flow"><div class="st">何を作るか指示する</div><div class="ar">→</div><div class="st">エージェントが進める</div><div class="ar">→</div><div class="st hi">おかしいと思ったら止める</div><div class="ar">→</div><div class="st hi">人が検証して確定する</div></div><figcaption>止める判断が入る場所</figcaption></figure><div class="keypoint" data-cards="EV-a3a166,EV-4170a8,EV-b773f9,EV-d8b939,EV-4d8b14"><span class="tag">要点</span><div>人の検証の価値が上がる</div></div></section><div class="bridge">次は <b>小さな試行で導入効果を確かめる</b> &nbsp;→ 次ページ</div><div class="footer"><span>AIエージェント入門 — 業務で使い始める前に</span><span>5</span></div></div><div class="page"><span class="chtab">評価・改善・説明責任</span><div class="running">評価・改善・説明責任</div><section class="sec" data-section="W-04-02"><h2><span class=lead>契約の前に、小さく測る</span>小さな試行で導入効果を確かめる</h2><div class="rule"></div><p data-cards="EV-b66037,EV-b5bb6f,EV-6fc39a,EV-bcd1d3,EV-3a77c9,EV-295836,EV-5d8bde,EV-15e84c,EV-567137,EV-ee0ab7,EV-1447b5,EV-f8e21b">効果は、他社の数字ではなく自分の現場で確かめる。<strong>契約や本格導入の前に、小さく測れる試行を始める。</strong></p><p data-cards="EV-b66037,EV-b5bb6f,EV-6fc39a,EV-bcd1d3,EV-3a77c9,EV-295836,EV-5d8bde,EV-15e84c,EV-567137,EV-ee0ab7,EV-1447b5,EV-f8e21b">形は決まっている。一人が、一つの測定できる業務を、一週間試す。対外的に使う前に人が確認する。これだけで、能力とリスクの両方が具体的に分かる。</p><p data-cards="EV-b66037,EV-b5bb6f,EV-6fc39a,EV-bcd1d3,EV-3a77c9,EV-295836,EV-5d8bde,EV-15e84c,EV-567137,EV-ee0ab7,EV-1447b5,EV-f8e21b">続けるなら、最初の30日で<strong>担当者・対象の業務・指標</strong>の三つを決める。損益の目安は、削減できた時間、時間単価、道具の費用で計算できる。</p><p data-cards="EV-b66037,EV-b5bb6f,EV-6fc39a,EV-bcd1d3,EV-3a77c9,EV-295836,EV-5d8bde,EV-15e84c,EV-567137,EV-ee0ab7,EV-1447b5,EV-f8e21b">広げる段になって効いてくるのは、成功事例の共有、やり方の標準化、効果の見える化の三つである。<strong>入れただけでは定着せず、測れる形になって初めて価値が出る。</strong></p><figure data-cards="EV-5d8bde,EV-6fc39a,EV-b5bb6f"><div class="ly"><div class="lv" style="width:46%">全社に広げる</div><div class="lv" style="width:69%">部門で展開する</div><div class="lv hi" style="width:92%">一人・一つの業務・一週間</div></div><figcaption>小さく始めて、確かめてから広げる</figcaption></figure><figure data-cards="EV-3a77c9,EV-1447b5"><div class="cmp" style="grid-template-columns:1fr 1fr 1fr"><div class="bx"><span class="lb">担当者</span><div>誰がやるかを1人に決める</div></div><div class="bx"><span class="lb">対象の業務</span><div>測れる業務を1つだけ選ぶ</div></div><div class="bx"><span class="lb">指標</span><div>何をもって効果とするかを先に決める</div></div></div><figcaption>最初の30日で決める三つ</figcaption></figure><div class="keypoint" data-cards="EV-b5bb6f,EV-6fc39a,EV-295836,EV-5d8bde"><span class="tag">要点</span><div>契約の前に小さく測れる試行を</div></div></section><div class="footer"><span>AIエージェント入門 — 業務で使い始める前に</span><span>6</span></div></div></body></html>
