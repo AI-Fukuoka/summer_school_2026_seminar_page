@@ -490,12 +490,28 @@ a {
 }
 
 .slide-illustration--message-lg {
-  max-height: 660px;
+  max-height: 555px;
   border-radius: 12px;
 }
 
 .slide-illustration--message-up {
   max-height: 635px;
+}
+
+.slide-illustration--slide-8 {
+  max-height: 560px;
+}
+
+.slide-illustration--slide-9 {
+  max-height: 585px;
+}
+
+.slide-illustration--slide-13 {
+  max-height: 565px;
+}
+
+.slide-illustration--slide-16 {
+  max-height: 565px;
 }
 
 .mindset-triptych {
