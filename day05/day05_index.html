@@ -3,86 +3,36 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Day 05 | Google AI Studioで始めるノーコードWebアプリ構築</title>
+  <title>Day5｜Google AI StudioでノーコードWebアプリ構築</title>
   <link rel="stylesheet" href="day05_styles.css">
 </head>
 <body>
-  <aside class="rail" aria-label="スライド一覧">
-    <div class="rail__brand"><span>DAY 05</span><strong>Google AI Studio</strong><small>ノーコード・Webアプリ構築</small></div>
-    <nav class="toc">
-      <a href="#s01">はじめに</a><a href="#s04">AI Studio / Build mode</a><a href="#s06">指示を組み立てる</a>
-      <a href="#s07">ハンズオン</a><a href="#s12">データと公開</a><a href="#s14">まとめ</a>
-    </nav>
-    <div class="rail__hint">← → キーで移動<br>印刷にも対応</div>
-  </aside>
+  <svg class="icon-sprite" aria-hidden="true">
+    <symbol id="i-compass" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m15.5 8.5-2.2 4.8-4.8 2.2 2.2-4.8z"/></symbol>
+    <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3 19 6v5c0 4.5-2.8 8-7 10-4.2-2-7-5.5-7-10V6z"/><path d="m8.5 12 2.2 2.2 4.8-5"/></symbol>
+    <symbol id="i-bulb" viewBox="0 0 24 24"><path d="M9 18h6M10 21h4M8 14c-1.1-1-2-2.3-2-4.2a6 6 0 1 1 12 0c0 1.9-.9 3.2-2 4.2-.6.6-1 1.3-1 2H9c0-.7-.4-1.4-1-2Z"/><path d="M12 1v2M3.8 4.8l1.4 1.4M20.2 4.8l-1.4 1.4"/></symbol>
+    <symbol id="i-code" viewBox="0 0 24 24"><path d="m8 7-5 5 5 5M16 7l5 5-5 5M14 4l-4 16"/></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/></symbol>
+    <symbol id="i-spark" viewBox="0 0 24 24"><path d="m12 2 1.7 6.3L20 10l-6.3 1.7L12 18l-1.7-6.3L4 10l6.3-1.7zM19 16l.7 2.3L22 19l-2.3.7L19 22l-.7-2.3L16 19l2.3-.7z"/></symbol>
+    <symbol id="i-share" viewBox="0 0 24 24"><circle cx="18" cy="5" r="2.5"/><circle cx="6" cy="12" r="2.5"/><circle cx="18" cy="19" r="2.5"/><path d="m8.2 10.8 7.6-4.6M8.2 13.2l7.6 4.6"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m8 12 2.6 2.6L16.5 9"/></symbol>
+    <symbol id="i-save" viewBox="0 0 24 24"><path d="M5 3h12l3 3v15H5z"/><path d="M8 3v6h8V3M8 20v-6h8v6"/></symbol>
+  </svg>
 
-  <div class="workspace">
-    <header class="topbar"><span>AI Summer school 2026</span><strong id="slideTitle">小さく動く試作をつくる</strong><span id="counter">01 / 14</span></header>
-    <main class="deck">
-      <section class="slide cover" id="s01" data-title="小さく動く試作をつくる" data-source="WFT05 p.1 / MST05 SEC-01">
-        <div class="slide__frame">
-          <div class="eyebrow">DAY 05 · 30 MINUTES HANDS-ON</div>
-          <h1>Google AI Studioで始める<br><em>ノーコード・Webアプリ構築</em></h1>
-          <p class="lead">完成品を公開するのではなく、<br>一画面の試作を「つくる → 確かめる → 直す」まで体験します。</p>
-          <div class="hero-flow" aria-label="会議メモを整理する流れ"><div class="memo">会議メモ<br><small>架空の文章</small></div><b>→</b><div class="ai-dot">AI</div><b>→</b><div class="out-stack"><span>決定事項</span><span>担当</span><span>次の行動</span></div></div>
-          <div class="cover-note">今日の主役は「コード」ではなく、何を入力し、何を返してほしいかを言葉にすることです。</div>
-          <footer>AIやろうぜ in Fukuoka、AI Summer school 2026 <span>01</span></footer>
-        </div>
-      </section>
-
-      <section class="slide" id="s02" data-title="完成イメージ：会議メモ整理アプリ" data-source="WFT05 p.2 / MST05 SEC-08">
-        <div class="slide__frame"><div class="kicker">GOAL</div><h2>完成イメージ：<em>会議メモ整理アプリ</em></h2><p class="sub">一つの入力と、三つの出力だけ。まずは業務の小さな困りごとを形にします。</p><div class="two-col"><div class="app-window"><div class="window-bar"><i></i><i></i><i></i><strong>会議メモ整理</strong></div><label>会議メモを貼り付ける</label><div class="fake-input">広報用の案内文を金曜までに確認する。<br>担当はAさん。次回は月曜に見出し案を決める。</div><button>整理する</button></div><div class="result-grid"><article><span class="tab">OUTPUT 01</span><h3>決定事項</h3><p>案内文を金曜までに確認</p></article><article><span class="tab teal">OUTPUT 02</span><h3>担当</h3><p>Aさん</p></article><article><span class="tab blue">OUTPUT 03</span><h3>次の行動</h3><p>月曜に見出し案を決める</p></article></div></div><div class="caution">◆ 実際の会議録・氏名・顧客情報・未公開情報は使いません。講師配布の架空文だけを使います。</div><footer>AIやろうぜ in Fukuoka、AI Summer school 2026 <span>02</span></footer></div>
-      </section>
-
-      <section class="slide" id="s03" data-title="最初から完成形を狙わない" data-source="WFT05 p.3 / MST05 SEC-01">
-        <div class="slide__frame"><div class="kicker">MINDSET</div><h2>最初から完成形を<br><em>狙わない</em></h2><p class="sub">生成されたものを正解にしない。小さく試し、画面で確認して、一つずつ改善します。</p><div class="loop"><div><span>1</span><strong>目的を決める</strong><small>誰の、何を助ける？</small></div><b>→</b><div><span>2</span><strong>小さく作る</strong><small>必要最小限の一画面</small></div><b>→</b><div><span>3</span><strong>画面で確かめる</strong><small>期待どおりに動く？</small></div><b>→</b><div><span>4</span><strong>一つだけ直す</strong><small>変更後も確認する</small></div></div><div class="insight">★ 「一度に全部」は頼まない。変更の影響を見つけられる大きさで進めます。</div><footer>AIやろうぜ in Fukuoka、AI Summer school 2026 <span>03</span></footer></div>
-      </section>
-
-      <section class="slide" id="s04" data-title="Google AI Studioでできること" data-source="WFT05 p.4 / MST05 SEC-03">
-        <div class="slide__frame"><div class="kicker">PLACE</div><h2>Google AI Studioで<br><em>できること</em></h2><p class="sub">目的に合わせて、AIの応答を試す場所と、アプリを試作する場所を使い分けます。</p><div class="entry-cards"><article><span class="line-icon">⌁</span><div><span class="tab">TRY</span><h3>プロンプトを試す</h3><p>AIにどう応答してほしいかを、会話形式で確かめる。</p></div></article><div class="split">or</div><article><span class="line-icon">□</span><div><span class="tab teal">BUILD</span><h3>アプリを試作する</h3><p>入力・表示・操作のある一画面を、指示から作って確かめる。</p></div></article></div><div class="insight">★ この講習では、コードを読むよりも、プレビューで意図どおり動くかを確認します。</div><footer>AIやろうぜ in Fukuoka、AI Summer school 2026 <span>04</span></footer></div>
-      </section>
-
-      <section class="slide" id="s05" data-title="Build modeの基本操作" data-source="WFT05 p.5 / MST05 SEC-04">
-        <div class="slide__frame"><div class="kicker">BUILD MODE</div><h2>作る → 見る → <em>直す</em></h2><p class="sub">画面上の名称や位置は更新されることがあります。操作名より、次の四つの流れを手がかりにします。</p><div class="build-flow"><article><span>01</span><h3>作りたいことを記述</h3><p>目的・入出力・条件を書く</p></article><b>→</b><article><span>02</span><h3>生成</h3><p>最初の画面を作ってもらう</p></article><b>→</b><article><span>03</span><h3>プレビュー</h3><p>操作して結果を見る</p></article><b>→</b><article><span>04</span><h3>修正依頼</h3><p>一つだけ変更を伝える</p></article></div><div class="example">💡 テンプレートやギャラリーを出発点にしても構いません。必ず自分の目的に合わせて確認します。</div><footer>AIやろうぜ in Fukuoka、AI Summer school 2026 <span>05</span></footer></div>
-      </section>
-
-      <section class="slide" id="s06" data-title="良い指示は要件のメモになる" data-source="WFT05 p.6 / MST05 SEC-13">
-        <div class="slide__frame"><div class="kicker">PROMPT = REQUIREMENTS</div><h2>良い指示は<br><em>「要件のメモ」</em>になる</h2><p class="sub">曖昧な一文で任せず、作りたいものを六つに分けて書き出します。</p><div class="six-grid"><article><b>01</b><h3>誰が使うか</h3><p>利用者</p></article><article><b>02</b><h3>何を解決するか</h3><p>目的</p></article><article><b>03</b><h3>何を入力するか</h3><p>入力</p></article><article><b>04</b><h3>何を出力するか</h3><p>出力</p></article><article><b>05</b><h3>守る条件</h3><p>制約</p></article><article><b>06</b><h3>どうなれば成功か</h3><p>確認方法</p></article></div><div class="insight">★ 指示を書いたら、結果を見て不足を一つずつ加えます。</div><footer>AIやろうぜ in Fukuoka、AI Summer school 2026 <span>06</span></footer></div>
-      </section>
-
-      <section class="slide hands-on" id="s07" data-title="ハンズオン 1：要件を埋める" data-source="WFT05 p.7 / MST05 SEC-08, SEC-13">
-        <div class="slide__frame"><div class="kicker">HANDS-ON 1 · 2 MIN</div><h2>まず、<em>要件を埋める</em></h2><p class="sub">配布シートの六項目を、次の内容で埋めましょう。</p><div class="requirement-sheet"><div><b>利用者</b><span>会議後にメモを整理したい人</span></div><div><b>目的</b><span>次に誰が何をするかをすぐ確認する</span></div><div><b>入力</b><span>架空の会議メモ</span></div><div><b>出力</b><span>決定事項 ／ 担当 ／ 次の行動</span></div><div><b>制約</b><span>書かれていないことは補わない。不明は「未設定」</span></div><div><b>成功条件</b><span>三つに整理され、空入力でも画面が壊れない</span></div></div><div class="caution">◆ 入力は架空の文章だけ。実データを貼り付けないことを、ここで確認します。</div><footer>AIやろうぜ in Fukuoka、AI Summer school 2026 <span>07</span></footer></div>
-      </section>
-
-      <section class="slide hands-on" id="s08" data-title="ハンズオン 2：最初のプロンプトで生成する" data-source="WFT05 p.8 / MST05 SEC-04, SEC-08">
-        <div class="slide__frame"><div class="kicker">HANDS-ON 2 · 3 MIN</div><h2>最初のプロンプトで<br><em>生成する</em></h2><div class="prompt-layout"><div class="prompt-box"><span class="tab">PASTE INTO BUILD MODE</span><p>会議メモを整理する一画面のWebアプリを作ってください。<br>テキストを貼り付ける入力欄と「整理する」ボタンを用意してください。<br>結果は「決定事項」「担当」「次の行動」の3つで表示してください。<br>書かれていないことは推測せず、不明な担当や期限は「未設定」と表示してください。<br>架空のサンプルデータだけで動作を確認できるようにしてください。</p></div><div class="step-list"><article><b>1</b><span>Build modeに相当する作成画面を開く</span></article><article><b>2</b><span>プロンプトを貼り付け、生成を始める</span></article><article><b>3</b><span>プレビューを開く</span></article></div></div><div class="example">💡 生成待ちになったら、講師のデモ画面で次の操作を確認します。</div><footer>AIやろうぜ in Fukuoka、AI Summer school 2026 <span>08</span></footer></div>
-      </section>
-
-      <section class="slide hands-on" id="s09" data-title="ハンズオン 3：プレビューで確かめる" data-source="WFT05 p.9 / MST05 SEC-08">
-        <div class="slide__frame"><div class="kicker">HANDS-ON 3 · 3 MIN</div><h2>プレビューで<br><em>最初の動作を確かめる</em></h2><p class="sub">架空メモを入れ、「見た目」ではなく「期待する動き」を確認します。</p><div class="check-layout"><div class="dummy-note"><span class="tab teal">DUMMY INPUT</span><p>広報用の案内文を金曜までに確認する。<br>担当はAさん。次回は月曜に見出し案を決める。</p></div><div class="checks"><article><b>✓</b><span>入力欄がある</span></article><article><b>✓</b><span>ボタンを押せる</span></article><article><b>✓</b><span>三つの見出しで表示される</span></article><article><b>✓</b><span>書いていない担当・期限を断定しない</span></article></div></div><div class="insight">★ 一度動いたことは、品質確認の完了ではありません。</div><footer>AIやろうぜ in Fukuoka、AI Summer school 2026 <span>09</span></footer></div>
-      </section>
-
-      <section class="slide hands-on" id="s10" data-title="ハンズオン 4：一つだけ改善する" data-source="WFT05 p.10 / MST05 SEC-08">
-        <div class="slide__frame"><div class="kicker">HANDS-ON 4 · 3 MIN</div><h2>一度に一つだけ<br><em>改善する</em></h2><p class="sub">「何を」「どう見せるか」「どんなときに」をつなげて、変更を一件だけ依頼します。</p><div class="choice-row"><article><span class="tab">CHOICE A</span><h3>結果を見やすくする</h3><p>結果の各項目をカード形式で表示し、空の項目は「該当なし」と表示してください。</p></article><div class="or-mark">OR</div><article><span class="tab teal">CHOICE B</span><h3>空の入力を案内する</h3><p>入力が空のときは、サンプルを入力するよう案内するメッセージを表示してください。</p></article></div><div class="build-flow mini"><article><span>1</span><h3>一つ選ぶ</h3></article><b>→</b><article><span>2</span><h3>変更を依頼</h3></article><b>→</b><article><span>3</span><h3>再び確認</h3></article></div><footer>AIやろうぜ in Fukuoka、AI Summer school 2026 <span>10</span></footer></div>
-      </section>
-
-      <section class="slide hands-on" id="s11" data-title="ハンズオン 5：三つのケースでテストする" data-source="WFT05 p.11 / MST05 SEC-08, SEC-01">
-        <div class="slide__frame"><div class="kicker">HANDS-ON 5 · 2 MIN</div><h2>三つのケースで<br><em>テストする</em></h2><p class="sub">想定どおりのときだけでなく、情報不足と入力なしも試します。</p><div class="test-cards"><article><span class="case-no">CASE 01</span><h3>通常の入力</h3><p>決定事項・担当・次の行動を含む架空メモ</p><b>意図どおり三つに整理される？</b></article><article><span class="case-no teal">CASE 02</span><h3>情報が不足</h3><p>担当や期限を含まない架空メモ</p><b>勝手に補わず「未設定」になる？</b></article><article><span class="case-no yellow">CASE 03</span><h3>空の入力</h3><p>何も入力せずにボタンを押す</p><b>画面が壊れず、案内が出る？</b></article></div><div class="example">💡 想定外の結果は、「再現手順」と「期待した結果」を整理してから小さく修正依頼します。</div><footer>AIやろうぜ in Fukuoka、AI Summer school 2026 <span>11</span></footer></div>
-      </section>
-
-      <section class="slide" id="s12" data-title="入れてよいデータ、入れてはいけないデータ" data-source="WFT05 p.12 / MST05 SEC-22">
-        <div class="slide__frame"><div class="kicker">DATA BOUNDARY</div><h2>入れてよいデータ、<br><em>入れてはいけないデータ</em></h2><p class="sub">このハンズオンは架空データだけ。実運用前には組織のルールと最新の公式条件を確認します。</p><div class="boundary"><article class="safe"><span class="line-icon">○</span><h3>試作に使える</h3><ul><li>架空データ</li><li>公開済みの情報</li><li>適切に匿名化した情報</li></ul></article><div class="border-line"><span>入力前に<br>判断</span></div><article class="stop"><span class="line-icon">×</span><h3>入力しない</h3><ul><li>顧客情報・個人情報</li><li>契約書・未公開資料</li><li>認証情報・秘密情報</li></ul></article></div><div class="caution">◆ 「使えるか不明」なら入力しない。無料版の扱いを十分に確認しないまま機密情報を入れない。</div><footer>AIやろうぜ in Fukuoka、AI Summer school 2026 <span>12</span></footer></div>
-      </section>
-
-      <section class="slide" id="s13" data-title="公開・外部連携は別の確認が必要" data-source="WFT05 p.13 / MST05 SEC-04, SEC-08, SEC-01">
-        <div class="slide__frame"><div class="kicker">NEXT BOUNDARY</div><h2>公開・外部連携は<br><em>別の確認が必要</em></h2><p class="sub">今日の範囲は「試作」まで。共有・公開・連携は、確認事項をそろえてから進めます。</p><div class="boundary steps"><article class="prototype"><span class="tab">TODAY</span><h3>試作</h3><p>架空データで、一画面を作り、動きを確かめる。</p><b>✓ 今日ここまで</b></article><div class="border-line"><span>境界線</span></div><article class="release"><span class="tab yellow">CHECK BEFORE</span><h3>公開・外部連携</h3><div class="pill-list"><span>データ</span><span>権限</span><span>費用</span><span>利用条件</span></div><p>保存・認証・外部APIを加える前に確認。</p></article></div><div class="caution">◆ APIキーや認証情報を画面側に置かない。公開・共有は講習中には行いません。</div><footer>AIやろうぜ in Fukuoka、AI Summer school 2026 <span>13</span></footer></div>
-      </section>
-
-      <section class="slide finish" id="s14" data-title="まとめ：次に一人で試す四手" data-source="WFT05 p.14 / MST05 SEC-01, SEC-08">
-        <div class="slide__frame"><div class="kicker">TAKE AWAY</div><h2>次に一人で試す<br><em>四手</em></h2><p class="sub">自分の業務から「入力と出力が一つずつ」のテーマを選び、実データを使わずに試しましょう。</p><div class="takeaway"><article><b>1</b><h3>目的を書く</h3><p>誰の何を助けるか</p></article><article><b>2</b><h3>一画面で作る</h3><p>必要最小限にする</p></article><article><b>3</b><h3>三つのケースで試す</h3><p>通常・不足・空入力</p></article><article><b>4</b><h3>範囲を確認する</h3><p>データと公開の境界</p></article></div><div class="cover-note">受講後課題：実データを使わない別テーマで、六項目の要件メモとプロンプトを一つ作る。</div><footer>AIやろうぜ in Fukuoka、AI Summer school 2026 <span>14</span></footer></div>
-      </section>
-    </main>
-    <div class="controls"><button id="prev" aria-label="前のスライド">←</button><button id="next" aria-label="次のスライド">→</button><button id="print" aria-label="印刷">PRINT</button></div>
+  <div class="app-shell">
+    <aside class="rail">
+      <div class="rail__brand"><span>AI Summer school</span><strong>DAY 5</strong></div>
+      <nav id="rail-nav" class="rail__nav" aria-label="スライド一覧"></nav>
+      <p class="rail__hint">← → キーでも移動できます</p>
+    </aside>
+    <section class="workspace">
+      <header class="topbar">
+        <div><span class="topbar__eyebrow">AIやろうぜ in Fukuoka</span><strong>Google AI Studioでつくる、はじめてのWebアプリ</strong></div>
+        <div class="topbar__actions"><span id="counter">1 / 17</span><button id="print-button" type="button">印刷 / PDF</button></div>
+      </header>
+      <main id="deck" class="deck" aria-live="polite"></main>
+      <div class="controls"><button id="prev" type="button" aria-label="前のページ">←</button><button id="next" type="button" aria-label="次のページ">→</button></div>
+    </section>
   </div>
   <script src="day05_app.js"></script>
 </body>
