@@ -1,0 +1,982 @@
+<!DOCTYPE html>
+<!-- Ariadne Threadworks / Web ページ資料（固定デザイン）。styles.css・app.js は書き換えない固定資産。DCK06 / WFT06 / MST06 -->
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GASで業務効率化・自動化</title>
+  <link rel="stylesheet" href="styles.css">
+  <style id="readability-overrides">
+    /* 視認性の上書き（styles.css は固定資産のため index.html 側で上書きする） */
+    :root { --muted: #33404f; }
+    .lead { color: #22334a; font-weight: 600; }
+    .flow-step p, .map-step p, .pillar-card p, .principle-card p,
+    .split-panel__pane p, .role-split__pane p, .compare-card__lead,
+    .warning-item span { color: #2a3648; font-weight: 500; }
+    .mini-list li, .check-list li { color: #223042; font-weight: 500; }
+    .callout { color: #1b2432; font-weight: 600; }
+    .figure-caption, .mini-label { color: #33404f; }
+  </style>
+</head>
+<body>
+  <svg class="icon-sprite" aria-hidden="true" focusable="false">
+    <symbol id="icon-doc" viewBox="0 0 24 24"><path d="M7 3h7l4 4v14H7z"></path><path d="M14 3v4h4M9 12h6M9 16h6"></path></symbol>
+    <symbol id="icon-grid" viewBox="0 0 24 24"><rect x="4" y="4" width="6" height="6"></rect><rect x="14" y="4" width="6" height="6"></rect><rect x="4" y="14" width="6" height="6"></rect><rect x="14" y="14" width="6" height="6"></rect></symbol>
+    <symbol id="icon-check" viewBox="0 0 24 24"><path d="M5 12.5 10 17l9-10"></path></symbol>
+    <symbol id="icon-lightbulb" viewBox="0 0 24 24"><path d="M9 18h6M10 21h4M8 14a6 6 0 1 1 8 0c-1 1-1.5 2-1.5 3h-5C9.5 16 9 15 8 14Z"></path></symbol>
+    <symbol id="icon-arrow-right" viewBox="0 0 24 24"><path d="M4 12h15"></path><path d="m13 6 6 6-6 6"></path></symbol>
+    <symbol id="icon-mail" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"></rect><path d="m3 7 9 6 9-6"></path></symbol>
+    <symbol id="icon-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 3"></path></symbol>
+    <symbol id="icon-shield" viewBox="0 0 24 24"><path d="M12 3 5 6v6c0 5 3.5 7.5 7 9 3.5-1.5 7-4 7-9V6z"></path></symbol>
+  </svg>
+
+  <div class="app-shell">
+    <aside class="rail" aria-label="スライド一覧">
+      <div class="rail__inner">
+        <p class="rail__eyebrow">GAS HANDS-ON 90MIN</p>
+        <h1 class="rail__title">GASで業務効率化・自動化</h1>
+        <p class="rail__subtitle">コードはAIに書かせる時代の業務自動化（解説30分＋ハンズオン60分）</p>
+        <nav class="toc">
+          <a class="toc__link" href="#slide-1">1 表紙</a>
+          <a class="toc__link" href="#slide-2">2 第1章 GASってなに？</a>
+          <a class="toc__link" href="#slide-3">3 無料で使える自動化の道具箱</a>
+          <a class="toc__link" href="#slide-4">4 GASがおすすめの理由</a>
+          <a class="toc__link" href="#slide-5">5 第2章 設計は人間、実装はAI</a>
+          <a class="toc__link" href="#slide-6">6 アイデアは人間、作るのはAI</a>
+          <a class="toc__link" href="#slide-7">7 覚えるのは設計メモ4行だけ</a>
+          <a class="toc__link" href="#slide-8">8 飛ばしがちな「見張り」の設定</a>
+          <a class="toc__link" href="#slide-9">9 エラー対処はワンパターン</a>
+          <a class="toc__link" href="#slide-10">10 自動化ネタの探し方 — 3条件</a>
+          <a class="toc__link" href="#slide-11">11 第3章 何が作れる？</a>
+          <a class="toc__link" href="#slide-12">12 型は5系統だけ</a>
+          <a class="toc__link" href="#slide-13">13 講師の実案件から3つ</a>
+          <a class="toc__link" href="#slide-14">14 教訓 — マクロ地獄</a>
+          <a class="toc__link" href="#slide-15">15 第4章 制限と安全運転</a>
+          <a class="toc__link" href="#slide-16">16 制限1: 実行時間は1回6分</a>
+          <a class="toc__link" href="#slide-17">17 安全運転の要点</a>
+          <a class="toc__link" href="#slide-18">18 GASでやらない判断</a>
+          <a class="toc__link" href="#slide-19">19 第5章 ハンズオン</a>
+          <a class="toc__link" href="#slide-20">20 Step1: 3クリックで到着</a>
+          <a class="toc__link" href="#slide-21">21 Step1続き: 名前をつける</a>
+          <a class="toc__link" href="#slide-22">22 Step2: 最初のコードを実行</a>
+          <a class="toc__link" href="#slide-23">23 コードの正体 — 3動作</a>
+          <a class="toc__link" href="#slide-24">24 Step3: ミニ棚卸し</a>
+          <a class="toc__link" href="#slide-25">25 第6章 山場 — AIに発注する</a>
+          <a class="toc__link" href="#slide-26">26 Step4-5: AIへの依頼文</a>
+          <a class="toc__link" href="#slide-27">27 Step6: エラーとの往復</a>
+          <a class="toc__link" href="#slide-28">28 Step7: トリガー設定</a>
+          <a class="toc__link" href="#slide-29">29 第7章 まとめ</a>
+          <a class="toc__link" href="#slide-30">30 つづきはこの道で</a>
+          <a class="toc__link" href="#slide-31">31 明日からのアクション</a>
+          <a class="toc__link" href="#slide-32">32 今日のポイント</a>
+          <a class="toc__link" href="#slide-33">33 補足資料</a>
+          <a class="toc__link" href="#slide-34">34 VBA・RPAとの使い分け</a>
+          <a class="toc__link" href="#slide-35">35 系統1: 差し込みメール送信</a>
+          <a class="toc__link" href="#slide-36">36 系統2: シートの定期集計</a>
+          <a class="toc__link" href="#slide-37">37 系統3: フォーム自動返信</a>
+          <a class="toc__link" href="#slide-38">38 系統4: 予定の一括登録</a>
+          <a class="toc__link" href="#slide-39">39 系統5: 簡易ワークフロー</a>
+          <a class="toc__link" href="#slide-40">40 制限2: メール送信数の上限</a>
+          <a class="toc__link" href="#slide-41">41 制限3: 細かい時間制限</a>
+          <a class="toc__link" href="#slide-42">42 会社アカウントで動かない時</a>
+          <a class="toc__link" href="#slide-43">43 安全運転ルール1: 権限</a>
+          <a class="toc__link" href="#slide-44">44 安全運転ルール2: AIとデータ</a>
+        </nav>
+      </div>
+    </aside>
+
+    <div class="workspace">
+      <header class="topbar">
+        <div>
+          <p class="topbar__eyebrow">SLIDE OUTPUT</p>
+          <p class="topbar__title">GASで業務効率化・自動化</p>
+        </div>
+        <div class="topbar__actions">
+          <p class="topbar__counter" id="slide-counter">1 / 44</p>
+          <button class="action-button" type="button" data-action="print">印刷 / PDF</button>
+        </div>
+      </header>
+
+      <main class="deck" id="deck">
+
+        <!-- 1 表紙 -->
+        <section class="slide slide--cover" id="slide-1" data-title="表紙">
+          <div class="slide__frame">
+            <div class="hero-grid">
+              <div class="hero-copy">
+                <p class="eyebrow">GAS HANDS-ON</p>
+                <h2 class="title title--hero">GASで<span class="accent">業務効率化・自動化</span></h2>
+                <p class="lead">AIにコードを書かせる時代の業務自動化</p>
+              </div>
+              <figure class="figure-panel figure-panel--flush">
+                <svg class="slide-figure" viewBox="0 0 560 400" role="img" aria-label="GASがGoogleの各サービスをつなぐ図">
+                  <defs>
+                    <marker id="cvar" markerWidth="10" markerHeight="10" refX="7" refY="3" orient="auto">
+                      <path d="M0,0 L7,3 L0,6 Z" fill="#0d84d8"></path>
+                    </marker>
+                  </defs>
+                  <rect x="205" y="165" width="150" height="70" rx="14" fill="#0d84d8"></rect>
+                  <text x="280" y="207" font-size="24" font-weight="800" fill="#ffffff" text-anchor="middle">GAS</text>
+                  <rect x="40" y="40" width="150" height="52" rx="12" fill="#ffffff" stroke="#d4dce7"></rect>
+                  <text x="115" y="72" font-size="16" font-weight="700" fill="#095f9e" text-anchor="middle">Gmail</text>
+                  <rect x="370" y="40" width="150" height="52" rx="12" fill="#ffffff" stroke="#d4dce7"></rect>
+                  <text x="445" y="72" font-size="16" font-weight="700" fill="#095f9e" text-anchor="middle">スプレッドシート</text>
+                  <rect x="24" y="255" width="150" height="52" rx="12" fill="#ffffff" stroke="#d4dce7"></rect>
+                  <text x="99" y="287" font-size="16" font-weight="700" fill="#095f9e" text-anchor="middle">カレンダー</text>
+                  <rect x="205" y="308" width="150" height="52" rx="12" fill="#ffffff" stroke="#d4dce7"></rect>
+                  <text x="280" y="340" font-size="16" font-weight="700" fill="#095f9e" text-anchor="middle">フォーム</text>
+                  <rect x="386" y="255" width="150" height="52" rx="12" fill="#ffffff" stroke="#d4dce7"></rect>
+                  <text x="461" y="287" font-size="16" font-weight="700" fill="#095f9e" text-anchor="middle">ドライブ</text>
+                  <line x1="150" y1="92" x2="228" y2="162" stroke="#0d84d8" stroke-width="2.5" marker-end="url(#cvar)"></line>
+                  <line x1="428" y1="92" x2="342" y2="162" stroke="#0d84d8" stroke-width="2.5" marker-end="url(#cvar)"></line>
+                  <line x1="130" y1="255" x2="212" y2="222" stroke="#0d84d8" stroke-width="2.5" marker-end="url(#cvar)"></line>
+                  <line x1="280" y1="305" x2="280" y2="240" stroke="#0d84d8" stroke-width="2.5" marker-end="url(#cvar)"></line>
+                  <line x1="430" y1="255" x2="348" y2="222" stroke="#0d84d8" stroke-width="2.5" marker-end="url(#cvar)"></line>
+                </svg>
+              </figure>
+            </div>
+            <div class="slide__number">1</div>
+          </div>
+        </section>
+
+        <section class="slide slide--chapter" id="slide-2" data-title="第1章 GASってなに？">
+          <div class="slide__frame">
+            <div class="chapter-hero">
+              <div class="chapter-hero__number">1</div>
+              <div class="chapter-hero__body">
+                <p class="eyebrow">CHAPTER 01</p>
+                <h2 class="title title--chapter">GASって<span class="accent">なに？</span></h2>
+                <div class="chapter-points"><span>無料の道具箱</span><span>おすすめの理由</span></div>
+              </div>
+            </div>
+            <div class="slide__number">2</div>
+          </div>
+        </section>
+
+        <section class="slide" id="slide-3" data-title="無料で使える自動化の道具箱">
+          <div class="slide__frame">
+            <div class="slide__main">
+              <div class="slide__header">
+                <p class="eyebrow">CHAPTER 01</p>
+                <h2 class="title">無料で使える<span class="accent">自動化の道具箱</span></h2>
+              </div>
+              <div class="split-panel">
+                <article class="split-panel__pane">
+                  <div class="pane-head"><svg class="icon icon--panel"><use href="#icon-grid"></use></svg><h3>いまの姿</h3></div>
+                  <p>Gmail・スプレッドシート・カレンダー・フォーム・ドライブを、別々の画面で手作業。</p>
+                </article>
+                <article class="split-panel__pane split-panel__pane--accent">
+                  <div class="pane-head"><svg class="icon icon--panel"><use href="#icon-lightbulb"></use></svg><h3>GASがあると</h3></div>
+                  <p>裏側でつないで一続きに自動で動く。Google提供・無料、アカウントがあれば導入作業なし。</p>
+                </article>
+              </div>
+              <ul class="check-list">
+                <li>読み方は「ガス」— Google Apps Script の略</li>
+                <li>この講座で文法の勉強はしない。磨くのは「何を作るか」を言葉にする設計力</li>
+              </ul>
+            </div>
+            <div class="slide__number">3</div>
+          </div>
+        </section>
+
+        <section class="slide" id="slide-4" data-title="GASがおすすめの理由">
+          <div class="slide__frame">
+            <div class="slide__main">
+              <div class="slide__header">
+                <p class="eyebrow">CHAPTER 01</p>
+                <h2 class="title">GASが<span class="accent">おすすめの理由</span></h2>
+              </div>
+              <div class="pillar-grid">
+                <article class="pillar-card"><div class="pillar-card__num">①</div><h3>料金</h3><p>初期費用も月額も0円。稟議が要らず、今日から始められる。</p></article>
+                <article class="pillar-card"><div class="pillar-card__num">②</div><h3>道具</h3><p>業務の中心にあるシートとGmailをそのまま動かせる。移行も引っ越しも不要。</p></article>
+                <article class="pillar-card pillar-card--accent"><div class="pillar-card__num">③</div><h3>AI</h3><p>サンプルが豊富でAIの学習データにも大量。日本語で伝えればコードはほぼ一発。</p></article>
+              </div>
+              <p class="callout">月額課金のSaaSや年間数十万円のRPAと違い、<strong>始めない理由がない</strong>のが今のGASです。</p>
+            </div>
+            <div class="slide__number">4</div>
+          </div>
+        </section>
+
+        <section class="slide slide--chapter" id="slide-5" data-title="第2章 設計は人間、実装はAI">
+          <div class="slide__frame">
+            <div class="chapter-hero">
+              <div class="chapter-hero__number">2</div>
+              <div class="chapter-hero__body">
+                <p class="eyebrow">CHAPTER 02</p>
+                <h2 class="title title--chapter">設計は人間、<span class="accent">実装はAI</span></h2>
+                <div class="chapter-points"><span>分業の考え方</span><span>設計メモ4行</span><span>エラーは怖くない</span></div>
+              </div>
+            </div>
+            <div class="slide__number">5</div>
+          </div>
+        </section>
+
+        <section class="slide" id="slide-6" data-title="アイデアは人間、作るのはAI">
+          <div class="slide__frame">
+            <div class="slide__main">
+              <div class="slide__header">
+                <p class="eyebrow">CHAPTER 02</p>
+                <h2 class="title">アイデアは人間、<span class="accent">作るのはAI</span></h2>
+              </div>
+              <div class="role-split">
+                <article class="role-split__pane role-split__pane--accent">
+                  <h3>人間の仕事 = アイデア出し</h3>
+                  <p>何を自動化すると業務が楽になるのか、GASで楽にできそうな業務を見つける</p>
+                </article>
+                <article class="role-split__pane">
+                  <h3>AIの仕事 = 実装</h3>
+                  <p>ChatGPT・Claude・GeminiはGASのコード生成が得意。日本語で伝えれば数分でコードが返る。</p>
+                </article>
+              </div>
+              <p class="callout">この講座ではGASを「勉強するもの」ではなく<strong>「AIに発注するもの」</strong>として扱います。</p>
+            </div>
+            <div class="slide__number">6</div>
+          </div>
+        </section>
+
+        <section class="slide" id="slide-7" data-title="覚えるのは設計メモ4行だけ">
+          <div class="slide__frame">
+            <div class="slide__main">
+              <div class="slide__header">
+                <p class="eyebrow">CHAPTER 02</p>
+                <h2 class="title">覚えるのは<span class="accent">設計メモ4行</span>だけ</h2>
+              </div>
+              <div class="flow flow--four">
+                <article class="flow-step"><h3>① 入口</h3><p>何をきっかけに動く？ データはどこから来る？</p></article>
+                <article class="flow-step"><h3>② 処理</h3><p>何を、どう変える？</p></article>
+                <article class="flow-step"><h3>③ 出口</h3><p>結果はどこに、どんな形で出す？</p></article>
+                <article class="flow-step flow-step--accent"><h3>④ 見張り</h3><p>失敗にどう気づく？ 人の確認をどこに挟む？</p></article>
+              </div>
+              <p class="callout">自動化は<strong>水道管</strong>。この4行が書ければ要件定義は完成 — 書けないうちはAIに頼まない。</p>
+            </div>
+            <div class="slide__number">7</div>
+          </div>
+        </section>
+
+        <section class="slide" id="slide-8" data-title="飛ばしがちな「見張り」の設定">
+          <div class="slide__frame">
+            <div class="slide__main">
+              <div class="slide__header">
+                <p class="eyebrow">CHAPTER 02</p>
+                <h2 class="title">飛ばしがちな<span class="accent">「見張り」</span>の設定</h2>
+              </div>
+              <div class="split-panel">
+                <article class="split-panel__pane">
+                  <div class="pane-head"><h3>全部自動</h3></div>
+                  <ul class="mini-list"><li><span class="tag-bad">×</span> 失敗に気づけない</li><li><span class="tag-bad">×</span> 仕組みが短命に終わる</li></ul>
+                </article>
+                <article class="split-panel__pane split-panel__pane--accent">
+                  <div class="pane-head"><h3>事故らない自動</h3></div>
+                  <ul class="mini-list"><li><span class="tag-good">〇</span> ログをシートに残す</li><li><span class="tag-good">〇</span> 完了・エラーを自分の見る場所へ通知</li><li><span class="tag-good">〇</span> 取り返しのつかない動作の直前は人が確認</li></ul>
+                </article>
+              </div>
+              <p class="callout">合言葉 — <strong>「全部自動」より「事故らない自動」が偉い。</strong>実案件で学んだ結論です。</p>
+            </div>
+            <div class="slide__number">8</div>
+          </div>
+        </section>
+
+        <section class="slide" id="slide-9" data-title="エラー対処はワンパターン">
+          <div class="slide__frame">
+            <div class="slide__main">
+              <div class="slide__header">
+                <p class="eyebrow">CHAPTER 02</p>
+                <h2 class="title">エラー対処は<span class="accent">ワンパターン</span></h2>
+              </div>
+              <div class="flow flow--four">
+                <article class="flow-step"><h3>① コピー</h3><p>エラーメッセージをそのまま。</p></article>
+                <article class="flow-step"><h3>② 貼る</h3><p>AIに貼り付けて「直してください」。</p></article>
+                <article class="flow-step"><h3>③ 差し替え</h3><p>返ってきた修正版に差し替える。</p></article>
+                <article class="flow-step flow-step--accent"><h3>④ 再実行</h3><p>動くまで根気よく繰り返す。</p></article>
+              </div>
+              <p class="callout">エラーは失敗ではなく<strong>AIとの往復の一部</strong>。プロの開発者も同じことをしています。</p>
+            </div>
+            <div class="slide__number">9</div>
+          </div>
+        </section>
+
+        <section class="slide" id="slide-10" data-title="自動化ネタの探し方 — 3条件">
+          <div class="slide__frame">
+            <div class="slide__main">
+              <div class="slide__header">
+                <p class="eyebrow">CHAPTER 02</p>
+                <h2 class="title">ネタの探し方 — <span class="accent">3条件</span></h2>
+              </div>
+              <div class="pillar-grid">
+                <article class="pillar-card"><div class="pillar-card__num">①</div><h3>繰り返す</h3><p>繰り返し発生する作業。</p></article>
+                <article class="pillar-card"><div class="pillar-card__num">②</div><h3>手順が決まっている</h3><p>毎回同じやり方でこなしている。</p></article>
+                <article class="pillar-card"><div class="pillar-card__num">③</div><h3>時間がかかる</h3><p>1回あたり数分〜数十分。</p></article>
+              </div>
+              <p class="mini-label"><strong>みっつ揃う作業</strong>を棚卸し表に書き出す（ハンズオンで実際に作ります）</p>
+              <div class="table-block">
+                <div class="table-row table-row--header"><span>業務内容</span><span>週の所要時間</span><span>難易度</span><span>優先度</span></div>
+                <div class="table-row"><span>週報の催促メール送信</span><span>30分</span><span>低</span><span>高</span></div>
+              </div>
+            </div>
+            <div class="slide__number">10</div>
+          </div>
+        </section>
+
+        <section class="slide slide--chapter" id="slide-11" data-title="第3章 何が作れる？">
+          <div class="slide__frame">
+            <div class="chapter-hero">
+              <div class="chapter-hero__number">3</div>
+              <div class="chapter-hero__body">
+                <p class="eyebrow">CHAPTER 03</p>
+                <h2 class="title title--chapter">何が作れる？ — <span class="accent">5つの型と実例</span></h2>
+                <div class="chapter-points"><span>型は5系統</span><span>実案件3つ</span><span>反面教師</span></div>
+              </div>
+            </div>
+            <div class="slide__number">11</div>
+          </div>
+        </section>
+
+        <section class="slide" id="slide-12" data-title="型は5系統だけ">
+          <div class="slide__frame">
+            <div class="slide__main">
+              <div class="slide__header">
+                <p class="eyebrow">CHAPTER 03</p>
+                <h2 class="title">型は<span class="accent">5系統</span>だけ</h2>
+              </div>
+              <div class="map-flow" style="grid-template-columns:1fr 1fr;grid-template-rows:repeat(3,auto);grid-auto-flow:column">
+                <article class="map-step"><div class="map-step__index">1</div><div><h3>メール・通知</h3><p>差し込み送信・リマインド</p></div></article>
+                <article class="map-step"><div class="map-step__index">2</div><div><h3>シート業務</h3><p>定期集計・転記・整形</p></div></article>
+                <article class="map-step"><div class="map-step__index">3</div><div><h3>フォーム連携</h3><p>受付の自動返信</p></div></article>
+                <article class="map-step"><div class="map-step__index">4</div><div><h3>カレンダー</h3><p>予定の一括登録</p></div></article>
+                <article class="map-step"><div class="map-step__index">5</div><div><h3>ドライブ・外部・ワークフロー</h3><p>申請から承認まで</p></div></article>
+              </div>
+              <p class="callout">全部覚えなくてよい。<strong>「自分の困りごとはどの系統か」</strong>の見当がつけば十分。</p>
+            </div>
+            <div class="slide__number">12</div>
+          </div>
+        </section>
+
+        <section class="slide" id="slide-13" data-title="講師の実案件から3つ">
+          <div class="slide__frame">
+            <div class="slide__main">
+              <div class="slide__header">
+                <p class="eyebrow">CHAPTER 03</p>
+                <h2 class="title">講師の<span class="accent">実案件</span>から3つ</h2>
+              </div>
+              <div class="comparison-grid">
+                <article class="compare-card"><h3>空調工事会社</h3><p class="compare-card__lead">紙とLINEでバラバラの申請・報告をフォーム＋シートに集約、提出で自動通知。</p><ul class="mini-list"><li><span class="tag-good">〇</span> 既存のGoogleだけで完結、定着も速い</li></ul></article>
+                <article class="compare-card"><h3>眼鏡店</h3><p class="compare-card__lead">顧客と購入履歴をシート管理、推奨時期が近い顧客への案内を自動化。</p><ul class="mini-list"><li><span class="tag-good">〇</span> 今日の要素が全部入った「完成形」</li></ul></article>
+                <article class="compare-card"><h3>個人事業の経理</h3><p class="compare-card__lead">レシート記録から科目候補の判定・台帳転記までを自動化。</p><ul class="mini-list"><li><span class="tag-good">〇</span> 月末数時間が日々の数分に分散</li></ul></article>
+              </div>
+              <p class="callout">業種が違っても、<strong>フォーム・シート・通知・トリガー</strong>という道具は同じ。</p>
+            </div>
+            <div class="slide__number">13</div>
+          </div>
+        </section>
+
+        <section class="slide" id="slide-14" data-title="教訓 — マクロ地獄">
+          <div class="slide__frame">
+            <div class="slide__main">
+              <div class="slide__header">
+                <p class="eyebrow">CHAPTER 03</p>
+                <h2 class="title">こうなってはいけない — <span class="accent">マクロ地獄</span></h2>
+              </div>
+              <div class="split-panel">
+                <article class="split-panel__pane">
+                  <div class="pane-head"><h3>製造業の反面教師</h3></div>
+                  <p>何年も継ぎ足され、作った人はおらず、誰も直せないExcelマクロ。AIに読み解かせて洗い出し、シンプルな構成へ作り直す方針に。</p>
+                </article>
+                <article class="split-panel__pane split-panel__pane--accent">
+                  <div class="pane-head"><h3>教訓</h3></div>
+                  <p>「動いているが中身を誰も知らない自動化」が最も危険。<strong>直せる・引き継げる状態を保つ</strong>ことが自動化の寿命を決める。</p>
+                </article>
+              </div>
+              <p class="callout">皆さんは1本目を作る側。最初の1本からこの教訓を設計に織り込む。</p>
+            </div>
+            <div class="slide__number">14</div>
+          </div>
+        </section>
+
+        <section class="slide slide--chapter" id="slide-15" data-title="第4章 制限と安全運転">
+          <div class="slide__frame">
+            <div class="chapter-hero">
+              <div class="chapter-hero__number">4</div>
+              <div class="chapter-hero__body">
+                <p class="eyebrow">CHAPTER 04</p>
+                <h2 class="title title--chapter">制限と<span class="accent">安全運転</span></h2>
+                <div class="chapter-points"><span>実行時間6分</span><span>安全運転の要点</span><span>やらない判断</span></div>
+              </div>
+            </div>
+            <div class="slide__number">15</div>
+          </div>
+        </section>
+
+        <section class="slide" id="slide-16" data-title="制限1: 実行時間は1回6分">
+          <div class="slide__frame">
+            <div class="slide__main">
+              <div class="slide__header">
+                <p class="eyebrow">CHAPTER 04</p>
+                <h2 class="title">制限1: 実行時間は<span class="accent">1回6分</span></h2>
+              </div>
+              <div class="split-panel" style="grid-template-columns:1fr">
+                <article class="split-panel__pane split-panel__pane--accent">
+                  <div class="pane-head"><h3>現行の公式仕様</h3></div>
+                  <ul class="mini-list"><li><span class="tag-good">〇</span> 全アカウント一律 6分（360秒）</li><li><span class="tag-good">〇</span> 上位プラン契約でも延長できないハードリミット</li></ul>
+                </article>
+              </div>
+              <p class="callout">大量データは<strong>分割か絞り込み</strong> — 「1回に処理する量」を設計段階で決める。中小企業の業務なら6分に収まるケースがほとんど。</p>
+            </div>
+            <div class="slide__number">16</div>
+          </div>
+        </section>
+
+        <section class="slide" id="slide-17" data-title="安全運転の要点">
+          <div class="slide__frame">
+            <div class="slide__main">
+              <div class="slide__header">
+                <p class="eyebrow">CHAPTER 04</p>
+                <h2 class="title">安全運転の<span class="accent">要点</span></h2>
+              </div>
+              <div class="pillar-grid">
+                <article class="pillar-card"><div class="pillar-card__num">①</div><h3>権限は中身を見てから</h3><p>何にアクセスするかを確認して、必要最小限だけ許可する。</p></article>
+                <article class="pillar-card"><div class="pillar-card__num">②</div><h3>実データを貼らない</h3><p>AIへの依頼はダミーデータ・伏せ字で書く。</p></article>
+                <article class="pillar-card"><div class="pillar-card__num">③</div><h3>動いても検証する</h3><p>計算結果や送信先は、テストデータで人間が確かめる。</p></article>
+              </div>
+              <p class="callout">詳しいルールと手順は、巻末の<strong>補足資料</strong>にまとめてあります。</p>
+            </div>
+            <div class="slide__number">17</div>
+          </div>
+        </section>
+
+        <section class="slide" id="slide-18" data-title="GASでやらない判断">
+          <div class="slide__frame">
+            <div class="slide__main">
+              <div class="slide__header">
+                <p class="eyebrow">CHAPTER 04</p>
+                <h2 class="title">GASで<span class="accent">やらない</span>判断</h2>
+              </div>
+              <div class="comparison-grid">
+                <article class="compare-card"><h3>大規模データ</h3><p class="compare-card__lead">数十万行を超える処理は実行時間に収まらない。データベースや専用システムの領域。</p></article>
+                <article class="compare-card"><h3>リアルタイム</h3><p class="compare-card__lead">秒単位の応答が必要な処理は不向き。トリガーは分単位で動く。</p></article>
+                <article class="compare-card"><h3>基幹システム</h3><p class="compare-card__lead">会計・人事など複雑な権限管理と監査が要る業務は専用システムが適切。</p></article>
+              </div>
+              <p class="callout"><strong>「GASで無理をしない」も設計のうち。</strong>できないことを早く見極めるほど、できる範囲の成果は速く出る。</p>
+            </div>
+            <div class="slide__number">18</div>
+          </div>
+        </section>
+
+        <section class="slide slide--chapter" id="slide-19" data-title="第5章 ハンズオン">
+          <div class="slide__frame">
+            <div class="chapter-hero">
+              <div class="chapter-hero__number">5</div>
+              <div class="chapter-hero__body">
+                <p class="eyebrow">CHAPTER 05</p>
+                <h2 class="title title--chapter">ハンズオン — <span class="accent">まず動かす</span></h2>
+                <div class="chapter-points"><span>Step1 環境</span><span>Step2 初回実行</span><span>Step3 棚卸し</span></div>
+              </div>
+            </div>
+            <div class="slide__number">19</div>
+          </div>
+        </section>
+
+        <section class="slide" id="slide-20" data-title="Step1: 3クリックで到着">
+          <div class="slide__frame">
+            <div class="slide__main">
+              <div class="slide__header">
+                <p class="eyebrow">CHAPTER 05</p>
+                <h2 class="title">開発環境を開く — <span class="accent">3クリックで到着</span></h2>
+              </div>
+              <div class="flow flow--three">
+                <article class="flow-step"><h3>① シートを作成</h3><p>Googleドライブで新しいスプレッドシート。</p></article>
+                <article class="flow-step"><h3>② 「拡張機能」</h3><p>メニューから選ぶ。</p></article>
+                <article class="flow-step flow-step--accent"><h3>③ 「Apps Script」</h3><p>新しいタブでエディタが開く。準備完了。</p></article>
+              </div>
+              <p class="callout">インストール作業は一切なし。ブラウザだけで書いて、実行して、保存できる。<strong>まず全員でエディタまで到達</strong>しましょう。</p>
+            </div>
+            <div class="slide__number">20</div>
+          </div>
+        </section>
+
+        <section class="slide" id="slide-21" data-title="Step1続き: 名前をつける">
+          <div class="slide__frame">
+            <div class="slide__main">
+              <div class="slide__header">
+                <p class="eyebrow">CHAPTER 05</p>
+                <h2 class="title">プロジェクトに<span class="accent">名前</span>をつける</h2>
+              </div>
+              <div class="split-panel">
+                <article class="split-panel__pane">
+                  <div class="pane-head"><h3>そのまま</h3></div>
+                  <ul class="mini-list"><li><span class="tag-bad">×</span> 「無題のプロジェクト」— 何をするものか分からなくなる</li></ul>
+                </article>
+                <article class="split-panel__pane split-panel__pane--accent">
+                  <div class="pane-head"><h3>名前をつける</h3></div>
+                  <ul class="mini-list"><li><span class="tag-good">〇</span> あとから見て分かる名前に</li><li><span class="tag-good">〇</span> 直すとき・引き継ぐときに効く</li></ul>
+                </article>
+              </div>
+              <p class="callout">合言葉 — <strong>「数か月後の自分が最初の読者」</strong>。名前だけが中身を思い出す手がかりになる。</p>
+            </div>
+            <div class="slide__number">21</div>
+          </div>
+        </section>
+
+        <section class="slide" id="slide-22" data-title="Step2: 最初のコードを実行">
+          <div class="slide__frame">
+            <div class="slide__main">
+              <div class="slide__header">
+                <p class="eyebrow">CHAPTER 05</p>
+                <h2 class="title">最初のコードを動かす — 承認は<span class="accent">エラーじゃない</span></h2>
+              </div>
+              <div class="flow flow--four">
+                <article class="flow-step"><h3>① 貼り付け</h3><p>セルに値を書き込む数行の関数。</p></article>
+                <article class="flow-step"><h3>② 「実行」を押す</h3><p>エディタのボタンひとつ。</p></article>
+                <article class="flow-step flow-step--accent"><h3>③ 権限の承認</h3><p>初回だけ出る確認画面。エラーではなく仕様。内容を確認して許可。</p></article>
+                <article class="flow-step"><h3>④ 動いた！</h3><p>セルに文字が入れば成功。最初のGASが動いた。</p></article>
+              </div>
+              <p class="callout">ここが今日いちばんのつまずきポイント。だから<strong>全員でいま一緒に通過</strong>します。何へのアクセスを求められているかだけ見て、許可。</p>
+            </div>
+            <div class="slide__number">22</div>
+          </div>
+        </section>
+
+        <section class="slide" id="slide-23" data-title="コードの正体 — 3動作">
+          <div class="slide__frame">
+            <div class="slide__main">
+              <div class="slide__header">
+                <p class="eyebrow">CHAPTER 05</p>
+                <h2 class="title">コードの正体 — <span class="accent">「読む・書く・送る」</span>の3動作</h2>
+              </div>
+              <div class="pillar-grid">
+                <article class="pillar-card"><div class="pillar-card__num">①</div><h3>読む</h3><p><code>getValue()</code> — シートの値を取得する。</p></article>
+                <article class="pillar-card"><div class="pillar-card__num">②</div><h3>書く</h3><p><code>setValue()</code> — シートに値を入れる。さっきのコードはこれ1動作。</p></article>
+                <article class="pillar-card"><div class="pillar-card__num">③</div><h3>送る</h3><p><code>GmailApp.sendMail()</code> — メールを送信する。</p></article>
+              </div>
+              <p class="callout">実務の自動化の大半はこの組み合わせ。「回答を<strong>読んで</strong>、台帳に<strong>書いて</strong>、お礼を<strong>送る</strong>」— それだけで立派な業務アプリ。AIとの会話も一気にスムーズになる。</p>
+            </div>
+            <div class="slide__number">23</div>
+          </div>
+        </section>
+
+        <section class="slide" id="slide-24" data-title="Step3: ミニ棚卸し">
+          <div class="slide__frame">
+            <div class="slide__main">
+              <div class="slide__header">
+                <p class="eyebrow">CHAPTER 05</p>
+                <h2 class="title">ミニ棚卸し — <span class="accent">自分の1本目</span>を決める</h2>
+              </div>
+              <div class="two-column two-column--diagram">
+                <figure class="figure-panel">
+                  <svg class="slide-figure" viewBox="0 0 560 330" role="img" aria-label="削減時間と難易度のマトリクス">
+                    <text x="180" y="24" font-size="14" font-weight="700" fill="#5a6b7f" text-anchor="middle">難易度 低</text>
+                    <text x="420" y="24" font-size="14" font-weight="700" fill="#5a6b7f" text-anchor="middle">難易度 高</text>
+                    <text x="48" y="105" font-size="14" font-weight="700" fill="#5a6b7f" text-anchor="middle">削減 大</text>
+                    <text x="48" y="245" font-size="14" font-weight="700" fill="#5a6b7f" text-anchor="middle">削減 小</text>
+                    <rect x="80" y="40" width="200" height="130" rx="12" fill="#0d84d8"></rect>
+                    <text x="180" y="98" font-size="17" font-weight="800" fill="#ffffff" text-anchor="middle">ここから手を付ける</text>
+                    <text x="180" y="124" font-size="14" fill="#dcecfa" text-anchor="middle">最初の1本はひとつだけ</text>
+                    <rect x="320" y="40" width="200" height="130" rx="12" fill="#ffffff" stroke="#d4dce7"></rect>
+                    <text x="420" y="110" font-size="15" font-weight="700" fill="#095f9e" text-anchor="middle">成功体験のあとで挑戦</text>
+                    <rect x="80" y="180" width="200" height="130" rx="12" fill="#ffffff" stroke="#d4dce7"></rect>
+                    <text x="180" y="250" font-size="15" font-weight="700" fill="#095f9e" text-anchor="middle">余裕があれば</text>
+                    <rect x="320" y="180" width="200" height="130" rx="12" fill="#ffffff" stroke="#d4dce7"></rect>
+                    <text x="420" y="250" font-size="15" font-weight="700" fill="#095f9e" text-anchor="middle">効果が出にくい</text>
+                  </svg>
+                  <figcaption class="figure-caption">「削減できる時間 × 実現の難しさ」で優先順位をつける</figcaption>
+                </figure>
+                <div>
+                  <ul class="check-list">
+                    <li>探し方の3条件で自分の業務を棚卸し表に書き出す</li>
+                    <li>週30分以上の定型作業が第一候補</li>
+                    <li>「効果大 × 難易度低」を<strong>ひとつだけ</strong>選んで○をつける</li>
+                    <li>思い浮かばなければ講師の共通お題で進める（配布物①）</li>
+                  </ul>
+                  <p class="callout">一気に何本も作らない。<strong>小さくても確実に動く1本</strong>を先に持つのが定石。</p>
+                </div>
+              </div>
+            </div>
+            <div class="slide__number">24</div>
+          </div>
+        </section>
+
+        <section class="slide slide--chapter" id="slide-25" data-title="第6章 山場 — AIに発注する">
+          <div class="slide__frame">
+            <div class="chapter-hero">
+              <div class="chapter-hero__number">6</div>
+              <div class="chapter-hero__body">
+                <p class="eyebrow">CHAPTER 06</p>
+                <h2 class="title title--chapter">設計メモを<span class="accent">AIに発注</span>する</h2>
+                <div class="chapter-points"><span>Step4-5 依頼文</span><span>Step6 エラーとの往復</span><span>Step7 トリガー</span></div>
+              </div>
+            </div>
+            <div class="slide__number">25</div>
+          </div>
+        </section>
+
+        <section class="slide" id="slide-26" data-title="Step4-5: AIへの依頼文">
+          <div class="slide__frame">
+            <div class="slide__main">
+              <div class="slide__header">
+                <p class="eyebrow">CHAPTER 06</p>
+                <h2 class="title">設計メモを<span class="accent">AIへの依頼文</span>に変える</h2>
+              </div>
+              <div class="two-column two-column--wide">
+                <pre class="prompt-sample">GASのコードを書いてください。
+【入口】（設計メモ1行目）
+【処理】（設計メモ2行目）
+【出口】（設計メモ3行目）
+【見張り】（設計メモ4行目）
+コードには日本語のコメントを入れ、
+初心者向けに設定手順も説明してください。</pre>
+                <div>
+                  <ul class="check-list">
+                    <li>精度を上げる5要素 — 入力の形式と場所／出力の形式と保存先／例外時の動き／実行環境と制約／役割の付与</li>
+                    <li>「集計して」は曖昧 — AIが推測で埋めて意図とズレる</li>
+                    <li>範囲・方法・出力先・例外まで書けば、ほぼ一発</li>
+                  </ul>
+                  <p class="callout">ありがちな失敗: <strong>出力先の指定忘れ</strong> — AIが勝手に判断した列に書き込まれる。「曖昧に頼むと、曖昧なものが返る」の典型例。</p>
+                </div>
+              </div>
+            </div>
+            <div class="slide__number">26</div>
+          </div>
+        </section>
+
+        <section class="slide" id="slide-27" data-title="Step6: エラーとの往復">
+          <div class="slide__frame">
+            <div class="slide__main">
+              <div class="slide__header">
+                <p class="eyebrow">CHAPTER 06</p>
+                <h2 class="title">エラーとの往復 — <span class="accent">一発完成を目指さない</span></h2>
+              </div>
+              <div class="flow flow--three">
+                <article class="flow-step flow-step--accent"><h3>① 小さく作る</h3><p>まず基本機能だけを最小構成で動かす。</p></article>
+                <article class="flow-step"><h3>② 動かす</h3><p>動作を確認。エラーが出たらワンパターンで直す。</p></article>
+                <article class="flow-step"><h3>③ 足す</h3><p>「ログを残して」など機能をひとつずつ追加注文。仕上げに整える。</p></article>
+              </div>
+              <p class="callout">最初から全部盛りは<strong>どこが悪いか切り分けられない</strong>。エラーが出た人、おめでとうございます — 今日いちばん価値のある体験です。</p>
+            </div>
+            <div class="slide__number">27</div>
+          </div>
+        </section>
+
+        <section class="slide" id="slide-28" data-title="Step7: トリガー設定">
+          <div class="slide__frame">
+            <div class="slide__main">
+              <div class="slide__header">
+                <p class="eyebrow">CHAPTER 06</p>
+                <h2 class="title">トリガーを設定 — 1本目を<span class="accent">自動で回す</span></h2>
+              </div>
+              <div class="split-panel">
+                <article class="split-panel__pane split-panel__pane--accent">
+                  <div class="pane-head"><svg class="icon icon--panel"><use href="#icon-clock"></use></svg><h3>時間主導型</h3></div>
+                  <p>「毎朝9時に実行」「毎時」など、決まった時刻に回す。エディタの時計アイコンから設定。</p>
+                </article>
+                <article class="split-panel__pane">
+                  <div class="pane-head"><svg class="icon icon--panel"><use href="#icon-doc"></use></svg><h3>シート起動型</h3></div>
+                  <p>「編集されたら」「フォームが送信されたら」をきっかけに動く。</p>
+                </article>
+              </div>
+              <ul class="check-list">
+                <li>人が画面を開いていなくても回り続ける — 手動マクロとの決定的な違い</li>
+                <li>失敗するとGoogleからエラー内容を含むメールが自動で届く（最低限の安全網）</li>
+              </ul>
+            </div>
+            <div class="slide__number">28</div>
+          </div>
+        </section>
+
+        <section class="slide slide--chapter" id="slide-29" data-title="第7章 まとめ">
+          <div class="slide__frame">
+            <div class="chapter-hero">
+              <div class="chapter-hero__number">7</div>
+              <div class="chapter-hero__body">
+                <p class="eyebrow">CHAPTER 07</p>
+                <h2 class="title title--chapter"><span class="accent">まとめ</span></h2>
+                <div class="chapter-points"><span>今日のポイント</span><span>学習リソース</span><span>明日からのアクション</span></div>
+              </div>
+            </div>
+            <div class="slide__number">29</div>
+          </div>
+        </section>
+
+        <section class="slide" id="slide-30" data-title="つづきはこの道で">
+          <div class="slide__frame">
+            <div class="slide__main">
+              <div class="slide__header">
+                <p class="eyebrow">CHAPTER 07</p>
+                <h2 class="title">つづきは<span class="accent">この道</span>で</h2>
+              </div>
+              <div class="map-flow" style="grid-template-columns:1fr 1fr">
+                <article class="map-step"><div class="map-step__index">1</div><div><h3>動画教材</h3><p>入門で全体像を掴む。実務では検索で使う。</p></div></article>
+                <article class="map-step"><div class="map-step__index">2</div><div><h3>ブログ</h3><p>【GAS＋やりたいこと】で検索して実例を探す。</p></div></article>
+                <article class="map-step"><div class="map-step__index">3</div><div><h3>書籍</h3><p>体系的に学びたくなったら入門書を1冊。</p></div></article>
+                <article class="map-step map-step--accent"><div class="map-step__index">4</div><div><h3>Google公式リファレンス</h3><p>正確な仕様や制限値は、最後にここで裏を取る癖を。</p></div></article>
+              </div>
+              <p class="callout">詰まったら質問できるコミュニティを持つ。<strong>「作ったものを見せ合う」のは最強の継続装置。</strong></p>
+            </div>
+            <div class="slide__number">30</div>
+          </div>
+        </section>
+
+        <section class="slide" id="slide-31" data-title="明日からのアクション">
+          <div class="slide__frame">
+            <div class="slide__main">
+              <div class="slide__header">
+                <p class="eyebrow">CHAPTER 07</p>
+                <h2 class="title">明日からの<span class="accent">アクション</span></h2>
+              </div>
+              <div class="flow flow--three">
+                <article class="flow-step flow-step--accent"><h3>今日</h3><p>30分で棚卸し表を作り、最初の1本を決めて設計メモ4行を書く。</p></article>
+                <article class="flow-step"><h3>今週</h3><p>AIに依頼して作り、テスト環境で動かす。</p></article>
+                <article class="flow-step"><h3>今月</h3><p>トリガーで本運用へ。見張りを確認し、設計メモを説明書として保存。2本目に着手。</p></article>
+              </div>
+              <p class="callout">上達に必要なのは文法の暗記ではなく<strong>「設計→依頼→動かす→直す」の回数</strong>。1本目が動いた瞬間から、あなたは自動化を発注できる人です。</p>
+            </div>
+            <div class="slide__number">31</div>
+          </div>
+        </section>
+
+        <section class="slide" id="slide-32" data-title="今日のポイント">
+          <div class="slide__frame">
+            <div class="slide__main">
+              <div class="slide__header">
+                <p class="eyebrow">CHAPTER 07</p>
+                <h2 class="title">今日の<span class="accent">ポイント</span></h2>
+              </div>
+              <div class="principle-grid">
+                <article class="principle-card"><h3>① アイデアは人間、作るのはAI</h3><p>楽にできそうな業務を見つけるのが人間の仕事。コードはAIに発注する。</p></article>
+                <article class="principle-card"><h3>② 設計メモ4行</h3><p>入口・処理・出口・見張り。この4行が書ければAIに頼める。</p></article>
+                <article class="principle-card"><h3>③ エラーはワンパターン</h3><p>コピーして貼って「直して」→ 差し替えて再実行。怖くない。</p></article>
+                <article class="principle-card"><h3>④ 事故らない自動が偉い</h3><p>ログ・通知・人の確認。「見張り」を飛ばさない。</p></article>
+                <article class="principle-card"><h3>⑤ 制限と安全運転</h3><p>実行時間は1回6分。権限は中身を見てから、実データはAIに貼らない。</p></article>
+                <article class="principle-card"><h3>⑥ 小さく作って育てる</h3><p>「効果大×難易度低」の1本から。上達は「設計→依頼→動かす→直す」の回数。</p></article>
+              </div>
+              <p class="callout">お疲れさまでした。<strong>自分の業務の自動化1本目が、もう動いています。</strong></p>
+            </div>
+            <div class="slide__number">32</div>
+          </div>
+        </section>
+
+        <section class="slide slide--chapter" id="slide-33" data-title="補足資料">
+          <div class="slide__frame">
+            <div class="chapter-hero">
+              <div class="chapter-hero__number">＋</div>
+              <div class="chapter-hero__body">
+                <p class="eyebrow">APPENDIX</p>
+                <h2 class="title title--chapter">補足<span class="accent">資料</span></h2>
+                <div class="chapter-points"><span>ツールの使い分け</span><span>5系統の各論</span><span>制限の詳細</span><span>安全運転の詳細</span></div>
+              </div>
+            </div>
+            <div class="slide__number">33</div>
+          </div>
+        </section>
+
+        <section class="slide" id="slide-34" data-title="VBA・RPAとの使い分け">
+          <div class="slide__frame">
+            <div class="slide__main">
+              <div class="slide__header">
+                <p class="eyebrow">APPENDIX</p>
+                <h2 class="title">使い分けは<span class="accent">シンプル</span></h2>
+              </div>
+              <div class="comparison-grid">
+                <article class="compare-card"><h3>GAS</h3><p class="compare-card__lead">Google内の自動化。無料で柔軟。クラウドで動くので、ファイルを閉じていても定時実行できる。</p><ul class="mini-list"><li><span class="tag-good">〇</span> まずここから</li></ul></article>
+                <article class="compare-card"><h3>iPaaS（Zapier等）</h3><p class="compare-card__lead">Google外の複数SaaSをまたぐ連携が主体なら、こちらのほうが構築が速い。</p><ul class="mini-list"><li><span class="tag-good">〇</span> 外部連携が多い場合</li></ul></article>
+                <article class="compare-card"><h3>RPA</h3><p class="compare-card__lead">高機能だが費用が高く、画面変更に弱い。</p><ul class="mini-list"><li><span class="tag-bad">×</span> 最初の選択肢ではない</li></ul></article>
+              </div>
+              <p class="callout">まず無料のGASでできる範囲を自動化し、<strong>必要になったら有料ツールを検討する</strong>順番が合理的。</p>
+            </div>
+            <div class="slide__number">34</div>
+          </div>
+        </section>
+
+        <section class="slide" id="slide-35" data-title="系統1: 差し込みメール送信">
+          <div class="slide__frame">
+            <div class="slide__main">
+              <div class="slide__header">
+                <p class="eyebrow">APPENDIX</p>
+                <h2 class="title">系統1: <span class="accent">差し込みメール送信</span></h2>
+              </div>
+              <div class="flow flow--three">
+                <article class="flow-step"><h3>① シートにまとめる</h3><p>宛先・名前・内容を行に並べる。</p></article>
+                <article class="flow-step"><h3>② 各行を読み取る</h3><p>1行ずつ順番に処理する。</p></article>
+                <article class="flow-step flow-step--accent"><h3>③ 差し込んで送信</h3><p>宛先ごとに名前を差し込んだメールを送る。</p></article>
+              </div>
+              <p class="callout">「差し込み印刷のメール版」。週30分の送信作業がゼロになれば<strong>月2時間の削減</strong>。</p>
+            </div>
+            <div class="slide__number">35</div>
+          </div>
+        </section>
+
+        <section class="slide" id="slide-36" data-title="系統2: シートの定期集計">
+          <div class="slide__frame">
+            <div class="slide__main">
+              <div class="slide__header">
+                <p class="eyebrow">APPENDIX</p>
+                <h2 class="title">系統2: <span class="accent">シートの定期集計</span></h2>
+              </div>
+              <div class="flow flow--three">
+                <article class="flow-step"><h3>① 散らばったデータ</h3><p>各店舗・各担当のシートに分かれている。</p></article>
+                <article class="flow-step flow-step--accent"><h3>② 毎朝6時に自動実行</h3><p>決まった時刻に集計が回る。</p></article>
+                <article class="flow-step"><h3>③ サマリーシートへ</h3><p>出社した時点で最新の数字が揃っている。</p></article>
+              </div>
+              <p class="callout">毎日1時間の集計なら<strong>月20時間規模</strong>の削減。転記・整形・帳票のPDF化も同じ系統。</p>
+            </div>
+            <div class="slide__number">36</div>
+          </div>
+        </section>
+
+        <section class="slide" id="slide-37" data-title="系統3: フォーム自動返信">
+          <div class="slide__frame">
+            <div class="slide__main">
+              <div class="slide__header">
+                <p class="eyebrow">APPENDIX</p>
+                <h2 class="title">系統3: <span class="accent">フォーム自動返信</span></h2>
+              </div>
+              <div class="flow flow--three">
+                <article class="flow-step"><h3>① 回答が届く</h3><p>フォームが送信される。</p></article>
+                <article class="flow-step"><h3>② 直後に受付メール</h3><p>「受け付けました」を自動で返す。</p></article>
+                <article class="flow-step flow-step--accent"><h3>③ 文面を出し分け</h3><p>回答内容に応じて標準機能より柔軟に。</p></article>
+              </div>
+              <p class="callout">返信がないと送信者は不安になる。自動返信があるだけで<strong>顧客体験は確実に良くなる</strong>。ハンズオンの共通お題につながる型です。</p>
+            </div>
+            <div class="slide__number">37</div>
+          </div>
+        </section>
+
+        <section class="slide" id="slide-38" data-title="系統4: 予定の一括登録">
+          <div class="slide__frame">
+            <div class="slide__main">
+              <div class="slide__header">
+                <p class="eyebrow">APPENDIX</p>
+                <h2 class="title">系統4: <span class="accent">予定の一括登録</span></h2>
+              </div>
+              <div class="flow flow--three">
+                <article class="flow-step"><h3>① シートに並べる</h3><p>日付・時間・タイトル・参加者。</p></article>
+                <article class="flow-step"><h3>② まとめて登録</h3><p>カレンダーへ一括で書き込む。</p></article>
+                <article class="flow-step flow-step--accent"><h3>③ 50件が1分</h3><p>手作業なら1時間以上。入力ミスもない。</p></article>
+              </div>
+              <p class="callout">「シートに書いたものが、そのまま予定表になる」— この感覚をつかむと応用がききます。</p>
+            </div>
+            <div class="slide__number">38</div>
+          </div>
+        </section>
+
+        <section class="slide" id="slide-39" data-title="系統5: 簡易ワークフロー">
+          <div class="slide__frame">
+            <div class="slide__main">
+              <div class="slide__header">
+                <p class="eyebrow">APPENDIX</p>
+                <h2 class="title">系統5: <span class="accent">簡易ワークフロー</span></h2>
+              </div>
+              <div class="flow flow--four">
+                <article class="flow-step"><h3>① フォームで申請</h3><p>備品購入・休暇・経費など。</p></article>
+                <article class="flow-step"><h3>② 承認者へ通知</h3><p>提出があれば自動で知らせる。</p></article>
+                <article class="flow-step flow-step--accent"><h3>③ 承認を入力</h3><p>承認をきっかけに処理を実行。</p></article>
+                <article class="flow-step"><h3>④ 完了を通知</h3><p>関係者に結果が届く。</p></article>
+              </div>
+              <p class="callout">月額数万円の専用ツールなしでGoogle内で完結。<strong>「有料ツールは大げさだが、紙とメールでは管理しきれない」</strong>規模にちょうどいい。</p>
+            </div>
+            <div class="slide__number">39</div>
+          </div>
+        </section>
+
+        <section class="slide" id="slide-40" data-title="制限2: メール送信数の上限">
+          <div class="slide__frame">
+            <div class="slide__main">
+              <div class="slide__header">
+                <p class="eyebrow">APPENDIX</p>
+                <h2 class="title">制限2: メール送信数の<span class="accent">上限</span></h2>
+              </div>
+              <div class="flow flow--three">
+                <article class="flow-step"><h3>① ログで数える</h3><p>送信のたびに件数を記録する。</p></article>
+                <article class="flow-step"><h3>② 上限に近づく</h3><p>1日あたりの上限（アカウント種別で異なる）。</p></article>
+                <article class="flow-step flow-step--accent"><h3>③ 止めて通知</h3><p>止められる前に、自分で気づける形に。</p></article>
+              </div>
+              <p class="callout">数十件規模の業務連絡には十分。<strong>大量のメルマガ配信には使わない</strong>。</p>
+            </div>
+            <div class="slide__number">40</div>
+          </div>
+        </section>
+
+        <section class="slide" id="slide-41" data-title="制限3: 細かい時間制限">
+          <div class="slide__frame">
+            <div class="slide__main">
+              <div class="slide__header">
+                <p class="eyebrow">APPENDIX</p>
+                <h2 class="title">制限3: <span class="accent">細かい時間制限</span>も頭の隅に</h2>
+              </div>
+              <div class="pillar-grid">
+                <article class="pillar-card pillar-card--accent"><div class="pillar-card__num">①</div><h3>1回の実行時間</h3><p>Workspaceでも変わらない。緩和されるのはここではない。</p></article>
+                <article class="pillar-card"><div class="pillar-card__num">②</div><h3>日次クォータ</h3><p>1日の総ランタイムやメール送信上限はWorkspaceで緩和される。</p></article>
+                <article class="pillar-card"><div class="pillar-card__num">③</div><h3>シンプルトリガー</h3><p>onOpen / onEdit などは最大30秒で強制終了。</p></article>
+              </div>
+              <p class="callout">時間切れのエラーは<strong>「Exceeded maximum execution time（起動時間の最大値を超えました）」</strong>。見たら実行時間の制限と判断する。</p>
+            </div>
+            <div class="slide__number">41</div>
+          </div>
+        </section>
+
+        <section class="slide" id="slide-42" data-title="会社アカウントで動かない時">
+          <div class="slide__frame">
+            <div class="slide__main">
+              <div class="slide__header">
+                <p class="eyebrow">APPENDIX</p>
+                <h2 class="title">会社アカウントで<span class="accent">動かない</span>とき</h2>
+              </div>
+              <div class="flow flow--three">
+                <article class="flow-step"><h3>① 設定の制限を疑う</h3><p>組織の管理者設定で機能や外部連携が制限されている場合がある。</p></article>
+                <article class="flow-step"><h3>② 権限まわりを確認</h3><p>自分のコードの問題かどうかを切り分ける。</p></article>
+                <article class="flow-step flow-step--accent"><h3>③ 管理者へ問い合わせ</h3><p>画面だけでは区別がつきにくい。確認が早道。</p></article>
+              </div>
+              <p class="callout">今日のハンズオンで動かない場合も、この可能性を思い出してください。</p>
+            </div>
+            <div class="slide__number">42</div>
+          </div>
+        </section>
+
+        <section class="slide" id="slide-43" data-title="安全運転ルール1: 権限">
+          <div class="slide__frame">
+            <div class="slide__main">
+              <div class="slide__header">
+                <p class="eyebrow">APPENDIX</p>
+                <h2 class="title">ルール1: 権限は<span class="accent">中身を見てから</span></h2>
+              </div>
+              <div class="flow flow--four">
+                <article class="flow-step"><h3>① 権限を求められる</h3><p>スクリプトがアクセス許可を要求。</p></article>
+                <article class="flow-step flow-step--accent"><h3>② 中身を確認</h3><p>特に他人が配布するコードは、何にアクセスするのかを見る。</p></article>
+                <article class="flow-step"><h3>③ 最小限だけ許可</h3><p>不要な権限を求めるコードは見直す。</p></article>
+                <article class="flow-step"><h3>④ 共有範囲を限定</h3><p>顧客情報を含むシートは共有設定を必ず確認。</p></article>
+              </div>
+              <p class="callout">把握しないまま承認しない — この一点で危険の大半は避けられる。自動化するとデータ量が増えるぶん、<strong>設定を誤ったときの影響も大きい</strong>。</p>
+            </div>
+            <div class="slide__number">43</div>
+          </div>
+        </section>
+
+        <section class="slide" id="slide-44" data-title="安全運転ルール2: AIとデータ">
+          <div class="slide__frame">
+            <div class="slide__main">
+              <div class="slide__header">
+                <p class="eyebrow">APPENDIX</p>
+                <h2 class="title">ルール2: 依頼は作り物、<span class="accent">検証は実物</span></h2>
+              </div>
+              <div class="flow flow--four">
+                <article class="flow-step"><h3>① ダミーで依頼</h3><p>機密・実データはAIチャットに貼らない。伏せ字で書く。</p></article>
+                <article class="flow-step"><h3>② コードが動く</h3><p>ここで安心しない。</p></article>
+                <article class="flow-step flow-step--accent"><h3>③ 人間が検証</h3><p>計算結果や送信先をテストデータで確かめる。</p></article>
+                <article class="flow-step"><h3>④ 本番へ</h3><p>お金・信用に関わる処理ほど入念に。</p></article>
+              </div>
+              <p class="callout"><strong>「動く」と「正しい」は別物。</strong>動いたことと、正しいことを分けて確かめる。</p>
+            </div>
+            <div class="slide__number">44</div>
+          </div>
+        </section>
+
+      </main>
+
+      <div class="deck-controls" aria-label="スライド操作">
+        <button class="nav-button" type="button" data-action="prev">前へ</button>
+        <button class="nav-button" type="button" data-action="next">次へ</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
