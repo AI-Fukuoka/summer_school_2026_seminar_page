@@ -143,11 +143,26 @@
       line-height: 1.4;
     }
 
+    .day-card__link .day-title:first-child,
+    .day-card > .day-title:first-child {
+      margin-top: 0;
+    }
+
     .day-description {
       margin: 0;
       color: var(--muted);
       line-height: 1.75;
       font-size: 0.96rem;
+    }
+
+    .slide-link {
+      display: inline-flex;
+      margin-top: 12px;
+      color: var(--accent);
+      font-size: 0.9rem;
+      font-weight: 700;
+      text-decoration: underline;
+      text-underline-offset: 3px;
     }
 
     .archive-link {
@@ -184,11 +199,132 @@
       text-decoration: underline;
     }
 
+    .tool-panel {
+      padding: 28px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--surface);
+      box-shadow: 0 10px 28px rgba(23, 50, 74, 0.05);
+    }
+
+    .tool-heading {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      margin: 0;
+      font-size: 1.25rem;
+    }
+
+    .tool-icon {
+      display: grid;
+      width: 40px;
+      height: 40px;
+      place-items: center;
+      border-radius: 12px;
+      background: var(--accent-soft);
+      color: var(--accent);
+      font-size: 1.25rem;
+    }
+
+    .tool-description {
+      margin: 14px 0 22px;
+      color: var(--muted);
+      line-height: 1.75;
+    }
+
+    .download-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .download-option {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      padding: 16px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #f8fbfe;
+    }
+
+    .download-platform {
+      font-weight: 700;
+    }
+
+    .download-detail {
+      color: var(--muted);
+      font-size: 0.84rem;
+    }
+
+    .download-button {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 44px;
+      margin-top: 12px;
+      border-radius: 9px;
+      background: var(--accent);
+      color: #ffffff;
+      font-weight: 700;
+      text-decoration: none;
+      transition: background 0.18s ease, transform 0.18s ease;
+    }
+
+    .download-button:hover {
+      background: #0871bb;
+      transform: translateY(-1px);
+    }
+
+    .tool-note {
+      margin: 20px 0 0;
+      padding: 16px;
+      border-left: 4px solid #72bde9;
+      border-radius: 0 10px 10px 0;
+      background: #eef8ff;
+      color: #315873;
+      font-size: 0.92rem;
+      line-height: 1.75;
+    }
+
+    .tool-note p {
+      margin: 0;
+    }
+
+    .tool-note code {
+      display: block;
+      margin-top: 10px;
+      padding: 9px 12px;
+      overflow-x: auto;
+      border-radius: 7px;
+      background: #243b53;
+      color: #ffffff;
+      font-family: Consolas, "Courier New", monospace;
+      font-size: 0.85rem;
+    }
+
     .footer-note {
       margin: 24px 0 0;
       color: var(--muted);
       line-height: 1.8;
       font-size: 0.94rem;
+    }
+
+    .site-footer {
+      margin-top: 40px;
+      padding-top: 20px;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 0.85rem;
+      text-align: center;
+    }
+
+    .site-footer p {
+      margin: 0;
+    }
+
+    .site-footer p + p {
+      margin-top: 6px;
     }
 
     @media (max-width: 720px) {
@@ -199,6 +335,14 @@
 
       .hero {
         padding: 28px 20px;
+      }
+
+      .tool-panel {
+        padding: 22px 18px;
+      }
+
+      .download-grid {
+        grid-template-columns: 1fr;
       }
     }
   </style>
@@ -217,29 +361,29 @@
     <h2 class="section-title">公開中のスライド(ボタンクリックでセミナー資料がひらきます)</h2>
     <section class="day-grid" aria-label="公開中のスライド">
       <article class="day-card day-card--archive">
-        <a class="day-card__link" href="./day01/index.html"><span class="day-label">OPEN</span><h3 class="day-title">Day1</h3><p class="day-description">生成AIの歩き方</p></a>
-        <a class="archive-link" href="https://www.youtube.com/watch?v=hTOPpISC5o4" target="_blank" rel="noopener noreferrer"><img class="archive-thumbnail" src="https://i.ytimg.com/vi/hTOPpISC5o4/hqdefault.jpg" alt="Day1 生成AIの歩き方のアーカイブ動画サムネイル"><span class="archive-copy"><span class="archive-title">視聴する</span></span></a>
+        <a class="day-card__link" href="./day01/index.html"><h3 class="day-title">Day1</h3><p class="day-description">生成AIの歩き方</p><span class="slide-link">セミナー資料</span></a>
+        <a class="archive-link" href="https://www.youtube.com/watch?v=hTOPpISC5o4" target="_blank" rel="noopener noreferrer"><img class="archive-thumbnail" src="https://i.ytimg.com/vi/hTOPpISC5o4/hqdefault.jpg" alt="Day1 生成AIの歩き方のアーカイブ動画サムネイル"><span class="archive-copy"><span class="archive-title">アーカイブ視聴</span></span></a>
       </article>
       <article class="day-card day-card--archive">
-        <a class="day-card__link" href="./day02/day02_index.html"><span class="day-label">OPEN</span><h3 class="day-title">Day2</h3><p class="day-description">Gemini Notebook活用術</p></a>
-        <a class="archive-link" href="https://www.youtube.com/watch?v=uFVse6Kr5TY" target="_blank" rel="noopener noreferrer"><img class="archive-thumbnail" src="https://i.ytimg.com/vi/uFVse6Kr5TY/hqdefault.jpg" alt="Day2 Gemini Notebook活用術のアーカイブ動画サムネイル"><span class="archive-copy"><span class="archive-title">視聴する</span></span></a>
+        <a class="day-card__link" href="./day02/day02_index.html"><h3 class="day-title">Day2</h3><p class="day-description">Gemini Notebook活用術</p><span class="slide-link">セミナー資料</span></a>
+        <a class="archive-link" href="https://www.youtube.com/watch?v=uFVse6Kr5TY" target="_blank" rel="noopener noreferrer"><img class="archive-thumbnail" src="https://i.ytimg.com/vi/uFVse6Kr5TY/hqdefault.jpg" alt="Day2 Gemini Notebook活用術のアーカイブ動画サムネイル"><span class="archive-copy"><span class="archive-title">アーカイブ視聴</span></span></a>
       </article>
       <article class="day-card day-card--archive">
-        <a class="day-card__link" href="./day03/day03_index.html"><span class="day-label">OPEN</span><h3 class="day-title">Day3</h3><p class="day-description">生成AIでスライドをつくる</p></a>
-        <a class="archive-link" href="https://youtu.be/eXjrLn4I-XI" target="_blank" rel="noopener noreferrer"><img class="archive-thumbnail" src="https://i.ytimg.com/vi/eXjrLn4I-XI/hqdefault.jpg" alt="Day3 生成AIでスライドをつくるのアーカイブ動画サムネイル"><span class="archive-copy"><span class="archive-title">視聴する</span></span></a>
+        <a class="day-card__link" href="./day03/day03_index.html"><h3 class="day-title">Day3</h3><p class="day-description">生成AIでスライドをつくる</p><span class="slide-link">セミナー資料</span></a>
+        <a class="archive-link" href="https://youtu.be/eXjrLn4I-XI" target="_blank" rel="noopener noreferrer"><img class="archive-thumbnail" src="https://i.ytimg.com/vi/eXjrLn4I-XI/hqdefault.jpg" alt="Day3 生成AIでスライドをつくるのアーカイブ動画サムネイル"><span class="archive-copy"><span class="archive-title">アーカイブ視聴</span></span></a>
       </article>
       <article class="day-card day-card--archive">
-        <a class="day-card__link" href="./day04/index.html"><span class="day-label">OPEN</span><h3 class="day-title">Day4</h3><p class="day-description">実務で使える最新画像AI</p></a>
-        <a class="archive-link" href="https://www.youtube.com/watch?v=60aS5IyDQ1k" target="_blank" rel="noopener noreferrer"><img class="archive-thumbnail" src="https://i.ytimg.com/vi/60aS5IyDQ1k/hqdefault.jpg" alt="Day4 実務で使える最新画像AIのアーカイブ動画サムネイル"><span class="archive-copy"><span class="archive-title">視聴する</span></span></a>
+        <a class="day-card__link" href="./day04/index.html"><h3 class="day-title">Day4</h3><p class="day-description">実務で使える最新画像AI</p><span class="slide-link">セミナー資料</span></a>
+        <a class="archive-link" href="https://www.youtube.com/watch?v=60aS5IyDQ1k" target="_blank" rel="noopener noreferrer"><img class="archive-thumbnail" src="https://i.ytimg.com/vi/60aS5IyDQ1k/hqdefault.jpg" alt="Day4 実務で使える最新画像AIのアーカイブ動画サムネイル"><span class="archive-copy"><span class="archive-title">アーカイブ視聴</span></span></a>
       </article>
       <article class="day-card day-card--archive">
-        <a class="day-card__link" href="./day05/No-Code_AI_App_Building.pdf"><span class="day-label">OPEN</span><h3 class="day-title">Day5</h3><p class="day-description">Google AI Studio</p></a>
-        <a class="archive-link" href="https://www.youtube.com/watch?v=eTeU-vP3Bv4" target="_blank" rel="noopener noreferrer"><img class="archive-thumbnail" src="https://i.ytimg.com/vi/eTeU-vP3Bv4/hqdefault.jpg" alt="Day5 Google AI Studioのアーカイブ動画サムネイル"><span class="archive-copy"><span class="archive-title">視聴する</span></span></a>
+        <a class="day-card__link" href="./day05/No-Code_AI_App_Building.pdf"><h3 class="day-title">Day5</h3><p class="day-description">Google AI Studio</p><span class="slide-link">セミナー資料</span></a>
+        <a class="archive-link" href="https://www.youtube.com/watch?v=eTeU-vP3Bv4" target="_blank" rel="noopener noreferrer"><img class="archive-thumbnail" src="https://i.ytimg.com/vi/eTeU-vP3Bv4/hqdefault.jpg" alt="Day5 Google AI Studioのアーカイブ動画サムネイル"><span class="archive-copy"><span class="archive-title">アーカイブ視聴</span></span></a>
       </article>
         <a class="day-card" href="./day06/index.html">
-        <span class="day-label">OPEN</span>
         <h3 class="day-title">day06</h3>
         <p class="day-description">GASで業務効率化・自動化</p>
+        <span class="slide-link">セミナー資料</span>
       </a>
 
 
@@ -251,10 +395,10 @@
       <article class="day-card day-card--disabled"><span class="day-label">COMING SOON</span><h3 class="day-title">day07</h3><p class="day-description">準備中</p></article>
       <article class="day-card day-card--disabled"><span class="day-label">COMING SOON</span><h3 class="day-title">day08</h3><p class="day-description">準備中</p></article>
       
-      <a class="day-card" href="./day09/">
-        <span class="day-label">OPEN</span>
+      <a class="day-card" href="./day09/index.html">
         <h3 class="day-title">day09</h3>
         <p class="day-description">AIエージェントを作ろう</p>
+        <span class="slide-link">セミナー資料</span>
       </a>
 
       <article class="day-card day-card--disabled"><span class="day-label">COMING SOON</span><h3 class="day-title">day10</h3><p class="day-description">準備中</p></article>
@@ -262,8 +406,37 @@
       <article class="day-card day-card--disabled"><span class="day-label">COMING SOON</span><h3 class="day-title">day12</h3><p class="day-description">準備中</p></article>
     </section>
 
-    <p class="footer-note">
-    </p>
+    <h2 class="section-title">おまけ・便利ツール</h2>
+    <section class="tool-panel" aria-labelledby="marktext-title">
+      <h3 class="tool-heading" id="marktext-title"><span class="tool-icon" aria-hidden="true">↓</span>マークダウンのフリービューアー</h3>
+      <p class="tool-description">拡張子「.md」のマークダウン形式ファイルを開くための無料アプリ、MarkTextです。<br>お使いのパソコンに合うインストーラーを選んでダウンロードしてください。</p>
+      <div class="download-grid">
+        <article class="download-option">
+          <span class="download-platform">Windows x64</span>
+          <span class="download-detail">MarkText v0.19.1 インストーラー版</span>
+          <a class="download-button" href="https://github.com/marktext/marktext/releases/download/v0.19.1/marktext-win-x64-0.19.1-setup.exe" target="_blank" rel="noopener noreferrer">ダウンロード</a>
+        </article>
+        <article class="download-option">
+          <span class="download-platform">Mac Apple Silicon</span>
+          <span class="download-detail">MarkText v0.19.1（M1 / M2 / M3 / M4）</span>
+          <a class="download-button" href="https://github.com/marktext/marktext/releases/download/v0.19.1/marktext-mac-arm64-0.19.1.dmg" target="_blank" rel="noopener noreferrer">ダウンロード</a>
+        </article>
+        <article class="download-option">
+          <span class="download-platform">Mac Intel</span>
+          <span class="download-detail">MarkText v0.19.1（Intel Mac）</span>
+          <a class="download-button" href="https://github.com/marktext/marktext/releases/download/v0.19.1/marktext-mac-x64-0.19.1.dmg" target="_blank" rel="noopener noreferrer">ダウンロード</a>
+        </article>
+      </div>
+      <aside class="tool-note" aria-label="Mac版の注意点">
+        <p><strong>Mac版の注意点</strong><br>v0.19.1のMac版はApple Developer IDで署名されていないため、初回起動時にmacOSからブロックされる場合があります。Applicationsフォルダへ移したあと、ターミナルで次のコマンドを実行してください。</p>
+        <code>xattr -cr /Applications/marktext.app</code>
+      </aside>
+    </section>
+
+    <footer class="site-footer">
+      <p>AIやろうぜin福岡　2026 サマースクール</p>
+      <p>無断転載・コピー禁止</p>
+    </footer>
   </main>
 </body>
 </html>
