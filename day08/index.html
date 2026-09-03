@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI SUMMER SCHOOL Day8 | HP作成基本・ハンズオン</title>
+  <link rel="stylesheet" href="day08_styles.css">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="rail" aria-label="スライド一覧">
+      <div class="rail__inner">
+        <p class="rail__eyebrow">AI-Fukuoka</p>
+        <h1 class="rail__title">AI SUMMER SCHOOL Day8</h1>
+        <p class="rail__subtitle">画像ベーススライド / HP作成基本・ハンズオン</p>
+        <nav class="toc">
+          <a class="toc__link" href="#slide-1">1 ホームページの仕組み</a>
+          <a class="toc__link" href="#slide-2">2 HTMLとCSSの役割</a>
+        </nav>
+      </div>
+    </aside>
+
+    <div class="workspace">
+      <header class="topbar">
+        <div>
+          <p class="topbar__eyebrow">SLIDE OUTPUT</p>
+          <p class="topbar__title">AI SUMMER SCHOOL Day8 / HP作成基本・ハンズオン</p>
+        </div>
+        <div class="topbar__actions">
+          <p class="topbar__counter" id="slide-counter">1 / 2</p>
+          <button class="action-button" type="button" data-action="prev">← 前のスライド</button>
+          <button class="action-button" type="button" data-action="next">次のスライド →</button>
+          <button class="action-button" type="button" data-action="print">印刷 / PDF</button>
+        </div>
+      </header>
+
+      <main class="deck" id="deck">
+        <section class="slide" id="slide-1" data-title="ホームページの仕組み"><div class="slide__frame slide__frame--image"><img class="slide-image" src="./images/slide-01.png" alt="ドメイン、サーバー、DNS、SSLとホームページの仕組みを説明するスライド"><div class="slide__number">1</div></div></section>
+        <section class="slide" id="slide-2" data-title="HTMLとCSSの役割"><div class="slide__frame slide__frame--image"><img class="slide-image" src="./images/slide-02.png" alt="お家づくりで例えるHTMLとCSSの役割を説明するスライド"><div class="slide__number">2</div></div></section>
+      </main>
+    </div>
+  </div>
+  <script src="day08_app.js"></script>
+</body>
+</html>
